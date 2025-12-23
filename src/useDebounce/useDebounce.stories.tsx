@@ -26,9 +26,32 @@ function SearchInputDemo() {
   }, [debouncedSearchTerm]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Search Input with Debounce</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div
+      style={{
+        padding: "2rem",
+        maxWidth: "600px",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <h2
+        style={{
+          fontSize: "1.75rem",
+          fontWeight: "700",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          marginBottom: "0.5rem",
+        }}
+      >
+        Search Input with Debounce
+      </h2>
+      <p
+        style={{
+          color: "#6b7280",
+          marginBottom: "1.5rem",
+          fontSize: "0.95rem",
+        }}
+      >
         Type to search. API calls are debounced by 500ms.
       </p>
 
@@ -39,46 +62,98 @@ function SearchInputDemo() {
         placeholder="Search..."
         style={{
           width: "100%",
-          padding: "0.75rem",
+          padding: "0.875rem 1rem",
           fontSize: "1rem",
-          border: "2px solid #ddd",
-          borderRadius: "4px",
-          marginBottom: "1rem",
+          border: "2px solid #e5e7eb",
+          borderRadius: "0.75rem",
+          marginBottom: "1.25rem",
+          outline: "none",
+          transition: "all 0.2s ease",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = "#667eea";
+          e.currentTarget.style.boxShadow =
+            "0 0 0 3px rgba(102, 126, 234, 0.1)";
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = "#e5e7eb";
+          e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
         }}
       />
 
       <div
         style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-          marginBottom: "1rem",
+          padding: "1.25rem",
+          background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
+          borderRadius: "0.75rem",
+          marginBottom: "1.25rem",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
         }}
       >
-        <div>
-          <strong>Current Input:</strong> {searchTerm || "(empty)"}
+        <div style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>
+          <strong style={{ color: "#374151" }}>Current Input:</strong>{" "}
+          <span style={{ color: "#6b7280" }}>
+            {searchTerm || "(empty)"}
+          </span>
         </div>
-        <div>
-          <strong>Debounced Value:</strong> {debouncedSearchTerm || "(empty)"}
+        <div style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>
+          <strong style={{ color: "#374151" }}>Debounced Value:</strong>{" "}
+          <span style={{ color: "#6b7280" }}>
+            {debouncedSearchTerm || "(empty)"}
+          </span>
         </div>
-        <div>
-          <strong>API Calls Made:</strong> {searchCount}
+        <div style={{ fontSize: "0.95rem" }}>
+          <strong style={{ color: "#374151" }}>API Calls Made:</strong>{" "}
+          <span
+            style={{
+              color: "#667eea",
+              fontWeight: "700",
+              fontSize: "1.1rem",
+            }}
+          >
+            {searchCount}
+          </span>
         </div>
       </div>
 
       {searchResults.length > 0 && (
         <div>
-          <h3>Search Results:</h3>
+          <h3
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: "600",
+              color: "#374151",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Search Results:
+          </h3>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {searchResults.map((result, index) => (
               <li
                 key={index}
                 style={{
-                  padding: "0.75rem",
+                  padding: "1rem",
                   backgroundColor: "white",
-                  border: "1px solid #ddd",
-                  borderRadius: "4px",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "0.5rem",
                   marginBottom: "0.5rem",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = "translateX(4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(102, 126, 234, 0.15)";
+                  e.currentTarget.style.borderColor = "#667eea";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = "translateX(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 1px 3px rgba(0, 0, 0, 0.1)";
+                  e.currentTarget.style.borderColor = "#e5e7eb";
                 }}
               >
                 {result}
@@ -121,9 +196,32 @@ function FormValidationDemo() {
   }, [debouncedEmail]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Form Validation with Debounce</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div
+      style={{
+        padding: "2rem",
+        maxWidth: "600px",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <h2
+        style={{
+          fontSize: "1.75rem",
+          fontWeight: "700",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          marginBottom: "0.5rem",
+        }}
+      >
+        Form Validation with Debounce
+      </h2>
+      <p
+        style={{
+          color: "#6b7280",
+          marginBottom: "1.5rem",
+          fontSize: "0.95rem",
+        }}
+      >
         Email validation is debounced by 800ms to avoid excessive checks.
       </p>
 
@@ -133,7 +231,9 @@ function FormValidationDemo() {
           style={{
             display: "block",
             marginBottom: "0.5rem",
-            fontWeight: "bold",
+            fontWeight: "600",
+            color: "#374151",
+            fontSize: "0.95rem",
           }}
         >
           Email Address
@@ -146,23 +246,54 @@ function FormValidationDemo() {
           placeholder="Enter your email"
           style={{
             width: "100%",
-            padding: "0.75rem",
+            padding: "0.875rem 1rem",
             fontSize: "1rem",
-            border: "2px solid #ddd",
-            borderRadius: "4px",
+            border: "2px solid #e5e7eb",
+            borderRadius: "0.75rem",
+            outline: "none",
+            transition: "all 0.2s ease",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = "#667eea";
+            e.currentTarget.style.boxShadow =
+              "0 0 0 3px rgba(102, 126, 234, 0.1)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "#e5e7eb";
+            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
           }}
         />
       </div>
 
       {isValidating && (
-        <div style={{ color: "#666", fontStyle: "italic" }}>Validating...</div>
+        <div
+          style={{
+            color: "#667eea",
+            fontStyle: "italic",
+            fontSize: "0.95rem",
+            padding: "0.75rem",
+            background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
+            borderRadius: "0.5rem",
+            marginTop: "0.75rem",
+          }}
+        >
+          Validating...
+        </div>
       )}
 
       {validationMessage && !isValidating && (
         <div
           style={{
-            color: validationMessage.startsWith("✓") ? "#28a745" : "#dc3545",
-            fontWeight: "bold",
+            color: validationMessage.startsWith("✓") ? "#10b981" : "#ef4444",
+            fontWeight: "600",
+            fontSize: "0.95rem",
+            padding: "0.75rem",
+            background: validationMessage.startsWith("✓")
+              ? "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)"
+              : "linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)",
+            borderRadius: "0.5rem",
+            marginTop: "0.75rem",
           }}
         >
           {validationMessage}
