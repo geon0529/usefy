@@ -93,9 +93,7 @@ function SearchInputDemo() {
       >
         <div style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>
           <strong style={{ color: "#374151" }}>Current Input:</strong>{" "}
-          <span style={{ color: "#6b7280" }}>
-            {searchTerm || "(empty)"}
-          </span>
+          <span style={{ color: "#6b7280" }}>{searchTerm || "(empty)"}</span>
         </div>
         <div style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>
           <strong style={{ color: "#374151" }}>Debounced Value:</strong>{" "}
@@ -1081,7 +1079,9 @@ export const SearchInput: Story = {
     const searchInput = canvas.getByPlaceholderText("Search...");
 
     // Initially, check the structure exists
-    await expect(canvas.getByText("API Calls Made:", { exact: false })).toBeInTheDocument();
+    await expect(
+      canvas.getByText("API Calls Made:", { exact: false })
+    ).toBeInTheDocument();
 
     // Type "react"
     await userEvent.type(searchInput, "react", { delay: 50 });
@@ -1089,7 +1089,9 @@ export const SearchInput: Story = {
     // Wait for debounce (500ms) and check results appear
     await waitFor(
       async () => {
-        await expect(canvas.getByText('Result 1 for "react"')).toBeInTheDocument();
+        await expect(
+          canvas.getByText('Result 1 for "react"')
+        ).toBeInTheDocument();
       },
       { timeout: 1000 }
     );
@@ -1163,7 +1165,9 @@ export const AutoSave: Story = {
     // Wait for auto-save (1000ms debounce) and check Last Saved appears
     await waitFor(
       async () => {
-        await expect(canvas.getByText("Last Saved:", { exact: false })).toBeInTheDocument();
+        await expect(
+          canvas.getByText("Last Saved:", { exact: false })
+        ).toBeInTheDocument();
       },
       { timeout: 1500 }
     );
@@ -1218,7 +1222,9 @@ export const Slider: Story = {
     await waitFor(
       async () => {
         // Just check that expensive updates text exists
-        await expect(canvas.getByText("Expensive Updates (Debounced):", { exact: false })).toBeInTheDocument();
+        await expect(
+          canvas.getByText("Expensive Updates (Debounced):", { exact: false })
+        ).toBeInTheDocument();
       },
       { timeout: 1000 }
     );
@@ -1250,7 +1256,9 @@ export const LeadingEdge: Story = {
     await waitFor(
       async () => {
         await expect(
-          canvas.getByText("Trailing Edge (fires after delay):", { exact: false })
+          canvas.getByText("Trailing Edge (fires after delay):", {
+            exact: false,
+          })
         ).toBeInTheDocument();
       },
       { timeout: 1500 }
@@ -1276,22 +1284,47 @@ export const MaxWait: Story = {
       /Keep typing without stopping/i
     );
 
-    // Type some content
-    await userEvent.type(
-      textarea,
-      "This is a test of the maxWait feature!",
-      { delay: 50 }
-    );
+    // Initially, both counts should be 0
+    // Text is split across multiple elements, so we check parent containers
+    const regularDebounceContainer = canvas.getByText(
+      /Regular Debounce \(2s delay\):/i
+    ).parentElement;
+    expect(regularDebounceContainer?.textContent).toMatch(/0\s+updates/i);
 
-    // Wait for debounce (2000ms) and verify updates happened
+    const maxWaitContainer = canvas.getByText(
+      /With MaxWait \(2s delay, 5s max\):/i
+    ).parentElement;
+    expect(maxWaitContainer?.textContent).toMatch(/0\s+updates/i);
+
+    // Type continuously for more than 5 seconds (maxWait time)
+    // This ensures maxWait triggers while regular debounce doesn't
+    // Each character typed with 100ms delay, so 60 characters = 6 seconds
+    const longText = "a".repeat(60);
+    await userEvent.type(textarea, longText, {
+      delay: 100, // 100ms delay between characters = 6 seconds total
+    });
+
+    // Wait for maxWait to trigger (should happen within 5 seconds)
+    // Regular debounce should still be 0 (user never stopped typing for 2 seconds)
+    // MaxWait debounce should be at least 1 (triggered after 5 seconds)
     await waitFor(
       async () => {
-        await expect(
-          canvas.getByText("Regular Debounce (2s delay):", { exact: false })
-        ).toBeInTheDocument();
+        const maxWaitContainer = canvas.getByText(
+          /With MaxWait \(2s delay, 5s max\):/i
+        ).parentElement;
+        const maxWaitText = maxWaitContainer?.textContent || "";
+        const maxWaitMatch = maxWaitText.match(/(\d+)\s+updates/i);
+        const maxWaitCount = maxWaitMatch ? parseInt(maxWaitMatch[1], 10) : 0;
+        expect(maxWaitCount).toBeGreaterThanOrEqual(1);
       },
-      { timeout: 3000 }
+      { timeout: 7000 } // Wait up to 7 seconds to allow maxWait to trigger
     );
+
+    // Verify regular debounce is still 0 (user never stopped for 2 seconds)
+    const regularDebounceContainerAfter = canvas.getByText(
+      /Regular Debounce \(2s delay\):/i
+    ).parentElement;
+    expect(regularDebounceContainerAfter?.textContent).toMatch(/0\s+updates/i);
   },
 };
 
@@ -1312,9 +1345,7 @@ export const CombinedOptions: Story = {
     const input = canvas.getByPlaceholderText("Type here...");
 
     // Initially, no updates
-    await expect(
-      canvas.getByText(/No updates yet.../i)
-    ).toBeInTheDocument();
+    await expect(canvas.getByText(/No updates yet.../i)).toBeInTheDocument();
 
     // Type some text
     await userEvent.type(input, "test", { delay: 100 });
@@ -1339,8 +1370,6 @@ export const CombinedOptions: Story = {
     await userEvent.click(clearButton);
 
     // Should reset to no updates
-    await expect(
-      canvas.getByText(/No updates yet.../i)
-    ).toBeInTheDocument();
+    await expect(canvas.getByText(/No updates yet.../i)).toBeInTheDocument();
   },
 };
