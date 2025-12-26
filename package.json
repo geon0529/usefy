@@ -19,7 +19,7 @@
       "vitest related --run --config vitest.packages.config.ts"
     ],
     "packages/**/*.{ts,tsx}": [
-      "tsc --noEmit"
+      "turbo run typecheck"
     ]
   },
   "keywords": [
