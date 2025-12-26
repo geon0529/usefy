@@ -5,13 +5,12 @@ import autoprefixer from "autoprefixer";
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
+    "@storybook/addon-essentials",
     "@storybook/addon-onboarding",
     "@storybook/addon-links",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
     "@storybook/addon-a11y",
-    "@storybook/addon-docs",
-    "@storybook/addon-vitest",
   ],
   framework: {
     name: "@storybook/react-vite",
