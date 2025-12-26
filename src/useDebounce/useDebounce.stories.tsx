@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import React, { useState, useEffect } from "react";
 import { useDebounce } from "./useDebounce";
 import { within, userEvent, expect, waitFor } from "storybook/test";
+import { storyTheme } from "../styles/storyTheme";
 
 /**
  * 1. Search Input Demo
@@ -26,11 +27,11 @@ function SearchInputDemo() {
   }, [debouncedSearchTerm]);
 
   return (
-    <div className="p-8 max-w-[600px] font-sans">
-      <h2 className="text-[1.75rem] font-bold bg-gradient-to-br from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>
         Search Input with Debounce
       </h2>
-      <p className="text-gray-500 mb-6 text-[0.95rem]">
+      <p className={storyTheme.subtitle}>
         Type to search. API calls are debounced by 500ms.
       </p>
 
@@ -39,23 +40,23 @@ function SearchInputDemo() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search..."
-        className="w-full py-3.5 px-4 text-base border-2 border-gray-200 rounded-xl mb-5 outline-none transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1)] focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+        className={storyTheme.input + " mb-5"}
       />
 
-      <div className="p-5 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl mb-5 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
-        <div className="mb-2 text-[0.95rem]">
-          <strong className="text-gray-700">Current Input:</strong>{" "}
-          <span className="text-gray-500">{searchTerm || "(empty)"}</span>
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Current Input:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{searchTerm || "(empty)"}</span>
         </div>
-        <div className="mb-2 text-[0.95rem]">
-          <strong className="text-gray-700">Debounced Value:</strong>{" "}
-          <span className="text-gray-500">
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Debounced Value:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>
             {debouncedSearchTerm || "(empty)"}
           </span>
         </div>
-        <div className="text-[0.95rem]">
-          <strong className="text-gray-700">API Calls Made:</strong>{" "}
-          <span className="text-[#667eea] font-bold text-[1.1rem]">
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>API Calls Made:</strong>{" "}
+          <span className={storyTheme.statValue}>
             {searchCount}
           </span>
         </div>
@@ -68,10 +69,7 @@ function SearchInputDemo() {
           </h3>
           <ul className="list-none p-0">
             {searchResults.map((result, index) => (
-              <li
-                key={index}
-                className="p-4 bg-white border border-gray-200 rounded-lg mb-2 shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 cursor-pointer hover:translate-x-1 hover:shadow-[0_4px_12px_rgba(102,126,234,0.15)] hover:border-[#667eea]"
-              >
+              <li key={index} className={storyTheme.listItem}>
                 {result}
               </li>
             ))}
@@ -112,19 +110,16 @@ function FormValidationDemo() {
   }, [debouncedEmail]);
 
   return (
-    <div className="p-8 max-w-[600px] font-sans">
-      <h2 className="text-[1.75rem] font-bold bg-gradient-to-br from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>
         Form Validation with Debounce
       </h2>
-      <p className="text-gray-500 mb-6 text-[0.95rem]">
+      <p className={storyTheme.subtitle}>
         Email validation is debounced by 800ms to avoid excessive checks.
       </p>
 
       <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="block mb-2 font-semibold text-gray-700 text-[0.95rem]"
-        >
+        <label htmlFor="email" className={storyTheme.label}>
           Email Address
         </label>
         <input
@@ -133,23 +128,23 @@ function FormValidationDemo() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          className="w-full py-3.5 px-4 text-base border-2 border-gray-200 rounded-xl outline-none transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1)] focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+          className={storyTheme.input}
         />
       </div>
 
       {isValidating && (
-        <div className="text-[#667eea] italic text-[0.95rem] p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg mt-3">
+        <div className={storyTheme.messageInfo}>
           Validating...
         </div>
       )}
 
       {validationMessage && !isValidating && (
         <div
-          className={`font-semibold text-[0.95rem] p-3 rounded-lg mt-3 ${
+          className={
             validationMessage.startsWith("✓")
-              ? "text-green-600 bg-gradient-to-br from-green-100 to-green-200"
-              : "text-red-500 bg-gradient-to-br from-red-100 to-red-200"
-          }`}
+              ? storyTheme.messageSuccess
+              : storyTheme.messageError
+          }
         >
           {validationMessage}
         </div>
@@ -178,9 +173,9 @@ function AutoSaveDemo() {
   }, [debouncedContent, content]);
 
   return (
-    <div className="p-8 max-w-[600px]">
-      <h2 className="text-2xl font-bold mb-4">Auto-save with Debounce</h2>
-      <p className="text-gray-600 mb-4">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Auto-save with Debounce</h2>
+      <p className={storyTheme.subtitle}>
         Content is automatically saved 1 second after you stop typing.
       </p>
 
@@ -189,19 +184,24 @@ function AutoSaveDemo() {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Start typing..."
         rows={8}
-        className="w-full p-3 text-base border-2 border-gray-300 rounded-md font-mono mb-4 resize-y"
+        className={storyTheme.textareaMono + " mb-5"}
       />
 
-      <div className="p-4 bg-gray-100 rounded-md">
-        <div>
-          <strong>Characters:</strong> {content.length}
+      <div className={storyTheme.statBox}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Characters:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{content.length}</span>
         </div>
-        <div>
-          <strong>Save Count:</strong> {saveCount}
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Save Count:</strong>{" "}
+          <span className={storyTheme.statValue}>{saveCount}</span>
         </div>
         {lastSaved && (
-          <div>
-            <strong>Last Saved:</strong> {lastSaved.toLocaleTimeString()}
+          <div className={storyTheme.statLabel}>
+            <strong className={storyTheme.statText}>Last Saved:</strong>{" "}
+            <span className={storyTheme.statTextSecondary}>
+              {lastSaved.toLocaleTimeString()}
+            </span>
           </div>
         )}
       </div>
@@ -251,31 +251,37 @@ function WindowResizeDemo() {
   const debouncedSize = parseSize(debouncedWindowSize);
 
   return (
-    <div className="p-8 max-w-[600px]">
-      <h2 className="text-2xl font-bold mb-4">Window Resize with Debounce</h2>
-      <p className="text-gray-600 mb-4">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Window Resize with Debounce</h2>
+      <p className={storyTheme.subtitle}>
         Resize your browser window. Expensive calculations are debounced by
         300ms.
       </p>
 
-      <div className="p-4 bg-gray-100 rounded-md mb-4">
-        <div>
-          <strong>Current Size:</strong> {currentSize.width} x{" "}
-          {currentSize.height}
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Current Size:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>
+            {currentSize.width} x {currentSize.height}
+          </span>
         </div>
-        <div>
-          <strong>Debounced Size:</strong> {debouncedSize.width} x{" "}
-          {debouncedSize.height}
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Debounced Size:</strong>{" "}
+          <span className={storyTheme.statValue}>
+            {debouncedSize.width} x {debouncedSize.height}
+          </span>
         </div>
-        <div className="mt-2 pt-2 border-t border-gray-300">
-          <strong>Resize Events Fired:</strong> {resizeCount}
+        <div className={storyTheme.divider}>
+          <strong className={storyTheme.statText}>Resize Events Fired:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{resizeCount}</span>
         </div>
-        <div>
-          <strong>Expensive Calculations Run:</strong> {expensiveCalcCount}
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Expensive Calculations Run:</strong>{" "}
+          <span className={storyTheme.statValue}>{expensiveCalcCount}</span>
         </div>
       </div>
 
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-500 m-0">
         💡 Without debouncing, expensive operations would run {resizeCount}{" "}
         times instead of {expensiveCalcCount} times!
       </p>
@@ -318,11 +324,11 @@ function APIRequestDemo() {
   }, [debouncedQuery]);
 
   return (
-    <div className="p-8 max-w-[600px]">
-      <h2 className="text-2xl font-bold mb-4">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>
         API Request with Loading State
       </h2>
-      <p className="text-gray-600 mb-4">
+      <p className={storyTheme.subtitle}>
         Search triggers an API request after 600ms of inactivity.
       </p>
 
@@ -331,32 +337,36 @@ function APIRequestDemo() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Type to search..."
-        className="w-full p-3 text-base border-2 border-gray-300 rounded-md mb-4"
+        className={storyTheme.input + " mb-5"}
       />
 
-      <div className="p-4 bg-gray-100 rounded-md mb-4">
-        <div>
-          <strong>API Requests Made:</strong> {requestCount}
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>API Requests Made:</strong>{" "}
+          <span className={storyTheme.statValue}>{requestCount}</span>
         </div>
       </div>
 
       {isLoading && (
-        <div className="p-8 text-center bg-yellow-100 rounded-md">
-          Loading...
+        <div className={storyTheme.infoBox + " p-8 text-center"}>
+          <p className={storyTheme.infoText + " m-0"}>Loading...</p>
         </div>
       )}
 
       {!isLoading && data && (
-        <div className="p-4 bg-green-100 rounded-md">
+        <div className={storyTheme.messageSuccess}>
           <h3 className="text-lg font-semibold mb-2">Results Found</h3>
-          <div>
-            <strong>Query:</strong> {data.query}
+          <div className={storyTheme.statLabel}>
+            <strong className={storyTheme.statText}>Query:</strong>{" "}
+            <span className={storyTheme.statTextSecondary}>{data.query}</span>
           </div>
-          <div>
-            <strong>Results:</strong> {data.results} items
+          <div className={storyTheme.statLabel}>
+            <strong className={storyTheme.statText}>Results:</strong>{" "}
+            <span className={storyTheme.statTextSecondary}>{data.results} items</span>
           </div>
-          <div>
-            <strong>Fetched at:</strong> {data.timestamp}
+          <div className={storyTheme.statLabel}>
+            <strong className={storyTheme.statText}>Fetched at:</strong>{" "}
+            <span className={storyTheme.statTextSecondary}>{data.timestamp}</span>
           </div>
         </div>
       )}
@@ -388,9 +398,9 @@ function SliderDemo() {
   }, [debouncedValue]);
 
   return (
-    <div className="p-8 max-w-[600px]">
-      <h2 className="text-2xl font-bold mb-4">Slider with Debounced Updates</h2>
-      <p className="text-gray-600 mb-4">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Slider with Debounced Updates</h2>
+      <p className={storyTheme.subtitle}>
         Drag the slider. Expensive calculations only run after 500ms of
         inactivity.
       </p>
@@ -406,27 +416,31 @@ function SliderDemo() {
         />
       </div>
 
-      <div className="p-4 bg-gray-100 rounded-md mb-4">
-        <div className="text-3xl font-bold mb-4">Current: {value}%</div>
-        <div className="text-2xl text-green-600">
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className="text-3xl font-bold mb-4 text-gray-800">
+          Current: {value}%
+        </div>
+        <div className={storyTheme.statValue + " text-2xl mb-4"}>
           Debounced: {debouncedValue}%
         </div>
-        <div className="mt-4 pt-4 border-t border-gray-300">
-          <strong>Immediate Updates:</strong> {immediateUpdateCount}
+        <div className={storyTheme.divider}>
+          <strong className={storyTheme.statText}>Immediate Updates:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{immediateUpdateCount}</span>
         </div>
-        <div>
-          <strong>Expensive Updates (Debounced):</strong> {expensiveUpdateCount}
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Expensive Updates (Debounced):</strong>{" "}
+          <span className={storyTheme.statValue}>{expensiveUpdateCount}</span>
         </div>
       </div>
 
-      <div className="p-4 bg-blue-50 rounded-md">
-        <div className="font-bold mb-2">
+      <div className={storyTheme.cardInfo}>
+        <div className="font-bold mb-2 text-gray-800">
           Simulated Expensive Calculation Result:
         </div>
-        <div className="font-mono text-xl">
+        <div className="font-mono text-xl text-indigo-600">
           {(debouncedValue * 123.456).toFixed(2)}
         </div>
-        <p className="text-sm text-gray-600 mt-2 mb-0">
+        <p className={storyTheme.infoText + " mt-2 mb-0"}>
           💡 This expensive calculation ran {expensiveUpdateCount} times instead
           of {immediateUpdateCount} times!
         </p>
@@ -466,34 +480,35 @@ function LeadingEdgeDemo() {
   }, [debouncedTrailing]);
 
   return (
-    <div className="p-8 max-w-[600px]">
-      <h2 className="text-2xl font-bold mb-4">Leading vs Trailing Edge</h2>
-      <p className="text-gray-600 mb-4">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Leading vs Trailing Edge</h2>
+      <p className={storyTheme.subtitle}>
         Click the button multiple times quickly. Leading edge fires immediately,
         trailing edge fires after 1 second of inactivity.
       </p>
 
       <button
         onClick={() => setClicks((prev) => prev + 1)}
-        className="w-full py-4 px-8 text-xl bg-blue-600 text-white border-none rounded-md cursor-pointer mb-4 hover:bg-blue-700 transition-colors"
+        className={storyTheme.buttonFull + " mb-5"}
       >
         Click Me! (Clicked {clicks} times)
       </button>
 
-      <div className="p-4 bg-gray-100 rounded-md mb-4">
-        <div className="mb-2">
-          <strong>Immediate Updates:</strong> {immediateCount}
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Immediate Updates:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{immediateCount}</span>
         </div>
-        <div className="mb-2 p-2 bg-green-100 rounded-md">
+        <div className={storyTheme.messageSuccess + " mb-2"}>
           <strong>Leading Edge (fires immediately):</strong> {leadingCount}
         </div>
-        <div className="p-2 bg-blue-100 rounded-md">
+        <div className={storyTheme.cardInfo}>
           <strong>Trailing Edge (fires after delay):</strong> {trailingCount}
         </div>
       </div>
 
-      <div className="p-4 bg-yellow-100 rounded-md">
-        <p className="m-0 text-sm">
+      <div className={storyTheme.infoBox}>
+        <p className={storyTheme.infoText}>
           💡 <strong>Leading edge</strong> is useful for actions that should
           happen immediately on first interaction (like showing a tooltip).
           <strong> Trailing edge</strong> is better for actions that should wait
@@ -528,9 +543,9 @@ function MaxWaitDemo() {
   }, [debouncedMaxWait]);
 
   return (
-    <div className="p-8 max-w-[600px]">
-      <h2 className="text-2xl font-bold mb-4">Max Wait Option</h2>
-      <p className="text-gray-600 mb-4">
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Max Wait Option</h2>
+      <p className={storyTheme.subtitle}>
         Type continuously without stopping. Regular debounce waits indefinitely,
         but maxWait ensures update happens within 5 seconds maximum.
       </p>
@@ -540,25 +555,26 @@ function MaxWaitDemo() {
         onChange={(e) => setInput(e.target.value)}
         placeholder="Keep typing without stopping for more than 2 seconds..."
         rows={6}
-        className="w-full p-3 text-base border-2 border-gray-300 rounded-md font-mono mb-4 resize-y"
+        className={storyTheme.textareaMono + " mb-5"}
       />
 
-      <div className="p-4 bg-gray-100 rounded-md mb-4">
-        <div className="mb-2">
-          <strong>Characters:</strong> {input.length}
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Characters:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{input.length}</span>
         </div>
-        <div className="mb-2 p-2 bg-blue-50 rounded-md">
+        <div className={storyTheme.cardInfo + " mb-2"}>
           <strong>Regular Debounce (2s delay):</strong> {regularUpdateCount}{" "}
           updates
         </div>
-        <div className="p-2 bg-green-100 rounded-md">
+        <div className={storyTheme.messageSuccess}>
           <strong>With MaxWait (2s delay, 5s max):</strong> {maxWaitUpdateCount}{" "}
           updates
         </div>
       </div>
 
-      <div className="p-4 bg-yellow-100 rounded-md">
-        <p className="m-0 text-sm">
+      <div className={storyTheme.infoBox}>
+        <p className={storyTheme.infoText}>
           💡 <strong>maxWait</strong> ensures that even if the user keeps typing
           continuously, the debounced value will update at least once every 5
           seconds. This is useful for auto-save features where you want to
