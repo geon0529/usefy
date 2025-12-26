@@ -19,7 +19,7 @@ function CounterDemo({ initialValue = 0 }: { initialValue?: number }) {
           {count}
         </p>
       </div>
-      <div className="flex gap-3 justify-center flex-wrap">
+      <div className="flex gap-3 justify-center">
         <button
           data-testid="decrement-btn"
           onClick={decrement}
