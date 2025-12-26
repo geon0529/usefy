@@ -26,32 +26,11 @@ function SearchInputDemo() {
   }, [debouncedSearchTerm]);
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-        maxWidth: "600px",
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: "1.75rem",
-          fontWeight: "700",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          marginBottom: "0.5rem",
-        }}
-      >
+    <div className="p-8 max-w-[600px] font-sans">
+      <h2 className="text-[1.75rem] font-bold bg-gradient-to-br from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
         Search Input with Debounce
       </h2>
-      <p
-        style={{
-          color: "#6b7280",
-          marginBottom: "1.5rem",
-          fontSize: "0.95rem",
-        }}
-      >
+      <p className="text-gray-500 mb-6 text-[0.95rem]">
         Type to search. API calls are debounced by 500ms.
       </p>
 
@@ -60,56 +39,23 @@ function SearchInputDemo() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search..."
-        style={{
-          width: "100%",
-          padding: "0.875rem 1rem",
-          fontSize: "1rem",
-          border: "2px solid #e5e7eb",
-          borderRadius: "0.75rem",
-          marginBottom: "1.25rem",
-          outline: "none",
-          transition: "all 0.2s ease",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.borderColor = "#667eea";
-          e.currentTarget.style.boxShadow =
-            "0 0 0 3px rgba(102, 126, 234, 0.1)";
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.borderColor = "#e5e7eb";
-          e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-        }}
+        className="w-full py-3.5 px-4 text-base border-2 border-gray-200 rounded-xl mb-5 outline-none transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1)] focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
       />
 
-      <div
-        style={{
-          padding: "1.25rem",
-          background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
-          borderRadius: "0.75rem",
-          marginBottom: "1.25rem",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-        }}
-      >
-        <div style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>
-          <strong style={{ color: "#374151" }}>Current Input:</strong>{" "}
-          <span style={{ color: "#6b7280" }}>{searchTerm || "(empty)"}</span>
+      <div className="p-5 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl mb-5 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+        <div className="mb-2 text-[0.95rem]">
+          <strong className="text-gray-700">Current Input:</strong>{" "}
+          <span className="text-gray-500">{searchTerm || "(empty)"}</span>
         </div>
-        <div style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>
-          <strong style={{ color: "#374151" }}>Debounced Value:</strong>{" "}
-          <span style={{ color: "#6b7280" }}>
+        <div className="mb-2 text-[0.95rem]">
+          <strong className="text-gray-700">Debounced Value:</strong>{" "}
+          <span className="text-gray-500">
             {debouncedSearchTerm || "(empty)"}
           </span>
         </div>
-        <div style={{ fontSize: "0.95rem" }}>
-          <strong style={{ color: "#374151" }}>API Calls Made:</strong>{" "}
-          <span
-            style={{
-              color: "#667eea",
-              fontWeight: "700",
-              fontSize: "1.1rem",
-            }}
-          >
+        <div className="text-[0.95rem]">
+          <strong className="text-gray-700">API Calls Made:</strong>{" "}
+          <span className="text-[#667eea] font-bold text-[1.1rem]">
             {searchCount}
           </span>
         </div>
@@ -117,42 +63,14 @@ function SearchInputDemo() {
 
       {searchResults.length > 0 && (
         <div>
-          <h3
-            style={{
-              fontSize: "1.25rem",
-              fontWeight: "600",
-              color: "#374151",
-              marginBottom: "0.75rem",
-            }}
-          >
+          <h3 className="text-xl font-semibold text-gray-700 mb-3">
             Search Results:
           </h3>
-          <ul style={{ listStyle: "none", padding: 0 }}>
+          <ul className="list-none p-0">
             {searchResults.map((result, index) => (
               <li
                 key={index}
-                style={{
-                  padding: "1rem",
-                  backgroundColor: "white",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "0.5rem",
-                  marginBottom: "0.5rem",
-                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-                  transition: "all 0.2s ease",
-                  cursor: "pointer",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateX(4px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(102, 126, 234, 0.15)";
-                  e.currentTarget.style.borderColor = "#667eea";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateX(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 1px 3px rgba(0, 0, 0, 0.1)";
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                }}
+                className="p-4 bg-white border border-gray-200 rounded-lg mb-2 shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-all duration-200 cursor-pointer hover:translate-x-1 hover:shadow-[0_4px_12px_rgba(102,126,234,0.15)] hover:border-[#667eea]"
               >
                 {result}
               </li>
@@ -194,45 +112,18 @@ function FormValidationDemo() {
   }, [debouncedEmail]);
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-        maxWidth: "600px",
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: "1.75rem",
-          fontWeight: "700",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          marginBottom: "0.5rem",
-        }}
-      >
+    <div className="p-8 max-w-[600px] font-sans">
+      <h2 className="text-[1.75rem] font-bold bg-gradient-to-br from-[#667eea] to-[#764ba2] bg-clip-text text-transparent mb-2">
         Form Validation with Debounce
       </h2>
-      <p
-        style={{
-          color: "#6b7280",
-          marginBottom: "1.5rem",
-          fontSize: "0.95rem",
-        }}
-      >
+      <p className="text-gray-500 mb-6 text-[0.95rem]">
         Email validation is debounced by 800ms to avoid excessive checks.
       </p>
 
-      <div style={{ marginBottom: "1rem" }}>
+      <div className="mb-4">
         <label
           htmlFor="email"
-          style={{
-            display: "block",
-            marginBottom: "0.5rem",
-            fontWeight: "600",
-            color: "#374151",
-            fontSize: "0.95rem",
-          }}
+          className="block mb-2 font-semibold text-gray-700 text-[0.95rem]"
         >
           Email Address
         </label>
@@ -242,57 +133,23 @@ function FormValidationDemo() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          style={{
-            width: "100%",
-            padding: "0.875rem 1rem",
-            fontSize: "1rem",
-            border: "2px solid #e5e7eb",
-            borderRadius: "0.75rem",
-            outline: "none",
-            transition: "all 0.2s ease",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = "#667eea";
-            e.currentTarget.style.boxShadow =
-              "0 0 0 3px rgba(102, 126, 234, 0.1)";
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = "#e5e7eb";
-            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-          }}
+          className="w-full py-3.5 px-4 text-base border-2 border-gray-200 rounded-xl outline-none transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1)] focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
         />
       </div>
 
       {isValidating && (
-        <div
-          style={{
-            color: "#667eea",
-            fontStyle: "italic",
-            fontSize: "0.95rem",
-            padding: "0.75rem",
-            background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
-            borderRadius: "0.5rem",
-            marginTop: "0.75rem",
-          }}
-        >
+        <div className="text-[#667eea] italic text-[0.95rem] p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg mt-3">
           Validating...
         </div>
       )}
 
       {validationMessage && !isValidating && (
         <div
-          style={{
-            color: validationMessage.startsWith("✓") ? "#10b981" : "#ef4444",
-            fontWeight: "600",
-            fontSize: "0.95rem",
-            padding: "0.75rem",
-            background: validationMessage.startsWith("✓")
-              ? "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)"
-              : "linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)",
-            borderRadius: "0.5rem",
-            marginTop: "0.75rem",
-          }}
+          className={`font-semibold text-[0.95rem] p-3 rounded-lg mt-3 ${
+            validationMessage.startsWith("✓")
+              ? "text-green-600 bg-gradient-to-br from-green-100 to-green-200"
+              : "text-red-500 bg-gradient-to-br from-red-100 to-red-200"
+          }`}
         >
           {validationMessage}
         </div>
@@ -321,9 +178,9 @@ function AutoSaveDemo() {
   }, [debouncedContent, content]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Auto-save with Debounce</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div className="p-8 max-w-[600px]">
+      <h2 className="text-2xl font-bold mb-4">Auto-save with Debounce</h2>
+      <p className="text-gray-600 mb-4">
         Content is automatically saved 1 second after you stop typing.
       </p>
 
@@ -332,25 +189,10 @@ function AutoSaveDemo() {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Start typing..."
         rows={8}
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          fontSize: "1rem",
-          border: "2px solid #ddd",
-          borderRadius: "4px",
-          fontFamily: "monospace",
-          marginBottom: "1rem",
-          resize: "vertical",
-        }}
+        className="w-full p-3 text-base border-2 border-gray-300 rounded-md font-mono mb-4 resize-y"
       />
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-        }}
-      >
+      <div className="p-4 bg-gray-100 rounded-md">
         <div>
           <strong>Characters:</strong> {content.length}
         </div>
@@ -409,21 +251,14 @@ function WindowResizeDemo() {
   const debouncedSize = parseSize(debouncedWindowSize);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Window Resize with Debounce</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div className="p-8 max-w-[600px]">
+      <h2 className="text-2xl font-bold mb-4">Window Resize with Debounce</h2>
+      <p className="text-gray-600 mb-4">
         Resize your browser window. Expensive calculations are debounced by
         300ms.
       </p>
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-        }}
-      >
+      <div className="p-4 bg-gray-100 rounded-md mb-4">
         <div>
           <strong>Current Size:</strong> {currentSize.width} x{" "}
           {currentSize.height}
@@ -432,13 +267,7 @@ function WindowResizeDemo() {
           <strong>Debounced Size:</strong> {debouncedSize.width} x{" "}
           {debouncedSize.height}
         </div>
-        <div
-          style={{
-            marginTop: "0.5rem",
-            paddingTop: "0.5rem",
-            borderTop: "1px solid #ddd",
-          }}
-        >
+        <div className="mt-2 pt-2 border-t border-gray-300">
           <strong>Resize Events Fired:</strong> {resizeCount}
         </div>
         <div>
@@ -446,7 +275,7 @@ function WindowResizeDemo() {
         </div>
       </div>
 
-      <p style={{ fontSize: "0.875rem", color: "#666" }}>
+      <p className="text-sm text-gray-600">
         💡 Without debouncing, expensive operations would run {resizeCount}{" "}
         times instead of {expensiveCalcCount} times!
       </p>
@@ -489,9 +318,11 @@ function APIRequestDemo() {
   }, [debouncedQuery]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>API Request with Loading State</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div className="p-8 max-w-[600px]">
+      <h2 className="text-2xl font-bold mb-4">
+        API Request with Loading State
+      </h2>
+      <p className="text-gray-600 mb-4">
         Search triggers an API request after 600ms of inactivity.
       </p>
 
@@ -500,51 +331,24 @@ function APIRequestDemo() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Type to search..."
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          fontSize: "1rem",
-          border: "2px solid #ddd",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-        }}
+        className="w-full p-3 text-base border-2 border-gray-300 rounded-md mb-4"
       />
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-        }}
-      >
+      <div className="p-4 bg-gray-100 rounded-md mb-4">
         <div>
           <strong>API Requests Made:</strong> {requestCount}
         </div>
       </div>
 
       {isLoading && (
-        <div
-          style={{
-            padding: "2rem",
-            textAlign: "center",
-            backgroundColor: "#fff3cd",
-            borderRadius: "4px",
-          }}
-        >
+        <div className="p-8 text-center bg-yellow-100 rounded-md">
           Loading...
         </div>
       )}
 
       {!isLoading && data && (
-        <div
-          style={{
-            padding: "1rem",
-            backgroundColor: "#d4edda",
-            borderRadius: "4px",
-          }}
-        >
-          <h3>Results Found</h3>
+        <div className="p-4 bg-green-100 rounded-md">
+          <h3 className="text-lg font-semibold mb-2">Results Found</h3>
           <div>
             <strong>Query:</strong> {data.query}
           </div>
@@ -584,47 +388,30 @@ function SliderDemo() {
   }, [debouncedValue]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Slider with Debounced Updates</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div className="p-8 max-w-[600px]">
+      <h2 className="text-2xl font-bold mb-4">Slider with Debounced Updates</h2>
+      <p className="text-gray-600 mb-4">
         Drag the slider. Expensive calculations only run after 500ms of
         inactivity.
       </p>
 
-      <div style={{ marginBottom: "2rem" }}>
+      <div className="mb-8">
         <input
           type="range"
           min="0"
           max="100"
           value={value}
           onChange={(e) => setValue(Number(e.target.value))}
-          style={{ width: "100%", height: "40px" }}
+          className="w-full h-10"
         />
       </div>
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-        }}
-      >
-        <div
-          style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "1rem" }}
-        >
-          Current: {value}%
-        </div>
-        <div style={{ fontSize: "1.5rem", color: "#28a745" }}>
+      <div className="p-4 bg-gray-100 rounded-md mb-4">
+        <div className="text-3xl font-bold mb-4">Current: {value}%</div>
+        <div className="text-2xl text-green-600">
           Debounced: {debouncedValue}%
         </div>
-        <div
-          style={{
-            marginTop: "1rem",
-            paddingTop: "1rem",
-            borderTop: "1px solid #ddd",
-          }}
-        >
+        <div className="mt-4 pt-4 border-t border-gray-300">
           <strong>Immediate Updates:</strong> {immediateUpdateCount}
         </div>
         <div>
@@ -632,27 +419,14 @@ function SliderDemo() {
         </div>
       </div>
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#e7f3ff",
-          borderRadius: "4px",
-        }}
-      >
-        <div style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
+      <div className="p-4 bg-blue-50 rounded-md">
+        <div className="font-bold mb-2">
           Simulated Expensive Calculation Result:
         </div>
-        <div style={{ fontFamily: "monospace", fontSize: "1.25rem" }}>
+        <div className="font-mono text-xl">
           {(debouncedValue * 123.456).toFixed(2)}
         </div>
-        <p
-          style={{
-            fontSize: "0.875rem",
-            color: "#666",
-            marginTop: "0.5rem",
-            marginBottom: 0,
-          }}
-        >
+        <p className="text-sm text-gray-600 mt-2 mb-0">
           💡 This expensive calculation ran {expensiveUpdateCount} times instead
           of {immediateUpdateCount} times!
         </p>
@@ -692,70 +466,34 @@ function LeadingEdgeDemo() {
   }, [debouncedTrailing]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Leading vs Trailing Edge</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div className="p-8 max-w-[600px]">
+      <h2 className="text-2xl font-bold mb-4">Leading vs Trailing Edge</h2>
+      <p className="text-gray-600 mb-4">
         Click the button multiple times quickly. Leading edge fires immediately,
         trailing edge fires after 1 second of inactivity.
       </p>
 
       <button
         onClick={() => setClicks((prev) => prev + 1)}
-        style={{
-          width: "100%",
-          padding: "1rem 2rem",
-          fontSize: "1.25rem",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "1rem",
-        }}
+        className="w-full py-4 px-8 text-xl bg-blue-600 text-white border-none rounded-md cursor-pointer mb-4 hover:bg-blue-700 transition-colors"
       >
         Click Me! (Clicked {clicks} times)
       </button>
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-        }}
-      >
-        <div style={{ marginBottom: "0.5rem" }}>
+      <div className="p-4 bg-gray-100 rounded-md mb-4">
+        <div className="mb-2">
           <strong>Immediate Updates:</strong> {immediateCount}
         </div>
-        <div
-          style={{
-            marginBottom: "0.5rem",
-            padding: "0.5rem",
-            backgroundColor: "#d4edda",
-            borderRadius: "4px",
-          }}
-        >
+        <div className="mb-2 p-2 bg-green-100 rounded-md">
           <strong>Leading Edge (fires immediately):</strong> {leadingCount}
         </div>
-        <div
-          style={{
-            padding: "0.5rem",
-            backgroundColor: "#cce5ff",
-            borderRadius: "4px",
-          }}
-        >
+        <div className="p-2 bg-blue-100 rounded-md">
           <strong>Trailing Edge (fires after delay):</strong> {trailingCount}
         </div>
       </div>
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#fff3cd",
-          borderRadius: "4px",
-        }}
-      >
-        <p style={{ margin: 0, fontSize: "0.875rem" }}>
+      <div className="p-4 bg-yellow-100 rounded-md">
+        <p className="m-0 text-sm">
           💡 <strong>Leading edge</strong> is useful for actions that should
           happen immediately on first interaction (like showing a tooltip).
           <strong> Trailing edge</strong> is better for actions that should wait
@@ -790,9 +528,9 @@ function MaxWaitDemo() {
   }, [debouncedMaxWait]);
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "600px" }}>
-      <h2>Max Wait Option</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>
+    <div className="p-8 max-w-[600px]">
+      <h2 className="text-2xl font-bold mb-4">Max Wait Option</h2>
+      <p className="text-gray-600 mb-4">
         Type continuously without stopping. Regular debounce waits indefinitely,
         but maxWait ensures update happens within 5 seconds maximum.
       </p>
@@ -802,60 +540,25 @@ function MaxWaitDemo() {
         onChange={(e) => setInput(e.target.value)}
         placeholder="Keep typing without stopping for more than 2 seconds..."
         rows={6}
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          fontSize: "1rem",
-          border: "2px solid #ddd",
-          borderRadius: "4px",
-          fontFamily: "monospace",
-          marginBottom: "1rem",
-          resize: "vertical",
-        }}
+        className="w-full p-3 text-base border-2 border-gray-300 rounded-md font-mono mb-4 resize-y"
       />
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "4px",
-          marginBottom: "1rem",
-        }}
-      >
-        <div style={{ marginBottom: "0.5rem" }}>
+      <div className="p-4 bg-gray-100 rounded-md mb-4">
+        <div className="mb-2">
           <strong>Characters:</strong> {input.length}
         </div>
-        <div
-          style={{
-            marginBottom: "0.5rem",
-            padding: "0.5rem",
-            backgroundColor: "#e7f3ff",
-            borderRadius: "4px",
-          }}
-        >
+        <div className="mb-2 p-2 bg-blue-50 rounded-md">
           <strong>Regular Debounce (2s delay):</strong> {regularUpdateCount}{" "}
           updates
         </div>
-        <div
-          style={{
-            padding: "0.5rem",
-            backgroundColor: "#d4edda",
-            borderRadius: "4px",
-          }}
-        >
+        <div className="p-2 bg-green-100 rounded-md">
           <strong>With MaxWait (2s delay, 5s max):</strong> {maxWaitUpdateCount}{" "}
           updates
         </div>
       </div>
 
-      <div
-        style={{
-          padding: "1rem",
-          backgroundColor: "#fff3cd",
-          borderRadius: "4px",
-        }}
-      >
-        <p style={{ margin: 0, fontSize: "0.875rem" }}>
+      <div className="p-4 bg-yellow-100 rounded-md">
+        <p className="m-0 text-sm">
           💡 <strong>maxWait</strong> ensures that even if the user keeps typing
           continuously, the debounced value will update at least once every 5
           seconds. This is useful for auto-save features where you want to
