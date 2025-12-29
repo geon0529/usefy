@@ -12,7 +12,10 @@
     "storybook": "turbo run storybook --filter=@usefy/storybook",
     "build-storybook": "turbo run build-storybook --filter=@usefy/storybook",
     "clean": "turbo run clean && rimraf node_modules",
-    "prepare": "husky"
+    "prepare": "husky",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish"
   },
   "lint-staged": {
     "packages/**/*.{ts,tsx,js,jsx}": [
@@ -32,6 +35,7 @@
   "author": "mirunamu",
   "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
