@@ -1,5 +1,12 @@
 // Re-export all hooks from individual packages
 
+// useClickAnyWhere
+export {
+  useClickAnyWhere,
+  type UseClickAnyWhereOptions,
+  type ClickAnyWhereHandler,
+} from "@usefy/use-click-any-where";
+
 // useCopyToClipboard
 export {
   useCopyToClipboard,
