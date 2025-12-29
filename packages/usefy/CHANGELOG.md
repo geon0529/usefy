@@ -1,5 +1,20 @@
 # @usefy/usefy
 
+## 0.0.5
+
+### Patch Changes
+
+- Simplify exports for better IDE support
+- Updated dependencies
+  - @usefy/use-counter@0.0.5
+  - @usefy/use-debounce@0.0.5
+  - @usefy/use-debounce-callback@0.0.5
+  - @usefy/use-local-storage@0.0.5
+  - @usefy/use-session-storage@0.0.5
+  - @usefy/use-throttle@0.0.5
+  - @usefy/use-throttle-callback@0.0.5
+  - @usefy/use-toggle@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

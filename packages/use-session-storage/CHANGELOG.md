@@ -1,5 +1,11 @@
 # @usefy/use-session-storage
 
+## 0.0.5
+
+### Patch Changes
+
+- Simplify exports for better IDE support
+
 ## 0.0.4
 
 ### Patch Changes
