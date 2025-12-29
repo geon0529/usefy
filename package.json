@@ -17,14 +17,6 @@
     "version": "changeset version",
     "release": "pnpm build && changeset publish"
   },
-  "lint-staged": {
-    "packages/**/*.{ts,tsx,js,jsx}": [
-      "vitest related --run --config vitest.packages.config.ts"
-    ],
-    "packages/**/*.{ts,tsx}": [
-      "turbo run typecheck"
-    ]
-  },
   "keywords": [
     "react",
     "hooks",
