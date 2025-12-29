@@ -5,6 +5,6 @@
     "rootDir": "./src",
     "types": ["node"]
   },
-  "include": ["src", ".storybook", "vitest.config.ts"],
+  "include": ["src", ".storybook"],
   "exclude": ["node_modules", "dist", "storybook-static"]
 }
