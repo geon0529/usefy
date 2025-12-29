@@ -1,6 +1,6 @@
 {
   "name": "@usefy/usefy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A collection of useful React hooks",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -12,7 +12,9 @@
       "require": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -48,5 +50,10 @@
     "directory": "packages/usefy"
   },
   "license": "MIT",
-  "keywords": ["react", "hooks", "custom-hooks", "usefy"]
+  "keywords": [
+    "react",
+    "hooks",
+    "custom-hooks",
+    "usefy"
+  ]
 }
