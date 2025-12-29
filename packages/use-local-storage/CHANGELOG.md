@@ -1,5 +1,11 @@
 # @usefy/use-local-storage
 
+## 0.0.6
+
+### Patch Changes
+
+- Reorder exports to put types first for better TypeScript compatibility
+
 ## 0.0.5
 
 ### Patch Changes

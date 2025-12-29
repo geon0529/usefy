@@ -1,5 +1,13 @@
 # @usefy/use-throttle-callback
 
+## 0.0.6
+
+### Patch Changes
+
+- Reorder exports to put types first for better TypeScript compatibility
+- Updated dependencies
+  - @usefy/use-debounce-callback@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes

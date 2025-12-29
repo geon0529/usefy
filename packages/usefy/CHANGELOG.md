@@ -1,5 +1,20 @@
 # @usefy/usefy
 
+## 0.0.6
+
+### Patch Changes
+
+- Reorder exports to put types first for better TypeScript compatibility
+- Updated dependencies
+  - @usefy/use-counter@0.0.6
+  - @usefy/use-debounce@0.0.6
+  - @usefy/use-debounce-callback@0.0.6
+  - @usefy/use-local-storage@0.0.6
+  - @usefy/use-session-storage@0.0.6
+  - @usefy/use-throttle@0.0.6
+  - @usefy/use-throttle-callback@0.0.6
+  - @usefy/use-toggle@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
