@@ -11,6 +11,7 @@
     "test-storybook:watch": "test-storybook --watch"
   },
   "dependencies": {
+    "@usefy/use-copy-to-clipboard": "workspace:*",
     "@usefy/use-counter": "workspace:*",
     "@usefy/use-debounce": "workspace:*",
     "@usefy/use-debounce-callback": "workspace:*",

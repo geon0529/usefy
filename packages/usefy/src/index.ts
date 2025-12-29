@@ -1,5 +1,13 @@
 // Re-export all hooks from individual packages
 
+// useCopyToClipboard
+export {
+  useCopyToClipboard,
+  type UseCopyToClipboardOptions,
+  type UseCopyToClipboardReturn,
+  type CopyFn,
+} from "@usefy/use-copy-to-clipboard";
+
 // useCounter
 export { useCounter } from "@usefy/use-counter";
 
