@@ -1,5 +1,12 @@
 # @usefy/use-click-any-where
 
+## 0.0.11
+
+### Patch Changes
+
+- 555f2dc: update README.md
+- 5f7403c: update README.md
+
 ## 0.0.10
 
 ### Patch Changes
