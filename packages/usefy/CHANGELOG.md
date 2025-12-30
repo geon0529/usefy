@@ -1,5 +1,22 @@
 # @usefy/usefy
 
+## 0.0.9
+
+### Patch Changes
+
+- 05a8be8: update README.md
+- Updated dependencies [05a8be8]
+  - @usefy/use-click-any-where@0.0.9
+  - @usefy/use-copy-to-clipboard@0.0.9
+  - @usefy/use-counter@0.0.9
+  - @usefy/use-debounce@0.0.9
+  - @usefy/use-debounce-callback@0.0.9
+  - @usefy/use-local-storage@0.0.9
+  - @usefy/use-session-storage@0.0.9
+  - @usefy/use-throttle@0.0.9
+  - @usefy/use-throttle-callback@0.0.9
+  - @usefy/use-toggle@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes
