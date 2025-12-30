@@ -1,5 +1,11 @@
 # @usefy/use-click-any-where
 
+## 0.0.12
+
+### Patch Changes
+
+- 224c3e1: update README.md
+
 ## 0.0.11
 
 ### Patch Changes
