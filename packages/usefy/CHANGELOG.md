@@ -1,5 +1,24 @@
 # @usefy/usefy
 
+## 0.0.11
+
+### Patch Changes
+
+- 555f2dc: update README.md
+- 5f7403c: update README.md
+- Updated dependencies [555f2dc]
+- Updated dependencies [5f7403c]
+  - @usefy/use-click-any-where@0.0.11
+  - @usefy/use-copy-to-clipboard@0.0.11
+  - @usefy/use-counter@0.0.11
+  - @usefy/use-debounce@0.0.11
+  - @usefy/use-debounce-callback@0.0.11
+  - @usefy/use-local-storage@0.0.11
+  - @usefy/use-session-storage@0.0.11
+  - @usefy/use-throttle@0.0.11
+  - @usefy/use-throttle-callback@0.0.11
+  - @usefy/use-toggle@0.0.11
+
 ## 0.0.10
 
 ### Patch Changes
