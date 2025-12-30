@@ -27,13 +27,12 @@
   <a href="#installation">Installation</a> •
   <a href="#packages">Packages</a> •
   <a href="#quick-start">Quick Start</a> •
-  <a href="#features">Features</a> •
-  <a href="#contributing">Contributing</a>
+  <a href="#features">Features</a>
 </p>
 
 ---
 
-> ⚠️ **Pre-release Notice**: This project is currently in version `0.x.x` (alpha/beta stage). APIs may change between minor versions. While fully functional and tested, please use with caution in production environments. We welcome feedback and contributions to help stabilize the API!
+> ⚠️ **Pre-release Notice**: This project is currently in version `0.x.x` (alpha/beta stage). APIs may change between minor versions. While fully functional and tested, please use with caution in production environments.
 >
 > 🚧 **Actively Developing**: New hooks are being added regularly. Stay tuned for more utilities!
 
@@ -390,48 +389,6 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 | Safari  | 13.1+            |
 | Edge    | 79+              |
 | IE 11   | Fallback support |
-
----
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](https://github.com/geon0529/usefy/blob/master/CONTRIBUTING.md) for details.
-
-```bash
-# Clone the repository
-git clone https://github.com/geon0529/usefy.git
-
-# Install dependencies
-pnpm install
-
-# Run tests
-pnpm test
-
-# Build all packages
-pnpm build
-
-# Run tests with coverage
-pnpm test --coverage
-```
-
-### 🗂️ Project Structure
-
-```
-usefy/
-├── packages/
-│   ├── usefy/                 # All-in-one package
-│   ├── use-toggle/            # Boolean state
-│   ├── use-counter/           # Counter state
-│   ├── use-debounce/          # Value debouncing
-│   ├── use-debounce-callback/ # Callback debouncing
-│   ├── use-throttle/          # Value throttling
-│   ├── use-throttle-callback/ # Callback throttling
-│   ├── use-local-storage/     # localStorage
-│   ├── use-session-storage/   # sessionStorage
-│   ├── use-click-any-where/   # Click detection
-│   └── use-copy-to-clipboard/ # Clipboard
-└── ...
-```
 
 ---
 
