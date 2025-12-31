@@ -16,6 +16,7 @@
     "@usefy/use-counter": "workspace:*",
     "@usefy/use-debounce": "workspace:*",
     "@usefy/use-debounce-callback": "workspace:*",
+    "@usefy/use-event-listener": "workspace:*",
     "@usefy/use-local-storage": "workspace:*",
     "@usefy/use-on-click-outside": "workspace:*",
     "@usefy/use-session-storage": "workspace:*",
@@ -24,7 +25,6 @@
     "@usefy/use-toggle": "workspace:*"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^8.6.14",
     "@storybook/addon-docs": "^8.6.14",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/addon-links": "^8.6.14",
