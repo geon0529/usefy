@@ -385,12 +385,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category   | Coverage       |
-| ---------- | -------------- |
-| Statements | 100%           |
-| Branches   | 100%           |
-| Functions  | 100%           |
-| Lines      | 100%           |
+| Category   | Coverage |
+| ---------- | -------- |
+| Statements | 96.29%   |
+| Branches   | 91.66%   |
+| Functions  | 100%     |
+| Lines      | 96.29%   |
 
 ### Test Categories
 
