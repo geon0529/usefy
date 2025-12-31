@@ -55,11 +55,11 @@
 
 ### localStorage vs sessionStorage
 
-| Feature | localStorage | sessionStorage |
-|---------|--------------|----------------|
-| Data persistence | Until explicitly cleared | Until tab closes |
-| Tab sharing | Shared across all tabs | Isolated per tab |
-| Best for | User preferences, themes | Form drafts, wizard steps |
+| Feature          | localStorage             | sessionStorage            |
+| ---------------- | ------------------------ | ------------------------- |
+| Data persistence | Until explicitly cleared | Until tab closes          |
+| Tab sharing      | Shared across all tabs   | Isolated per tab          |
+| Best for         | User preferences, themes | Form drafts, wizard steps |
 
 ---
 
@@ -93,28 +93,37 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function CheckoutForm() {
-  const [formData, setFormData, clearForm] = useSessionStorage('checkout-form', {
-    name: '',
-    email: '',
-    address: '',
-  });
+  const [formData, setFormData, clearForm] = useSessionStorage(
+    "checkout-form",
+    {
+      name: "",
+      email: "",
+      address: "",
+    }
+  );
 
   return (
     <form>
       <input
         value={formData.name}
-        onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, name: e.target.value }))
+        }
         placeholder="Name"
       />
       <input
         value={formData.email}
-        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, email: e.target.value }))
+        }
         placeholder="Email"
       />
-      <button type="button" onClick={clearForm}>Clear Form</button>
+      <button type="button" onClick={clearForm}>
+        Clear Form
+      </button>
     </form>
   );
 }
@@ -130,27 +139,27 @@ A hook that persists state in sessionStorage for the duration of the browser ses
 
 #### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `key` | `string` | The sessionStorage key |
-| `initialValue` | `T \| () => T` | Initial value or lazy initializer function |
-| `options` | `UseSessionStorageOptions<T>` | Configuration options |
+| Parameter      | Type                          | Description                                |
+| -------------- | ----------------------------- | ------------------------------------------ |
+| `key`          | `string`                      | The sessionStorage key                     |
+| `initialValue` | `T \| () => T`                | Initial value or lazy initializer function |
+| `options`      | `UseSessionStorageOptions<T>` | Configuration options                      |
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `serializer` | `(value: T) => string` | `JSON.stringify` | Custom serializer function |
-| `deserializer` | `(value: string) => T` | `JSON.parse` | Custom deserializer function |
-| `onError` | `(error: Error) => void` | — | Callback for error handling |
+| Option         | Type                     | Default          | Description                  |
+| -------------- | ------------------------ | ---------------- | ---------------------------- |
+| `serializer`   | `(value: T) => string`   | `JSON.stringify` | Custom serializer function   |
+| `deserializer` | `(value: string) => T`   | `JSON.parse`     | Custom deserializer function |
+| `onError`      | `(error: Error) => void` | —                | Callback for error handling  |
 
 #### Returns `[T, SetValue<T>, RemoveValue]`
 
-| Index | Type | Description |
-|-------|------|-------------|
-| `[0]` | `T` | Current stored value |
-| `[1]` | `Dispatch<SetStateAction<T>>` | Function to update value (same as useState) |
-| `[2]` | `() => void` | Function to remove value and reset to initial |
+| Index | Type                          | Description                                   |
+| ----- | ----------------------------- | --------------------------------------------- |
+| `[0]` | `T`                           | Current stored value                          |
+| `[1]` | `Dispatch<SetStateAction<T>>` | Function to update value (same as useState)   |
+| `[2]` | `() => void`                  | Function to remove value and reset to initial |
 
 ---
 
@@ -159,13 +168,13 @@ A hook that persists state in sessionStorage for the duration of the browser ses
 ### Multi-Step Wizard
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function SignupWizard() {
-  const [step, setStep] = useSessionStorage('signup-step', 1);
-  const [formData, setFormData, resetForm] = useSessionStorage('signup-data', {
-    email: '',
-    password: '',
+  const [step, setStep] = useSessionStorage("signup-step", 1);
+  const [formData, setFormData, resetForm] = useSessionStorage("signup-data", {
+    email: "",
+    password: "",
     profile: {},
   });
 
@@ -193,7 +202,9 @@ function SignupWizard() {
       {step === 2 && (
         <PasswordStep
           value={formData.password}
-          onChange={(password) => setFormData((prev) => ({ ...prev, password }))}
+          onChange={(password) =>
+            setFormData((prev) => ({ ...prev, password }))
+          }
           onBack={handleBack}
           onNext={handleNext}
         />
@@ -215,12 +226,12 @@ function SignupWizard() {
 ### Form Draft (Auto-Restore)
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function ContactForm() {
-  const [draft, setDraft, clearDraft] = useSessionStorage('contact-draft', {
-    subject: '',
-    message: '',
+  const [draft, setDraft, clearDraft] = useSessionStorage("contact-draft", {
+    subject: "",
+    message: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -233,17 +244,23 @@ function ContactForm() {
     <form onSubmit={handleSubmit}>
       <input
         value={draft.subject}
-        onChange={(e) => setDraft((prev) => ({ ...prev, subject: e.target.value }))}
+        onChange={(e) =>
+          setDraft((prev) => ({ ...prev, subject: e.target.value }))
+        }
         placeholder="Subject"
       />
       <textarea
         value={draft.message}
-        onChange={(e) => setDraft((prev) => ({ ...prev, message: e.target.value }))}
+        onChange={(e) =>
+          setDraft((prev) => ({ ...prev, message: e.target.value }))
+        }
         placeholder="Message"
       />
       <p className="hint">Your draft is auto-saved in this tab</p>
       <button type="submit">Send</button>
-      <button type="button" onClick={clearDraft}>Discard</button>
+      <button type="button" onClick={clearDraft}>
+        Discard
+      </button>
     </form>
   );
 }
@@ -252,7 +269,7 @@ function ContactForm() {
 ### Shopping Cart (Per-Tab)
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 interface CartItem {
   id: string;
@@ -261,7 +278,10 @@ interface CartItem {
 }
 
 function TabCart() {
-  const [cart, setCart, clearCart] = useSessionStorage<CartItem[]>('tab-cart', []);
+  const [cart, setCart, clearCart] = useSessionStorage<CartItem[]>(
+    "tab-cart",
+    []
+  );
 
   const addItem = (product: Product) => {
     setCart((prev) => {
@@ -290,10 +310,13 @@ function TabCart() {
 ### Temporary Auth Token
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function ProtectedPage() {
-  const [token, setToken, clearToken] = useSessionStorage<string | null>('auth-token', null);
+  const [token, setToken, clearToken] = useSessionStorage<string | null>(
+    "auth-token",
+    null
+  );
 
   const login = async (credentials: Credentials) => {
     const response = await authenticate(credentials);
@@ -321,17 +344,13 @@ function ProtectedPage() {
 ### Custom Serialization (Date)
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function SessionTimer() {
-  const [sessionStart] = useSessionStorage<Date>(
-    'session-start',
-    new Date(),
-    {
-      serializer: (date) => date.toISOString(),
-      deserializer: (str) => new Date(str),
-    }
-  );
+  const [sessionStart] = useSessionStorage<Date>("session-start", new Date(), {
+    serializer: (date) => date.toISOString(),
+    deserializer: (str) => new Date(str),
+  });
 
   const [elapsed, setElapsed] = useState(0);
 
@@ -349,15 +368,19 @@ function SessionTimer() {
 ### Error Handling
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function RobustSessionStorage() {
-  const [data, setData] = useSessionStorage('session-data', { items: [] }, {
-    onError: (error) => {
-      console.error('Session storage error:', error.message);
-      toast.error('Failed to save session data');
-    },
-  });
+  const [data, setData] = useSessionStorage(
+    "session-data",
+    { items: [] },
+    {
+      onError: (error) => {
+        console.error("Session storage error:", error.message);
+        toast.error("Failed to save session data");
+      },
+    }
+  );
 
   return <DataEditor data={data} onChange={setData} />;
 }
@@ -366,12 +389,12 @@ function RobustSessionStorage() {
 ### Lazy Initialization
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 function ExpensiveDefaultDemo() {
   // Expensive computation only runs if no stored value exists
-  const [cache, setCache] = useSessionStorage('session-cache', () => {
-    console.log('Building initial cache...');
+  const [cache, setCache] = useSessionStorage("session-cache", () => {
+    console.log("Building initial cache...");
     return buildExpensiveCache();
   });
 
@@ -382,7 +405,7 @@ function ExpensiveDefaultDemo() {
 ### Quiz Progress
 
 ```tsx
-import { useSessionStorage } from '@usefy/use-session-storage';
+import { useSessionStorage } from "@usefy/use-session-storage";
 
 interface QuizState {
   currentQuestion: number;
@@ -391,11 +414,14 @@ interface QuizState {
 }
 
 function Quiz() {
-  const [quiz, setQuiz, resetQuiz] = useSessionStorage<QuizState>('quiz-progress', {
-    currentQuestion: 0,
-    answers: {},
-    startTime: Date.now(),
-  });
+  const [quiz, setQuiz, resetQuiz] = useSessionStorage<QuizState>(
+    "quiz-progress",
+    {
+      currentQuestion: 0,
+      answers: {},
+      startTime: Date.now(),
+    }
+  );
 
   const submitAnswer = (answer: string) => {
     setQuiz((prev) => ({
@@ -435,21 +461,21 @@ import {
   type UseSessionStorageOptions,
   type UseSessionStorageReturn,
   type InitialValue,
-} from '@usefy/use-session-storage';
+} from "@usefy/use-session-storage";
 
 // Generic type inference
-const [name, setName] = useSessionStorage('name', 'Guest');    // string
-const [step, setStep] = useSessionStorage('step', 1);           // number
-const [items, setItems] = useSessionStorage('items', ['a']);    // string[]
+const [name, setName] = useSessionStorage("name", "Guest"); // string
+const [step, setStep] = useSessionStorage("step", 1); // number
+const [items, setItems] = useSessionStorage("items", ["a"]); // string[]
 
 // Explicit generic type
 interface FormData {
   email: string;
   message: string;
 }
-const [form, setForm] = useSessionStorage<FormData>('form', {
-  email: '',
-  message: '',
+const [form, setForm] = useSessionStorage<FormData>("form", {
+  email: "",
+  message: "",
 });
 ```
 
@@ -461,12 +487,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage       |
+| ---------- | -------------- |
 | Statements | 93.75% (45/48) |
-| Branches | 78.94% (15/19) |
-| Functions | 100% (6/6) |
-| Lines | 93.75% (45/48) |
+| Branches   | 78.94% (15/19) |
+| Functions  | 100% (6/6)     |
+| Lines      | 93.75% (45/48) |
 
 ### Test Categories
 
@@ -512,14 +538,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
-| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage) | Persistent localStorage |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| Package                                                                                | Description              |
+| -------------------------------------------------------------------------------------- | ------------------------ |
+| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage)     | Persistent localStorage  |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                   | Boolean state management |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                 | Counter state management |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)               | Value debouncing         |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)               | Value throttling         |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection   |
 
 ---
 

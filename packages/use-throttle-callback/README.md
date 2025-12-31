@@ -51,11 +51,11 @@
 
 ### Throttle vs Debounce Callbacks
 
-| Feature | Throttle Callback | Debounce Callback |
-|---------|-------------------|-------------------|
-| First invocation | Immediate (leading: true) | After delay |
-| During rapid calls | Regular intervals | Waits for pause |
-| Best for | Scroll, resize, mouse move | Search, form validation |
+| Feature            | Throttle Callback          | Debounce Callback       |
+| ------------------ | -------------------------- | ----------------------- |
+| First invocation   | Immediate (leading: true)  | After delay             |
+| During rapid calls | Regular intervals          | Waits for pause         |
+| Best for           | Scroll, resize, mouse move | Search, form validation |
 
 ---
 
@@ -93,18 +93,18 @@ This package uses [@usefy/use-debounce-callback](https://www.npmjs.com/package/@
 ## Quick Start
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function ScrollTracker() {
   const handleScroll = useThrottleCallback(() => {
-    console.log('Scroll position:', window.scrollY);
+    console.log("Scroll position:", window.scrollY);
   }, 100);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
       handleScroll.cancel();
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
 
@@ -122,27 +122,27 @@ A hook that returns a throttled version of the provided callback function.
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `callback` | `T extends (...args: any[]) => any` | — | The callback function to throttle |
-| `delay` | `number` | `500` | The throttle interval in milliseconds |
-| `options` | `UseThrottleCallbackOptions` | `{}` | Additional configuration options |
+| Parameter  | Type                                | Default | Description                           |
+| ---------- | ----------------------------------- | ------- | ------------------------------------- |
+| `callback` | `T extends (...args: any[]) => any` | —       | The callback function to throttle     |
+| `delay`    | `number`                            | `500`   | The throttle interval in milliseconds |
+| `options`  | `UseThrottleCallbackOptions`        | `{}`    | Additional configuration options      |
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `leading` | `boolean` | `true` | Invoke on the leading edge (first call) |
-| `trailing` | `boolean` | `true` | Invoke on the trailing edge (after interval) |
+| Option     | Type      | Default | Description                                  |
+| ---------- | --------- | ------- | -------------------------------------------- |
+| `leading`  | `boolean` | `true`  | Invoke on the leading edge (first call)      |
+| `trailing` | `boolean` | `true`  | Invoke on the trailing edge (after interval) |
 
 #### Returns `ThrottledFunction<T>`
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property    | Type            | Description                                         |
+| ----------- | --------------- | --------------------------------------------------- |
 | `(...args)` | `ReturnType<T>` | The throttled function (same signature as original) |
-| `cancel` | `() => void` | Cancels any pending invocation |
-| `flush` | `() => void` | Immediately invokes any pending invocation |
-| `pending` | `() => boolean` | Returns `true` if there's a pending invocation |
+| `cancel`    | `() => void`    | Cancels any pending invocation                      |
+| `flush`     | `() => void`    | Immediately invokes any pending invocation          |
+| `pending`   | `() => boolean` | Returns `true` if there's a pending invocation      |
 
 ---
 
@@ -151,7 +151,7 @@ A hook that returns a throttled version of the provided callback function.
 ### Scroll Event Handler
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function InfiniteScroll() {
   const [items, setItems] = useState([]);
@@ -167,16 +167,18 @@ function InfiniteScroll() {
   }, 200);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       handleScroll.cancel();
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
 
   return (
     <div>
-      {items.map(item => <ItemCard key={item.id} item={item} />)}
+      {items.map((item) => (
+        <ItemCard key={item.id} item={item} />
+      ))}
     </div>
   );
 }
@@ -185,7 +187,7 @@ function InfiniteScroll() {
 ### Mouse Movement Tracking
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function HeatmapTracker() {
   const recordPosition = useThrottleCallback((x: number, y: number) => {
@@ -197,10 +199,10 @@ function HeatmapTracker() {
       recordPosition(e.clientX, e.clientY);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener("mousemove", handleMouseMove);
     return () => {
       recordPosition.cancel();
-      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener("mousemove", handleMouseMove);
     };
   }, [recordPosition]);
 
@@ -211,13 +213,13 @@ function HeatmapTracker() {
 ### Window Resize Handler
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function ResponsiveChart() {
   const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
 
   const handleResize = useThrottleCallback(() => {
-    const container = document.getElementById('chart-container');
+    const container = document.getElementById("chart-container");
     if (container) {
       setDimensions({
         width: container.clientWidth,
@@ -227,10 +229,10 @@ function ResponsiveChart() {
   }, 150);
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
       handleResize.cancel();
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [handleResize]);
 
@@ -245,7 +247,7 @@ function ResponsiveChart() {
 ### Drag Handler with Flush
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function Draggable() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -280,13 +282,13 @@ function Draggable() {
 ### Real-time Input Sync
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function CollaborativeEditor() {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   const syncToServer = useThrottleCallback((text: string) => {
-    webSocket.send(JSON.stringify({ type: 'update', content: text }));
+    webSocket.send(JSON.stringify({ type: "update", content: text }));
   }, 200);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -315,7 +317,7 @@ function CollaborativeEditor() {
 ### Leading Edge Only (Immediate Response)
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function ButtonWithCooldown() {
   const [clickCount, setClickCount] = useState(0);
@@ -323,7 +325,7 @@ function ButtonWithCooldown() {
   // First click is immediate, then 1 second cooldown
   const handleClick = useThrottleCallback(
     () => {
-      setClickCount(c => c + 1);
+      setClickCount((c) => c + 1);
     },
     1000,
     { leading: true, trailing: false }
@@ -340,23 +342,21 @@ function ButtonWithCooldown() {
 ### Pending State Indicator
 
 ```tsx
-import { useThrottleCallback } from '@usefy/use-throttle-callback';
+import { useThrottleCallback } from "@usefy/use-throttle-callback";
 
 function SaveIndicator() {
   const [data, setData] = useState({});
 
   const save = useThrottleCallback((newData: object) => {
-    fetch('/api/save', {
-      method: 'POST',
+    fetch("/api/save", {
+      method: "POST",
       body: JSON.stringify(newData),
     });
   }, 500);
 
   return (
     <div>
-      <button onClick={() => save(data)}>
-        Save
-      </button>
+      <button onClick={() => save(data)}>Save</button>
       {save.pending() && <span className="saving-indicator">Saving...</span>}
     </div>
   );
@@ -374,7 +374,7 @@ import {
   useThrottleCallback,
   type UseThrottleCallbackOptions,
   type ThrottledFunction,
-} from '@usefy/use-throttle-callback';
+} from "@usefy/use-throttle-callback";
 
 // Type inference from callback
 const throttledFn = useThrottleCallback((x: number, y: number) => {
@@ -395,12 +395,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage   |
+| ---------- | ---------- |
 | Statements | 100% (2/2) |
-| Branches | 100% (4/4) |
-| Functions | 100% (1/1) |
-| Lines | 100% (2/2) |
+| Branches   | 100% (4/4) |
+| Functions  | 100% (1/1) |
+| Lines      | 100% (2/2) |
 
 ### Running Tests
 
@@ -421,14 +421,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| Package                                                                                    | Description              |
+| ------------------------------------------------------------------------------------------ | ------------------------ |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling         |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing         |
+| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks      |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Global click detection   |
 
 ---
 

@@ -80,7 +80,7 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 function Counter() {
   const { count, increment, decrement, reset } = useCounter(0);
@@ -106,18 +106,18 @@ A hook that manages counter state with increment, decrement, and reset capabilit
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `initialValue` | `number` | `0` | The initial value of the counter |
+| Parameter      | Type     | Default | Description                      |
+| -------------- | -------- | ------- | -------------------------------- |
+| `initialValue` | `number` | `0`     | The initial value of the counter |
 
 #### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `count` | `number` | The current counter value |
-| `increment` | `() => void` | Increases the counter by 1 |
-| `decrement` | `() => void` | Decreases the counter by 1 |
-| `reset` | `() => void` | Resets the counter to the initial value |
+| Property    | Type         | Description                             |
+| ----------- | ------------ | --------------------------------------- |
+| `count`     | `number`     | The current counter value               |
+| `increment` | `() => void` | Increases the counter by 1              |
+| `decrement` | `() => void` | Decreases the counter by 1              |
+| `reset`     | `() => void` | Resets the counter to the initial value |
 
 ---
 
@@ -126,7 +126,7 @@ A hook that manages counter state with increment, decrement, and reset capabilit
 ### Basic Counter
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 function BasicCounter() {
   const { count, increment, decrement, reset } = useCounter();
@@ -135,9 +135,15 @@ function BasicCounter() {
     <div className="counter">
       <span className="count">{count}</span>
       <div className="controls">
-        <button onClick={decrement} aria-label="Decrease">−</button>
-        <button onClick={increment} aria-label="Increase">+</button>
-        <button onClick={reset} aria-label="Reset">Reset</button>
+        <button onClick={decrement} aria-label="Decrease">
+          −
+        </button>
+        <button onClick={increment} aria-label="Increase">
+          +
+        </button>
+        <button onClick={reset} aria-label="Reset">
+          Reset
+        </button>
       </div>
     </div>
   );
@@ -147,7 +153,7 @@ function BasicCounter() {
 ### Starting with a Custom Value
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 function QuantitySelector() {
   const { count, increment, decrement } = useCounter(1);
@@ -162,10 +168,7 @@ function QuantitySelector() {
         −
       </button>
       <span aria-label="Quantity">{count}</span>
-      <button
-        onClick={increment}
-        aria-label="Increase quantity"
-      >
+      <button onClick={increment} aria-label="Increase quantity">
         +
       </button>
     </div>
@@ -176,24 +179,25 @@ function QuantitySelector() {
 ### Pagination Control
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 function Pagination({ totalPages }: { totalPages: number }) {
-  const { count: currentPage, increment: nextPage, decrement: prevPage, reset } = useCounter(1);
+  const {
+    count: currentPage,
+    increment: nextPage,
+    decrement: prevPage,
+    reset,
+  } = useCounter(1);
 
   return (
     <nav className="pagination" aria-label="Pagination">
-      <button
-        onClick={prevPage}
-        disabled={currentPage <= 1}
-      >
+      <button onClick={prevPage} disabled={currentPage <= 1}>
         Previous
       </button>
-      <span>Page {currentPage} of {totalPages}</span>
-      <button
-        onClick={nextPage}
-        disabled={currentPage >= totalPages}
-      >
+      <span>
+        Page {currentPage} of {totalPages}
+      </span>
+      <button onClick={nextPage} disabled={currentPage >= totalPages}>
         Next
       </button>
       <button onClick={reset}>First Page</button>
@@ -205,7 +209,7 @@ function Pagination({ totalPages }: { totalPages: number }) {
 ### Multiple Independent Counters
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 function ScoreBoard() {
   const teamA = useCounter(0);
@@ -237,7 +241,7 @@ function ScoreBoard() {
 ### With Negative Values
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 function TemperatureAdjuster() {
   const { count: temperature, increment, decrement, reset } = useCounter(-10);
@@ -260,7 +264,7 @@ function TemperatureAdjuster() {
 This hook is written in TypeScript and provides full type inference out of the box.
 
 ```tsx
-import { useCounter } from '@usefy/use-counter';
+import { useCounter } from "@usefy/use-counter";
 
 // Return type is automatically inferred
 const { count, increment, decrement, reset } = useCounter(0);
@@ -294,12 +298,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage     |
+| ---------- | ------------ |
 | Statements | 100% (10/10) |
-| Branches | 100% (1/1) |
-| Functions | 100% (6/6) |
-| Lines | 100% (8/8) |
+| Branches   | 100% (1/1)   |
+| Functions  | 100% (6/6)   |
+| Lines      | 100% (8/8)   |
 
 ### Test Categories
 
@@ -383,14 +387,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| Package                                                                                    | Description              |
+| ------------------------------------------------------------------------------------------ | ------------------------ |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing         |
+| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks      |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling         |
+| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks      |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Global click detection   |
 
 ---
 

@@ -110,32 +110,32 @@ A hook that adds an event listener to the specified target.
 
 #### Parameters
 
-| Parameter   | Type                      | Description                                          |
-| ----------- | ------------------------- | ---------------------------------------------------- |
+| Parameter   | Type                      | Description                                            |
+| ----------- | ------------------------- | ------------------------------------------------------ |
 | `eventName` | `string`                  | The event type to listen for (e.g., "click", "resize") |
-| `handler`   | `(event: Event) => void`  | Callback function called when the event fires        |
-| `element`   | `EventTargetType`         | Target element (defaults to window)                  |
-| `options`   | `UseEventListenerOptions` | Configuration options                                |
+| `handler`   | `(event: Event) => void`  | Callback function called when the event fires          |
+| `element`   | `EventTargetType`         | Target element (defaults to window)                    |
+| `options`   | `UseEventListenerOptions` | Configuration options                                  |
 
 #### Options
 
-| Option    | Type      | Default     | Description                                      |
-| --------- | --------- | ----------- | ------------------------------------------------ |
-| `enabled` | `boolean` | `true`      | Whether the event listener is active             |
-| `capture` | `boolean` | `false`     | Use event capture phase instead of bubble        |
-| `passive` | `boolean` | `undefined` | Use passive event listener for performance       |
-| `once`    | `boolean` | `false`     | Handler is invoked once and then removed         |
+| Option    | Type      | Default     | Description                                |
+| --------- | --------- | ----------- | ------------------------------------------ |
+| `enabled` | `boolean` | `true`      | Whether the event listener is active       |
+| `capture` | `boolean` | `false`     | Use event capture phase instead of bubble  |
+| `passive` | `boolean` | `undefined` | Use passive event listener for performance |
+| `once`    | `boolean` | `false`     | Handler is invoked once and then removed   |
 
 #### Supported Target Types
 
 ```typescript
 type EventTargetType<T extends HTMLElement = HTMLElement> =
-  | Window              // window object
-  | Document            // document object
-  | HTMLElement         // any HTML element
-  | React.RefObject<T>  // React ref
-  | null                // no listener
-  | undefined;          // defaults to window
+  | Window // window object
+  | Document // document object
+  | HTMLElement // any HTML element
+  | React.RefObject<T> // React ref
+  | null // no listener
+  | undefined; // defaults to window
 ```
 
 #### Returns
@@ -351,7 +351,10 @@ This hook provides full type inference for event types:
 
 ```tsx
 import { useEventListener } from "@usefy/use-event-listener";
-import type { UseEventListenerOptions, EventTargetType } from "@usefy/use-event-listener";
+import type {
+  UseEventListenerOptions,
+  EventTargetType,
+} from "@usefy/use-event-listener";
 
 // MouseEvent is automatically inferred
 useEventListener("click", (e) => {
@@ -359,14 +362,22 @@ useEventListener("click", (e) => {
 });
 
 // KeyboardEvent is automatically inferred
-useEventListener("keydown", (e) => {
-  console.log(e.key); // e is KeyboardEvent
-}, document);
+useEventListener(
+  "keydown",
+  (e) => {
+    console.log(e.key); // e is KeyboardEvent
+  },
+  document
+);
 
 // FocusEvent is automatically inferred
-useEventListener("focus", (e) => {
-  console.log(e.relatedTarget); // e is FocusEvent
-}, inputRef);
+useEventListener(
+  "focus",
+  (e) => {
+    console.log(e.relatedTarget); // e is FocusEvent
+  },
+  inputRef
+);
 
 // Options type
 const options: UseEventListenerOptions = {
@@ -478,17 +489,17 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package                                                                                    | Description                         |
-| ------------------------------------------------------------------------------------------ | ----------------------------------- |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Document-wide click detection       |
-| [@usefy/use-on-click-outside](https://www.npmjs.com/package/@usefy/use-on-click-outside)   | Outside click detection             |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management            |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management            |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing                    |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling                    |
-| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage)         | localStorage state synchronization  |
-| [@usefy/use-session-storage](https://www.npmjs.com/package/@usefy/use-session-storage)     | sessionStorage state synchronization|
-| [@usefy/use-copy-to-clipboard](https://www.npmjs.com/package/@usefy/use-copy-to-clipboard) | Clipboard operations                |
+| Package                                                                                    | Description                          |
+| ------------------------------------------------------------------------------------------ | ------------------------------------ |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Document-wide click detection        |
+| [@usefy/use-on-click-outside](https://www.npmjs.com/package/@usefy/use-on-click-outside)   | Outside click detection              |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management             |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management             |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing                     |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling                     |
+| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage)         | localStorage state synchronization   |
+| [@usefy/use-session-storage](https://www.npmjs.com/package/@usefy/use-session-storage)     | sessionStorage state synchronization |
+| [@usefy/use-copy-to-clipboard](https://www.npmjs.com/package/@usefy/use-copy-to-clipboard) | Clipboard operations                 |
 
 ---
 

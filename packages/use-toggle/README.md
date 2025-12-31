@@ -80,7 +80,7 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useToggle } from '@usefy/use-toggle';
+import { useToggle } from "@usefy/use-toggle";
 
 function Modal() {
   const { value: isOpen, toggle, setTrue, setFalse } = useToggle(false);
@@ -109,18 +109,18 @@ A hook that manages boolean state with toggle, setTrue, setFalse, and setValue f
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+| Parameter      | Type      | Default | Description               |
+| -------------- | --------- | ------- | ------------------------- |
 | `initialValue` | `boolean` | `false` | The initial boolean value |
 
 #### Returns `UseToggleReturn`
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `value` | `boolean` | The current boolean state |
-| `toggle` | `() => void` | Toggles the value (true ↔ false) |
-| `setTrue` | `() => void` | Sets the value to `true` |
-| `setFalse` | `() => void` | Sets the value to `false` |
+| Property   | Type                       | Description                          |
+| ---------- | -------------------------- | ------------------------------------ |
+| `value`    | `boolean`                  | The current boolean state            |
+| `toggle`   | `() => void`               | Toggles the value (true ↔ false)     |
+| `setTrue`  | `() => void`               | Sets the value to `true`             |
+| `setFalse` | `() => void`               | Sets the value to `false`            |
 | `setValue` | `(value: boolean) => void` | Sets the value to a specific boolean |
 
 ---
@@ -130,7 +130,7 @@ A hook that manages boolean state with toggle, setTrue, setFalse, and setValue f
 ### Modal/Dialog
 
 ```tsx
-import { useToggle } from '@usefy/use-toggle';
+import { useToggle } from "@usefy/use-toggle";
 
 function ConfirmDialog() {
   const { value: isOpen, setTrue: open, setFalse: close } = useToggle(false);
@@ -145,7 +145,12 @@ function ConfirmDialog() {
             <p>Are you sure you want to delete this item?</p>
             <div className="dialog-actions">
               <button onClick={close}>Cancel</button>
-              <button onClick={() => { deleteItem(); close(); }}>
+              <button
+                onClick={() => {
+                  deleteItem();
+                  close();
+                }}
+              >
                 Delete
               </button>
             </div>
@@ -160,7 +165,7 @@ function ConfirmDialog() {
 ### Accordion
 
 ```tsx
-import { useToggle } from '@usefy/use-toggle';
+import { useToggle } from "@usefy/use-toggle";
 
 function AccordionItem({ title, content }: AccordionItemProps) {
   const { value: isExpanded, toggle } = useToggle(false);
@@ -173,11 +178,9 @@ function AccordionItem({ title, content }: AccordionItemProps) {
         aria-expanded={isExpanded}
       >
         {title}
-        <span className={`icon ${isExpanded ? 'rotate' : ''}`}>▼</span>
+        <span className={`icon ${isExpanded ? "rotate" : ""}`}>▼</span>
       </button>
-      {isExpanded && (
-        <div className="accordion-content">{content}</div>
-      )}
+      {isExpanded && <div className="accordion-content">{content}</div>}
     </div>
   );
 }
@@ -186,23 +189,23 @@ function AccordionItem({ title, content }: AccordionItemProps) {
 ### Dark Mode Toggle
 
 ```tsx
-import { useToggle } from '@usefy/use-toggle';
+import { useToggle } from "@usefy/use-toggle";
 
 function ThemeToggle() {
   const { value: isDark, toggle, setValue } = useToggle(false);
 
   // Sync with system preference
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setValue(mediaQuery.matches);
   }, [setValue]);
 
   return (
     <button
       onClick={toggle}
-      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
-      {isDark ? '🌙' : '☀️'}
+      {isDark ? "🌙" : "☀️"}
     </button>
   );
 }
@@ -211,7 +214,7 @@ function ThemeToggle() {
 ### Dropdown Menu
 
 ```tsx
-import { useToggle } from '@usefy/use-toggle';
+import { useToggle } from "@usefy/use-toggle";
 
 function Dropdown({ items }: DropdownProps) {
   const { value: isOpen, toggle, setFalse: close } = useToggle(false);
@@ -225,7 +228,12 @@ function Dropdown({ items }: DropdownProps) {
         <ul className="dropdown-menu">
           {items.map((item) => (
             <li key={item.id}>
-              <button onClick={() => { item.onClick(); close(); }}>
+              <button
+                onClick={() => {
+                  item.onClick();
+                  close();
+                }}
+              >
                 {item.label}
               </button>
             </li>
@@ -240,7 +248,7 @@ function Dropdown({ items }: DropdownProps) {
 ### Controlled from Props
 
 ```tsx
-import { useToggle } from '@usefy/use-toggle';
+import { useToggle } from "@usefy/use-toggle";
 
 function ControlledSwitch({ defaultChecked, onChange }: SwitchProps) {
   const { value, toggle } = useToggle(defaultChecked);
@@ -255,7 +263,7 @@ function ControlledSwitch({ defaultChecked, onChange }: SwitchProps) {
       role="switch"
       aria-checked={value}
       onClick={handleToggle}
-      className={`switch ${value ? 'on' : 'off'}`}
+      className={`switch ${value ? "on" : "off"}`}
     >
       <span className="switch-thumb" />
     </button>
@@ -270,10 +278,11 @@ function ControlledSwitch({ defaultChecked, onChange }: SwitchProps) {
 This hook is written in TypeScript and exports the `UseToggleReturn` interface.
 
 ```tsx
-import { useToggle, type UseToggleReturn } from '@usefy/use-toggle';
+import { useToggle, type UseToggleReturn } from "@usefy/use-toggle";
 
 // Return type is fully typed
-const { value, toggle, setTrue, setFalse, setValue }: UseToggleReturn = useToggle(false);
+const { value, toggle, setTrue, setFalse, setValue }: UseToggleReturn =
+  useToggle(false);
 
 // value: boolean
 // toggle: () => void
@@ -305,12 +314,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage     |
+| ---------- | ------------ |
 | Statements | 100% (11/11) |
-| Branches | 100% (1/1) |
-| Functions | 100% (6/6) |
-| Lines | 100% (10/10) |
+| Branches   | 100% (1/1)   |
+| Functions  | 100% (6/6)   |
+| Lines      | 100% (10/10) |
 
 ### Test Categories
 
@@ -373,14 +382,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| Package                                                                                    | Description              |
+| ------------------------------------------------------------------------------------------ | ------------------------ |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing         |
+| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks      |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling         |
+| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks      |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Global click detection   |
 
 ---
 

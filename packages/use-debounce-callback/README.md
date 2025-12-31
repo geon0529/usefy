@@ -81,10 +81,10 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function SearchInput() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const debouncedSearch = useDebounceCallback((searchTerm: string) => {
     fetchSearchResults(searchTerm);
@@ -116,28 +116,28 @@ A hook that returns a debounced version of the provided callback function.
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `callback` | `T extends (...args: any[]) => any` | — | The callback function to debounce |
-| `delay` | `number` | `500` | The debounce delay in milliseconds |
-| `options` | `UseDebounceCallbackOptions` | `{}` | Additional configuration options |
+| Parameter  | Type                                | Default | Description                        |
+| ---------- | ----------------------------------- | ------- | ---------------------------------- |
+| `callback` | `T extends (...args: any[]) => any` | —       | The callback function to debounce  |
+| `delay`    | `number`                            | `500`   | The debounce delay in milliseconds |
+| `options`  | `UseDebounceCallbackOptions`        | `{}`    | Additional configuration options   |
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `leading` | `boolean` | `false` | Invoke on the leading edge (first call) |
-| `trailing` | `boolean` | `true` | Invoke on the trailing edge (after delay) |
-| `maxWait` | `number` | — | Maximum time to wait before forcing invocation |
+| Option     | Type      | Default | Description                                    |
+| ---------- | --------- | ------- | ---------------------------------------------- |
+| `leading`  | `boolean` | `false` | Invoke on the leading edge (first call)        |
+| `trailing` | `boolean` | `true`  | Invoke on the trailing edge (after delay)      |
+| `maxWait`  | `number`  | —       | Maximum time to wait before forcing invocation |
 
 #### Returns `DebouncedFunction<T>`
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property    | Type            | Description                                         |
+| ----------- | --------------- | --------------------------------------------------- |
 | `(...args)` | `ReturnType<T>` | The debounced function (same signature as original) |
-| `cancel` | `() => void` | Cancels any pending invocation |
-| `flush` | `() => void` | Immediately invokes any pending invocation |
-| `pending` | `() => boolean` | Returns `true` if there's a pending invocation |
+| `cancel`    | `() => void`    | Cancels any pending invocation                      |
+| `flush`     | `() => void`    | Immediately invokes any pending invocation          |
+| `pending`   | `() => boolean` | Returns `true` if there's a pending invocation      |
 
 ---
 
@@ -146,14 +146,14 @@ A hook that returns a debounced version of the provided callback function.
 ### Auto-Save with Cancel
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function Editor() {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   const debouncedSave = useDebounceCallback((text: string) => {
     saveToServer(text);
-    console.log('Auto-saved');
+    console.log("Auto-saved");
   }, 1000);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -169,7 +169,7 @@ function Editor() {
   const handleDiscard = () => {
     // Cancel pending save and reset content
     debouncedSave.cancel();
-    setContent('');
+    setContent("");
   };
 
   return (
@@ -186,7 +186,7 @@ function Editor() {
 ### Search with Immediate First Call
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function SearchWithSuggestions() {
   const [results, setResults] = useState([]);
@@ -214,25 +214,25 @@ function SearchWithSuggestions() {
 ### Form Validation
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function RegistrationForm() {
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   const validateEmail = useDebounceCallback(async (value: string) => {
-    if (!value.includes('@')) {
-      setError('Invalid email format');
+    if (!value.includes("@")) {
+      setError("Invalid email format");
       return;
     }
     const response = await fetch(`/api/check-email?e=${value}`);
     const { available } = await response.json();
-    setError(available ? '' : 'Email already registered');
+    setError(available ? "" : "Email already registered");
   }, 500);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    setError(''); // Clear error immediately
+    setError(""); // Clear error immediately
     validateEmail(e.target.value);
   };
 
@@ -253,7 +253,7 @@ function RegistrationForm() {
 ### Event Handler with maxWait
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function ResizeHandler() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -271,10 +271,10 @@ function ResizeHandler() {
   );
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
       handleResize.cancel();
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [handleResize]);
 
@@ -289,32 +289,29 @@ function ResizeHandler() {
 ### API Request with Pending State
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function DataFetcher() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = useDebounceCallback(
-    async (params: QueryParams) => {
-      setLoading(true);
-      try {
-        const response = await fetch('/api/data', {
-          method: 'POST',
-          body: JSON.stringify(params),
-        });
-        setData(await response.json());
-      } finally {
-        setLoading(false);
-      }
-    },
-    500
-  );
+  const fetchData = useDebounceCallback(async (params: QueryParams) => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/data", {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+      setData(await response.json());
+    } finally {
+      setLoading(false);
+    }
+  }, 500);
 
   return (
     <div>
       <button onClick={() => fetchData({ page: 1 })}>
-        {fetchData.pending() ? 'Request pending...' : 'Fetch Data'}
+        {fetchData.pending() ? "Request pending..." : "Fetch Data"}
       </button>
       {loading && <Spinner />}
     </div>
@@ -325,7 +322,7 @@ function DataFetcher() {
 ### Cleanup on Unmount
 
 ```tsx
-import { useDebounceCallback } from '@usefy/use-debounce-callback';
+import { useDebounceCallback } from "@usefy/use-debounce-callback";
 
 function Component() {
   const debouncedAction = useDebounceCallback(() => {
@@ -354,7 +351,7 @@ import {
   useDebounceCallback,
   type UseDebounceCallbackOptions,
   type DebouncedFunction,
-} from '@usefy/use-debounce-callback';
+} from "@usefy/use-debounce-callback";
 
 // Type inference from callback
 const debouncedFn = useDebounceCallback((a: string, b: number) => {
@@ -375,12 +372,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage        |
+| ---------- | --------------- |
 | Statements | 94.11% (96/102) |
-| Branches | 82.6% (38/46) |
-| Functions | 93.75% (15/16) |
-| Lines | 94.05% (95/101) |
+| Branches   | 82.6% (38/46)   |
+| Functions  | 93.75% (15/16)  |
+| Lines      | 94.05% (95/101) |
 
 ### Test Categories
 
@@ -425,14 +422,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| Package                                                                                    | Description              |
+| ------------------------------------------------------------------------------------------ | ------------------------ |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing         |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling         |
+| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks      |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Global click detection   |
 
 ---
 
