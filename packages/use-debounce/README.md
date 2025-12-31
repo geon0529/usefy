@@ -80,10 +80,10 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useDebounce } from '@usefy/use-debounce';
+import { useDebounce } from "@usefy/use-debounce";
 
 function SearchInput() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
@@ -113,25 +113,25 @@ A hook that returns a debounced version of the provided value.
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `value` | `T` | — | The value to debounce |
-| `delay` | `number` | `500` | The debounce delay in milliseconds |
-| `options` | `UseDebounceOptions` | `{}` | Additional configuration options |
+| Parameter | Type                 | Default | Description                        |
+| --------- | -------------------- | ------- | ---------------------------------- |
+| `value`   | `T`                  | —       | The value to debounce              |
+| `delay`   | `number`             | `500`   | The debounce delay in milliseconds |
+| `options` | `UseDebounceOptions` | `{}`    | Additional configuration options   |
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `leading` | `boolean` | `false` | Update on the leading edge (first call) |
-| `trailing` | `boolean` | `true` | Update on the trailing edge (after delay) |
-| `maxWait` | `number` | — | Maximum time to wait before forcing an update |
+| Option     | Type      | Default | Description                                   |
+| ---------- | --------- | ------- | --------------------------------------------- |
+| `leading`  | `boolean` | `false` | Update on the leading edge (first call)       |
+| `trailing` | `boolean` | `true`  | Update on the trailing edge (after delay)     |
+| `maxWait`  | `number`  | —       | Maximum time to wait before forcing an update |
 
 #### Returns
 
-| Type | Description |
-|------|-------------|
-| `T` | The debounced value |
+| Type | Description         |
+| ---- | ------------------- |
+| `T`  | The debounced value |
 
 ---
 
@@ -140,10 +140,10 @@ A hook that returns a debounced version of the provided value.
 ### Basic Search Input
 
 ```tsx
-import { useDebounce } from '@usefy/use-debounce';
+import { useDebounce } from "@usefy/use-debounce";
 
 function SearchInput() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
   const [results, setResults] = useState([]);
 
@@ -179,10 +179,10 @@ function SearchInput() {
 ### With Leading Edge (Instant First Update)
 
 ```tsx
-import { useDebounce } from '@usefy/use-debounce';
+import { useDebounce } from "@usefy/use-debounce";
 
 function FilterPanel() {
-  const [filters, setFilters] = useState({ category: 'all', price: 0 });
+  const [filters, setFilters] = useState({ category: "all", price: 0 });
 
   // Update immediately on first change, then debounce subsequent changes
   const debouncedFilters = useDebounce(filters, 500, { leading: true });
@@ -195,7 +195,9 @@ function FilterPanel() {
     <div>
       <select
         value={filters.category}
-        onChange={(e) => setFilters(f => ({ ...f, category: e.target.value }))}
+        onChange={(e) =>
+          setFilters((f) => ({ ...f, category: e.target.value }))
+        }
       >
         <option value="all">All</option>
         <option value="electronics">Electronics</option>
@@ -204,7 +206,7 @@ function FilterPanel() {
       <input
         type="range"
         value={filters.price}
-        onChange={(e) => setFilters(f => ({ ...f, price: +e.target.value }))}
+        onChange={(e) => setFilters((f) => ({ ...f, price: +e.target.value }))}
       />
     </div>
   );
@@ -214,10 +216,10 @@ function FilterPanel() {
 ### With maxWait (Guaranteed Updates)
 
 ```tsx
-import { useDebounce } from '@usefy/use-debounce';
+import { useDebounce } from "@usefy/use-debounce";
 
 function AutoSaveEditor() {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   // Debounce for 1 second, but guarantee save every 5 seconds during continuous typing
   const debouncedContent = useDebounce(content, 1000, { maxWait: 5000 });
@@ -241,22 +243,24 @@ function AutoSaveEditor() {
 ### Form Validation
 
 ```tsx
-import { useDebounce } from '@usefy/use-debounce';
+import { useDebounce } from "@usefy/use-debounce";
 
 function RegistrationForm() {
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
   const debouncedUsername = useDebounce(username, 500);
 
   useEffect(() => {
     async function checkAvailability() {
       if (debouncedUsername.length < 3) {
-        setError('Username must be at least 3 characters');
+        setError("Username must be at least 3 characters");
         return;
       }
-      const response = await fetch(`/api/check-username?u=${debouncedUsername}`);
+      const response = await fetch(
+        `/api/check-username?u=${debouncedUsername}`
+      );
       const { available } = await response.json();
-      setError(available ? '' : 'Username is already taken');
+      setError(available ? "" : "Username is already taken");
     }
 
     if (debouncedUsername) {
@@ -280,13 +284,13 @@ function RegistrationForm() {
 ### Debouncing Object Values
 
 ```tsx
-import { useDebounce } from '@usefy/use-debounce';
+import { useDebounce } from "@usefy/use-debounce";
 
 function FilteredTable() {
   const [filters, setFilters] = useState({
-    search: '',
-    status: 'all',
-    sortBy: 'date',
+    search: "",
+    status: "all",
+    sortBy: "date",
   });
 
   const debouncedFilters = useDebounce(filters, 300);
@@ -299,12 +303,12 @@ function FilteredTable() {
     <div>
       <input
         value={filters.search}
-        onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
+        onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
         placeholder="Search..."
       />
       <select
         value={filters.status}
-        onChange={(e) => setFilters(f => ({ ...f, status: e.target.value }))}
+        onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
       >
         <option value="all">All</option>
         <option value="active">Active</option>
@@ -322,11 +326,11 @@ function FilteredTable() {
 This hook is written in TypeScript with full generic support.
 
 ```tsx
-import { useDebounce, type UseDebounceOptions } from '@usefy/use-debounce';
+import { useDebounce, type UseDebounceOptions } from "@usefy/use-debounce";
 
 // Generic type inference
-const debouncedString = useDebounce('hello', 300); // string
-const debouncedNumber = useDebounce(42, 300);      // number
+const debouncedString = useDebounce("hello", 300); // string
+const debouncedNumber = useDebounce(42, 300); // number
 const debouncedObject = useDebounce({ x: 1 }, 300); // { x: number }
 
 // Explicit generic type
@@ -345,12 +349,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage       |
+| ---------- | -------------- |
 | Statements | 91.01% (81/89) |
-| Branches | 90.47% (38/42) |
-| Functions | 66.66% (14/21) |
-| Lines | 93.02% (80/86) |
+| Branches   | 90.47% (38/42) |
+| Functions  | 66.66% (14/21) |
+| Lines      | 93.02% (80/86) |
 
 ### Test Categories
 
@@ -402,14 +406,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
+| Package                                                                                    | Description                           |
+| ------------------------------------------------------------------------------------------ | ------------------------------------- |
 | [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks with cancel/flush |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling                      |
+| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks                   |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management              |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management              |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Global click detection                |
 
 ---
 

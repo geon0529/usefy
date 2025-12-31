@@ -1,5 +1,61 @@
 # @usefy/usefy
 
+## 0.0.18
+
+### Patch Changes
+
+- 67c32d7: update README.md
+- dc5cb67: add logo
+- Updated dependencies [dc5cb67]
+  - @usefy/use-click-any-where@0.0.18
+  - @usefy/use-copy-to-clipboard@0.0.18
+  - @usefy/use-counter@0.0.18
+  - @usefy/use-debounce@0.0.18
+  - @usefy/use-debounce-callback@0.0.18
+  - @usefy/use-event-listener@0.0.18
+  - @usefy/use-local-storage@0.0.18
+  - @usefy/use-on-click-outside@0.0.18
+  - @usefy/use-session-storage@0.0.18
+  - @usefy/use-throttle@0.0.18
+  - @usefy/use-throttle-callback@0.0.18
+  - @usefy/use-toggle@0.0.18
+
+## 0.0.17
+
+### Patch Changes
+
+- d1f9cec: update README.md
+  - @usefy/use-click-any-where@0.0.17
+  - @usefy/use-copy-to-clipboard@0.0.17
+  - @usefy/use-counter@0.0.17
+  - @usefy/use-debounce@0.0.17
+  - @usefy/use-debounce-callback@0.0.17
+  - @usefy/use-event-listener@0.0.17
+  - @usefy/use-local-storage@0.0.17
+  - @usefy/use-on-click-outside@0.0.17
+  - @usefy/use-session-storage@0.0.17
+  - @usefy/use-throttle@0.0.17
+  - @usefy/use-throttle-callback@0.0.17
+  - @usefy/use-toggle@0.0.17
+
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies [40091df]
+  - @usefy/use-event-listener@0.0.16
+  - @usefy/use-click-any-where@0.0.16
+  - @usefy/use-copy-to-clipboard@0.0.16
+  - @usefy/use-counter@0.0.16
+  - @usefy/use-debounce@0.0.16
+  - @usefy/use-debounce-callback@0.0.16
+  - @usefy/use-local-storage@0.0.16
+  - @usefy/use-on-click-outside@0.0.16
+  - @usefy/use-session-storage@0.0.16
+  - @usefy/use-throttle@0.0.16
+  - @usefy/use-throttle-callback@0.0.16
+  - @usefy/use-toggle@0.0.16
+
 ## 0.0.15
 
 ### Patch Changes

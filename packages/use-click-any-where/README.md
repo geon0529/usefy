@@ -357,12 +357,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage      |
+| ---------- | ------------- |
 | Statements | 92.3% (12/13) |
-| Branches | 87.5% (7/8) |
-| Functions | 100% (4/4) |
-| Lines | 92.3% (12/13) |
+| Branches   | 87.5% (7/8)   |
+| Functions  | 100% (4/4)    |
+| Lines      | 92.3% (12/13) |
 
 ### Test Categories
 

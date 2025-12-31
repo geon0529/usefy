@@ -83,14 +83,14 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function CopyButton() {
   const [copiedText, copy] = useCopyToClipboard();
 
   return (
-    <button onClick={() => copy('Hello World!')}>
-      {copiedText ? 'Copied!' : 'Copy'}
+    <button onClick={() => copy("Hello World!")}>
+      {copiedText ? "Copied!" : "Copy"}
     </button>
   );
 }
@@ -106,24 +106,24 @@ A hook that provides clipboard copy functionality with state tracking.
 
 #### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type                        | Description           |
+| --------- | --------------------------- | --------------------- |
 | `options` | `UseCopyToClipboardOptions` | Configuration options |
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `timeout` | `number` | `2000` | Time in ms before `copiedText` resets to null. Set to `0` to disable. |
-| `onSuccess` | `(text: string) => void` | — | Callback called when copy succeeds |
-| `onError` | `(error: Error) => void` | — | Callback called when copy fails |
+| Option      | Type                     | Default | Description                                                           |
+| ----------- | ------------------------ | ------- | --------------------------------------------------------------------- |
+| `timeout`   | `number`                 | `2000`  | Time in ms before `copiedText` resets to null. Set to `0` to disable. |
+| `onSuccess` | `(text: string) => void` | —       | Callback called when copy succeeds                                    |
+| `onError`   | `(error: Error) => void` | —       | Callback called when copy fails                                       |
 
 #### Returns `[copiedText, copy]`
 
-| Index | Type | Description |
-|-------|------|-------------|
-| `[0]` | `string \| null` | The last successfully copied text, or `null` |
-| `[1]` | `(text: string) => Promise<boolean>` | Async function to copy text |
+| Index | Type                                 | Description                                  |
+| ----- | ------------------------------------ | -------------------------------------------- |
+| `[0]` | `string \| null`                     | The last successfully copied text, or `null` |
+| `[1]` | `(text: string) => Promise<boolean>` | Async function to copy text                  |
 
 ---
 
@@ -132,14 +132,14 @@ A hook that provides clipboard copy functionality with state tracking.
 ### Basic Copy Button
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function CopyButton({ text }: { text: string }) {
   const [copiedText, copy] = useCopyToClipboard();
 
   return (
     <button onClick={() => copy(text)}>
-      {copiedText === text ? 'Copied!' : 'Copy to Clipboard'}
+      {copiedText === text ? "Copied!" : "Copy to Clipboard"}
     </button>
   );
 }
@@ -148,23 +148,20 @@ function CopyButton({ text }: { text: string }) {
 ### Copy with Visual Feedback
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function CopyWithIcon({ text }: { text: string }) {
   const [copiedText, copy] = useCopyToClipboard();
   const isCopied = copiedText === text;
 
   return (
-    <button
-      onClick={() => copy(text)}
-      className={isCopied ? 'copied' : ''}
-    >
+    <button onClick={() => copy(text)} className={isCopied ? "copied" : ""}>
       {isCopied ? (
         <CheckIcon className="icon" />
       ) : (
         <CopyIcon className="icon" />
       )}
-      {isCopied ? 'Copied!' : 'Copy'}
+      {isCopied ? "Copied!" : "Copy"}
     </button>
   );
 }
@@ -173,7 +170,7 @@ function CopyWithIcon({ text }: { text: string }) {
 ### Code Block with Copy
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function CodeBlock({ code, language }: { code: string; language: string }) {
   const [copiedText, copy] = useCopyToClipboard();
@@ -183,7 +180,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
       <div className="code-header">
         <span>{language}</span>
         <button onClick={() => copy(code)}>
-          {copiedText === code ? 'Copied!' : 'Copy Code'}
+          {copiedText === code ? "Copied!" : "Copy Code"}
         </button>
       </div>
       <pre>
@@ -197,15 +194,15 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
 ### Custom Timeout
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function LongFeedbackCopy() {
   // Show "Copied!" for 5 seconds
   const [copiedText, copy] = useCopyToClipboard({ timeout: 5000 });
 
   return (
-    <button onClick={() => copy('Long feedback!')}>
-      {copiedText ? 'Copied!' : 'Copy'}
+    <button onClick={() => copy("Long feedback!")}>
+      {copiedText ? "Copied!" : "Copy"}
     </button>
   );
 }
@@ -214,7 +211,7 @@ function LongFeedbackCopy() {
 ### Persistent Copied State
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function PersistentCopy() {
   // Never auto-reset the copied state
@@ -222,8 +219,8 @@ function PersistentCopy() {
 
   return (
     <div>
-      <button onClick={() => copy('Persistent!')}>
-        {copiedText ? 'Copied!' : 'Copy'}
+      <button onClick={() => copy("Persistent!")}>
+        {copiedText ? "Copied!" : "Copy"}
       </button>
       {copiedText && <span>Copied text: {copiedText}</span>}
     </div>
@@ -234,8 +231,8 @@ function PersistentCopy() {
 ### With Callbacks
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
-import { toast } from 'your-toast-library';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+import { toast } from "your-toast-library";
 
 function CopyWithToast({ text }: { text: string }) {
   const [, copy] = useCopyToClipboard({
@@ -254,22 +251,24 @@ function CopyWithToast({ text }: { text: string }) {
 ### Async Handling
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function AsyncCopy({ text }: { text: string }) {
   const [, copy] = useCopyToClipboard();
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
   const handleCopy = async () => {
     const success = await copy(text);
-    setStatus(success ? 'success' : 'error');
+    setStatus(success ? "success" : "error");
   };
 
   return (
     <div>
       <button onClick={handleCopy}>Copy</button>
-      {status === 'success' && <span className="success">Copied successfully!</span>}
-      {status === 'error' && <span className="error">Failed to copy</span>}
+      {status === "success" && (
+        <span className="success">Copied successfully!</span>
+      )}
+      {status === "error" && <span className="error">Failed to copy</span>}
     </div>
   );
 }
@@ -278,7 +277,7 @@ function AsyncCopy({ text }: { text: string }) {
 ### Share URL Button
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function ShareButton() {
   const [copiedText, copy] = useCopyToClipboard();
@@ -289,7 +288,7 @@ function ShareButton() {
 
   return (
     <button onClick={handleShare}>
-      {copiedText ? 'Link Copied!' : 'Share Link'}
+      {copiedText ? "Link Copied!" : "Share Link"}
     </button>
   );
 }
@@ -298,7 +297,7 @@ function ShareButton() {
 ### Copy Multiple Items
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function CopyList({ items }: { items: string[] }) {
   const [copiedText, copy] = useCopyToClipboard();
@@ -309,7 +308,7 @@ function CopyList({ items }: { items: string[] }) {
         <li key={item}>
           <span>{item}</span>
           <button onClick={() => copy(item)}>
-            {copiedText === item ? 'Copied!' : 'Copy'}
+            {copiedText === item ? "Copied!" : "Copy"}
           </button>
         </li>
       ))}
@@ -321,18 +320,18 @@ function CopyList({ items }: { items: string[] }) {
 ### API Key Display
 
 ```tsx
-import { useCopyToClipboard } from '@usefy/use-copy-to-clipboard';
+import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
 
 function ApiKeyDisplay({ apiKey }: { apiKey: string }) {
   const [copiedText, copy] = useCopyToClipboard();
 
-  const maskedKey = `${apiKey.slice(0, 4)}${'*'.repeat(20)}${apiKey.slice(-4)}`;
+  const maskedKey = `${apiKey.slice(0, 4)}${"*".repeat(20)}${apiKey.slice(-4)}`;
 
   return (
     <div className="api-key">
       <code>{maskedKey}</code>
       <button onClick={() => copy(apiKey)}>
-        {copiedText === apiKey ? 'Copied!' : 'Copy Key'}
+        {copiedText === apiKey ? "Copied!" : "Copy Key"}
       </button>
     </div>
   );
@@ -351,7 +350,7 @@ import {
   type UseCopyToClipboardOptions,
   type UseCopyToClipboardReturn,
   type CopyFn,
-} from '@usefy/use-copy-to-clipboard';
+} from "@usefy/use-copy-to-clipboard";
 
 // Return type
 const [copiedText, copy]: UseCopyToClipboardReturn = useCopyToClipboard();
@@ -362,8 +361,8 @@ const [copiedText, copy]: UseCopyToClipboardReturn = useCopyToClipboard();
 // Options type
 const options: UseCopyToClipboardOptions = {
   timeout: 3000,
-  onSuccess: (text) => console.log('Copied:', text),
-  onError: (error) => console.error('Error:', error),
+  onSuccess: (text) => console.log("Copied:", text),
+  onError: (error) => console.error("Error:", error),
 };
 ```
 
@@ -373,14 +372,14 @@ const options: UseCopyToClipboardOptions = {
 
 This hook uses the modern [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) when available, with automatic fallback to `document.execCommand('copy')` for older browsers.
 
-| Browser | Clipboard API | Fallback |
-|---------|---------------|----------|
-| Chrome 66+ | Yes | - |
-| Firefox 63+ | Yes | - |
-| Safari 13.1+ | Yes | - |
-| Edge 79+ | Yes | - |
-| IE 11 | No | Yes |
-| Older browsers | No | Yes |
+| Browser        | Clipboard API | Fallback |
+| -------------- | ------------- | -------- |
+| Chrome 66+     | Yes           | -        |
+| Firefox 63+    | Yes           | -        |
+| Safari 13.1+   | Yes           | -        |
+| Edge 79+       | Yes           | -        |
+| IE 11          | No            | Yes      |
+| Older browsers | No            | Yes      |
 
 ---
 
@@ -390,12 +389,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage       |
+| ---------- | -------------- |
 | Statements | 87.87% (58/66) |
-| Branches | 79.16% (19/24) |
-| Functions | 85.71% (6/7) |
-| Lines | 87.87% (58/66) |
+| Branches   | 79.16% (19/24) |
+| Functions  | 85.71% (6/7)   |
+| Lines      | 87.87% (58/66) |
 
 ### Test Categories
 
@@ -447,14 +446,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
-| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage) | Persistent localStorage |
+| Package                                                                                | Description                 |
+| -------------------------------------------------------------------------------------- | --------------------------- |
+| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage)     | Persistent localStorage     |
 | [@usefy/use-session-storage](https://www.npmjs.com/package/@usefy/use-session-storage) | Session storage persistence |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                   | Boolean state management    |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                 | Counter state management    |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)               | Value debouncing            |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection      |
 
 ---
 

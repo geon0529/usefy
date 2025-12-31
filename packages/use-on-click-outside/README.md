@@ -112,31 +112,36 @@ A hook that detects clicks outside of specified element(s).
 
 #### Parameters
 
-| Parameter | Type                     | Description                                        |
-| --------- | ------------------------ | -------------------------------------------------- |
-| `ref`     | `RefTarget<T>`           | Single ref or array of refs to detect outside clicks for |
-| `handler` | `OnClickOutsideHandler`  | Callback function called when a click outside is detected |
-| `options` | `UseOnClickOutsideOptions` | Configuration options                            |
+| Parameter | Type                       | Description                                               |
+| --------- | -------------------------- | --------------------------------------------------------- |
+| `ref`     | `RefTarget<T>`             | Single ref or array of refs to detect outside clicks for  |
+| `handler` | `OnClickOutsideHandler`    | Callback function called when a click outside is detected |
+| `options` | `UseOnClickOutsideOptions` | Configuration options                                     |
 
 #### Options
 
-| Option           | Type                        | Default        | Description                                           |
-| ---------------- | --------------------------- | -------------- | ----------------------------------------------------- |
-| `enabled`        | `boolean`                   | `true`         | Whether the event listener is active                  |
-| `capture`        | `boolean`                   | `true`         | Use event capture phase (immune to stopPropagation)   |
-| `eventType`      | `MouseEventType`            | `"mousedown"`  | Mouse event type to listen for                        |
-| `touchEventType` | `TouchEventType`            | `"touchstart"` | Touch event type to listen for                        |
-| `detectTouch`    | `boolean`                   | `true`         | Whether to detect touch events (mobile support)       |
-| `excludeRefs`    | `RefObject<HTMLElement>[]`  | `[]`           | Refs to exclude from outside click detection          |
-| `shouldExclude`  | `(target: Node) => boolean` | `undefined`    | Custom function to determine if target should be excluded |
-| `eventTarget`    | `Document \| HTMLElement \| Window` | `document` | The event target to attach listeners to          |
+| Option           | Type                                | Default        | Description                                               |
+| ---------------- | ----------------------------------- | -------------- | --------------------------------------------------------- |
+| `enabled`        | `boolean`                           | `true`         | Whether the event listener is active                      |
+| `capture`        | `boolean`                           | `true`         | Use event capture phase (immune to stopPropagation)       |
+| `eventType`      | `MouseEventType`                    | `"mousedown"`  | Mouse event type to listen for                            |
+| `touchEventType` | `TouchEventType`                    | `"touchstart"` | Touch event type to listen for                            |
+| `detectTouch`    | `boolean`                           | `true`         | Whether to detect touch events (mobile support)           |
+| `excludeRefs`    | `RefObject<HTMLElement>[]`          | `[]`           | Refs to exclude from outside click detection              |
+| `shouldExclude`  | `(target: Node) => boolean`         | `undefined`    | Custom function to determine if target should be excluded |
+| `eventTarget`    | `Document \| HTMLElement \| Window` | `document`     | The event target to attach listeners to                   |
 
 #### Types
 
 ```typescript
 type ClickOutsideEvent = MouseEvent | TouchEvent;
 type OnClickOutsideHandler = (event: ClickOutsideEvent) => void;
-type MouseEventType = "mousedown" | "mouseup" | "click" | "pointerdown" | "pointerup";
+type MouseEventType =
+  | "mousedown"
+  | "mouseup"
+  | "click"
+  | "pointerdown"
+  | "pointerup";
 type TouchEventType = "touchstart" | "touchend";
 type RefTarget<T extends HTMLElement> =
   | React.RefObject<T | null>
@@ -188,11 +193,9 @@ function Dropdown() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Both button and menu are considered "inside"
-  useOnClickOutside(
-    [buttonRef, menuRef],
-    () => setIsOpen(false),
-    { enabled: isOpen }
-  );
+  useOnClickOutside([buttonRef, menuRef], () => setIsOpen(false), {
+    enabled: isOpen,
+  });
 
   return (
     <>
@@ -410,12 +413,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category   | Coverage           |
-| ---------- | ------------------ |
-| Statements | 97.61% (41/42)     |
-| Branches   | 93.93% (31/33)     |
-| Functions  | 100% (7/7)         |
-| Lines      | 97.61% (41/42)     |
+| Category   | Coverage       |
+| ---------- | -------------- |
+| Statements | 97.61% (41/42) |
+| Branches   | 93.93% (31/33) |
+| Functions  | 100% (7/7)     |
+| Lines      | 97.61% (41/42) |
 
 ### Test Categories
 
@@ -508,18 +511,18 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package                                                                                    | Description                         |
-| ------------------------------------------------------------------------------------------ | ----------------------------------- |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Document-wide click detection       |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management            |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management            |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing                    |
-| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks                 |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling                    |
-| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks                 |
-| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage)         | localStorage state synchronization  |
-| [@usefy/use-session-storage](https://www.npmjs.com/package/@usefy/use-session-storage)     | sessionStorage state synchronization|
-| [@usefy/use-copy-to-clipboard](https://www.npmjs.com/package/@usefy/use-copy-to-clipboard) | Clipboard operations                |
+| Package                                                                                    | Description                          |
+| ------------------------------------------------------------------------------------------ | ------------------------------------ |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where)     | Document-wide click detection        |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                       | Boolean state management             |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                     | Counter state management             |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)                   | Value debouncing                     |
+| [@usefy/use-debounce-callback](https://www.npmjs.com/package/@usefy/use-debounce-callback) | Debounced callbacks                  |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)                   | Value throttling                     |
+| [@usefy/use-throttle-callback](https://www.npmjs.com/package/@usefy/use-throttle-callback) | Throttled callbacks                  |
+| [@usefy/use-local-storage](https://www.npmjs.com/package/@usefy/use-local-storage)         | localStorage state synchronization   |
+| [@usefy/use-session-storage](https://www.npmjs.com/package/@usefy/use-session-storage)     | sessionStorage state synchronization |
+| [@usefy/use-copy-to-clipboard](https://www.npmjs.com/package/@usefy/use-copy-to-clipboard) | Clipboard operations                 |
 
 ---
 

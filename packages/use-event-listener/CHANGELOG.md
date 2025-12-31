@@ -1,4 +1,4 @@
-# @usefy/use-on-click-outside
+# @usefy/use-event-listener
 
 ## 0.0.18
 
@@ -10,8 +10,6 @@
 
 ## 0.0.16
 
-## 0.0.15
-
 ### Patch Changes
 
-- e113f40: add useOnClickOutside
+- 40091df: add useEventListener

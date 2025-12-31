@@ -1,7 +1,7 @@
 {
-  "name": "@usefy/use-throttle",
+  "name": "@usefy/use-event-listener",
   "version": "0.0.18",
-  "description": "A React hook for throttling values",
+  "description": "A React hook for adding event listeners to DOM elements with automatic cleanup",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -24,9 +24,6 @@
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
-  "dependencies": {
-    "@usefy/use-debounce": "workspace:*"
-  },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
   },
@@ -48,13 +45,17 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/geon0529/usefy.git",
-    "directory": "packages/use-throttle"
+    "directory": "packages/use-event-listener"
   },
   "license": "MIT",
   "keywords": [
     "react",
     "hooks",
-    "throttle",
-    "rate-limit"
+    "event-listener",
+    "addEventListener",
+    "window",
+    "document",
+    "dom",
+    "useEventListener"
   ]
 }

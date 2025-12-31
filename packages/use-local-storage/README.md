@@ -84,16 +84,16 @@ This package requires React 18 or 19:
 ## Quick Start
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function ThemeToggle() {
-  const [theme, setTheme, removeTheme] = useLocalStorage('theme', 'light');
+  const [theme, setTheme, removeTheme] = useLocalStorage("theme", "light");
 
   return (
     <div>
       <p>Current theme: {theme}</p>
-      <button onClick={() => setTheme('dark')}>Dark</button>
-      <button onClick={() => setTheme('light')}>Light</button>
+      <button onClick={() => setTheme("dark")}>Dark</button>
+      <button onClick={() => setTheme("light")}>Light</button>
       <button onClick={removeTheme}>Reset</button>
     </div>
   );
@@ -110,28 +110,28 @@ A hook that persists state in localStorage with automatic synchronization.
 
 #### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `key` | `string` | The localStorage key |
-| `initialValue` | `T \| () => T` | Initial value or lazy initializer function |
-| `options` | `UseLocalStorageOptions<T>` | Configuration options |
+| Parameter      | Type                        | Description                                |
+| -------------- | --------------------------- | ------------------------------------------ |
+| `key`          | `string`                    | The localStorage key                       |
+| `initialValue` | `T \| () => T`              | Initial value or lazy initializer function |
+| `options`      | `UseLocalStorageOptions<T>` | Configuration options                      |
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `serializer` | `(value: T) => string` | `JSON.stringify` | Custom serializer function |
-| `deserializer` | `(value: string) => T` | `JSON.parse` | Custom deserializer function |
-| `syncTabs` | `boolean` | `true` | Sync value across browser tabs |
-| `onError` | `(error: Error) => void` | — | Callback for error handling |
+| Option         | Type                     | Default          | Description                    |
+| -------------- | ------------------------ | ---------------- | ------------------------------ |
+| `serializer`   | `(value: T) => string`   | `JSON.stringify` | Custom serializer function     |
+| `deserializer` | `(value: string) => T`   | `JSON.parse`     | Custom deserializer function   |
+| `syncTabs`     | `boolean`                | `true`           | Sync value across browser tabs |
+| `onError`      | `(error: Error) => void` | —                | Callback for error handling    |
 
 #### Returns `[T, SetValue<T>, RemoveValue]`
 
-| Index | Type | Description |
-|-------|------|-------------|
-| `[0]` | `T` | Current stored value |
-| `[1]` | `Dispatch<SetStateAction<T>>` | Function to update value (same as useState) |
-| `[2]` | `() => void` | Function to remove value and reset to initial |
+| Index | Type                          | Description                                   |
+| ----- | ----------------------------- | --------------------------------------------- |
+| `[0]` | `T`                           | Current stored value                          |
+| `[1]` | `Dispatch<SetStateAction<T>>` | Function to update value (same as useState)   |
+| `[2]` | `() => void`                  | Function to remove value and reset to initial |
 
 ---
 
@@ -140,10 +140,10 @@ A hook that persists state in localStorage with automatic synchronization.
 ### Basic String Storage
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function NameInput() {
-  const [name, setName, removeName] = useLocalStorage('userName', '');
+  const [name, setName, removeName] = useLocalStorage("userName", "");
 
   return (
     <div>
@@ -153,7 +153,7 @@ function NameInput() {
         placeholder="Enter your name"
       />
       <button onClick={removeName}>Clear</button>
-      <p>Hello, {name || 'Guest'}!</p>
+      <p>Hello, {name || "Guest"}!</p>
     </div>
   );
 }
@@ -162,7 +162,7 @@ function NameInput() {
 ### Object State
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 interface UserSettings {
   notifications: boolean;
@@ -171,9 +171,9 @@ interface UserSettings {
 }
 
 function SettingsPanel() {
-  const [settings, setSettings] = useLocalStorage<UserSettings>('settings', {
+  const [settings, setSettings] = useLocalStorage<UserSettings>("settings", {
     notifications: true,
-    language: 'en',
+    language: "en",
     fontSize: 16,
   });
 
@@ -184,7 +184,10 @@ function SettingsPanel() {
           type="checkbox"
           checked={settings.notifications}
           onChange={(e) =>
-            setSettings((prev) => ({ ...prev, notifications: e.target.checked }))
+            setSettings((prev) => ({
+              ...prev,
+              notifications: e.target.checked,
+            }))
           }
         />
         Enable Notifications
@@ -218,12 +221,12 @@ function SettingsPanel() {
 ### Lazy Initialization
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function ExpensiveDefaultDemo() {
   // Expensive computation only runs if no stored value exists
-  const [config, setConfig] = useLocalStorage('appConfig', () => {
-    console.log('Computing expensive default...');
+  const [config, setConfig] = useLocalStorage("appConfig", () => {
+    console.log("Computing expensive default...");
     return generateComplexDefaultConfig();
   });
 
@@ -234,11 +237,11 @@ function ExpensiveDefaultDemo() {
 ### Custom Serialization (Date)
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function DatePicker() {
   const [lastVisit, setLastVisit] = useLocalStorage<Date>(
-    'lastVisit',
+    "lastVisit",
     new Date(),
     {
       serializer: (date) => date.toISOString(),
@@ -258,11 +261,11 @@ function DatePicker() {
 ### Custom Serialization (Map)
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function FavoritesManager() {
   const [favorites, setFavorites] = useLocalStorage<Map<string, boolean>>(
-    'favorites',
+    "favorites",
     new Map(),
     {
       serializer: (map) => JSON.stringify([...map.entries()]),
@@ -284,7 +287,7 @@ function FavoritesManager() {
         <li key={item.id}>
           {item.name}
           <button onClick={() => toggleFavorite(item.id)}>
-            {favorites.has(item.id) ? '★' : '☆'}
+            {favorites.has(item.id) ? "★" : "☆"}
           </button>
         </li>
       ))}
@@ -296,16 +299,20 @@ function FavoritesManager() {
 ### Error Handling
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function RobustStorage() {
-  const [data, setData] = useLocalStorage('userData', { items: [] }, {
-    onError: (error) => {
-      console.error('Storage error:', error.message);
-      // Could show toast notification, log to analytics, etc.
-      toast.error('Failed to save data. Storage may be full.');
-    },
-  });
+  const [data, setData] = useLocalStorage(
+    "userData",
+    { items: [] },
+    {
+      onError: (error) => {
+        console.error("Storage error:", error.message);
+        // Could show toast notification, log to analytics, etc.
+        toast.error("Failed to save data. Storage may be full.");
+      },
+    }
+  );
 
   return <DataEditor data={data} onChange={setData} />;
 }
@@ -314,11 +321,11 @@ function RobustStorage() {
 ### Cross-Tab Synchronization
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function CartCounter() {
   // Changes in one tab automatically sync to other tabs
-  const [cartItems, setCartItems] = useLocalStorage<string[]>('cart', []);
+  const [cartItems, setCartItems] = useLocalStorage<string[]>("cart", []);
 
   const addItem = (item: string) => {
     setCartItems((prev) => [...prev, item]);
@@ -336,11 +343,11 @@ function CartCounter() {
 ### Disable Tab Sync
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 function LocalOnlyData() {
   // Don't sync changes from other tabs
-  const [draft, setDraft] = useLocalStorage('draft', '', {
+  const [draft, setDraft] = useLocalStorage("draft", "", {
     syncTabs: false,
   });
 
@@ -357,7 +364,7 @@ function LocalOnlyData() {
 ### Shopping Cart
 
 ```tsx
-import { useLocalStorage } from '@usefy/use-local-storage';
+import { useLocalStorage } from "@usefy/use-local-storage";
 
 interface CartItem {
   id: string;
@@ -367,7 +374,7 @@ interface CartItem {
 }
 
 function ShoppingCart() {
-  const [cart, setCart, clearCart] = useLocalStorage<CartItem[]>('cart', []);
+  const [cart, setCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
@@ -414,19 +421,19 @@ import {
   type UseLocalStorageOptions,
   type UseLocalStorageReturn,
   type InitialValue,
-} from '@usefy/use-local-storage';
+} from "@usefy/use-local-storage";
 
 // Generic type inference
-const [name, setName] = useLocalStorage('name', 'John');     // string
-const [count, setCount] = useLocalStorage('count', 0);        // number
-const [items, setItems] = useLocalStorage('items', [1, 2]);   // number[]
+const [name, setName] = useLocalStorage("name", "John"); // string
+const [count, setCount] = useLocalStorage("count", 0); // number
+const [items, setItems] = useLocalStorage("items", [1, 2]); // number[]
 
 // Explicit generic type
 interface User {
   id: string;
   name: string;
 }
-const [user, setUser] = useLocalStorage<User | null>('user', null);
+const [user, setUser] = useLocalStorage<User | null>("user", null);
 ```
 
 ---
@@ -437,12 +444,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category | Coverage |
-|----------|----------|
+| Category   | Coverage       |
+| ---------- | -------------- |
 | Statements | 95.16% (59/62) |
-| Branches | 85.71% (24/28) |
-| Functions | 100% (9/9) |
-| Lines | 95.08% (58/61) |
+| Branches   | 85.71% (24/28) |
+| Functions  | 100% (9/9)     |
+| Lines      | 95.08% (58/61) |
 
 ### Test Categories
 
@@ -488,14 +495,14 @@ pnpm test --coverage
 
 Explore other hooks in the **@usefy** collection:
 
-| Package | Description |
-|---------|-------------|
+| Package                                                                                | Description                 |
+| -------------------------------------------------------------------------------------- | --------------------------- |
 | [@usefy/use-session-storage](https://www.npmjs.com/package/@usefy/use-session-storage) | Session storage persistence |
-| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle) | Boolean state management |
-| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter) | Counter state management |
-| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce) | Value debouncing |
-| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle) | Value throttling |
-| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection |
+| [@usefy/use-toggle](https://www.npmjs.com/package/@usefy/use-toggle)                   | Boolean state management    |
+| [@usefy/use-counter](https://www.npmjs.com/package/@usefy/use-counter)                 | Counter state management    |
+| [@usefy/use-debounce](https://www.npmjs.com/package/@usefy/use-debounce)               | Value debouncing            |
+| [@usefy/use-throttle](https://www.npmjs.com/package/@usefy/use-throttle)               | Value throttling            |
+| [@usefy/use-click-any-where](https://www.npmjs.com/package/@usefy/use-click-any-where) | Global click detection      |
 
 ---
 
