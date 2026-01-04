@@ -509,8 +509,8 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 | use-counter           | 100%       | 100%     | 100%      | 100%  |
 | use-throttle          | 100%       | 100%     | 100%      | 100%  |
 | use-throttle-callback | 100%       | 100%     | 100%      | 100%  |
-| use-local-storage     | 95%        | 86%      | 100%      | 95%   |
-| use-session-storage   | 94%        | 79%      | 100%      | 94%   |
+| use-local-storage     | 95%        | 86%      | 93%       | 95%   |
+| use-session-storage   | 94%        | 82%      | 93%       | 94%   |
 | use-debounce-callback | 94%        | 83%      | 94%       | 94%   |
 | use-click-any-where   | 92%        | 88%      | 100%      | 92%   |
 | use-debounce          | 91%        | 90%      | 67%       | 93%   |

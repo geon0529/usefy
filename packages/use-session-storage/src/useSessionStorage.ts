@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useSyncExternalStore } from "react";
+import { subscribe, notifyListeners } from "./store";
 
 /**
  * Type for initial value that can be a value or a function returning a value (lazy initialization)
@@ -47,8 +48,12 @@ function resolveInitialValue<T>(initialValue: InitialValue<T>): T {
 }
 
 /**
- * A hook for persisting state in sessionStorage.
+ * A hook for persisting state in sessionStorage with automatic synchronization.
  * Works like useState but persists the value in sessionStorage for the duration of the browser session.
+ *
+ * Features:
+ * - Same-tab synchronization: Multiple components using the same key will stay in sync
+ * - SSR compatible: Works with Next.js, Remix, and other SSR frameworks
  *
  * Unlike localStorage, sessionStorage data:
  * - Is cleared when the tab/window is closed
@@ -78,6 +83,21 @@ function resolveInitialValue<T>(initialValue: InitialValue<T>): T {
  *       <button type="button" onClick={clearForm}>Clear</button>
  *     </form>
  *   );
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Same-tab synchronization - both components stay in sync
+ * function ComponentA() {
+ *   const [step, setStep] = useSessionStorage('wizard-step', 1);
+ *   return <button onClick={() => setStep(s => s + 1)}>Next Step</button>;
+ * }
+ *
+ * function ComponentB() {
+ *   const [step] = useSessionStorage('wizard-step', 1);
+ *   // Automatically updates when ComponentA calls setStep!
+ *   return <p>Current Step: {step}</p>;
  * }
  * ```
  *
@@ -117,54 +137,119 @@ export function useSessionStorage<T>(
   const serializerRef = useRef(serializer);
   const deserializerRef = useRef(deserializer);
   const onErrorRef = useRef(onError);
+  const initialValueRef = useRef(initialValue);
+
   serializerRef.current = serializer;
   deserializerRef.current = deserializer;
   onErrorRef.current = onError;
-
-  // Store initialValue in ref for use in removeValue
-  const initialValueRef = useRef(initialValue);
   initialValueRef.current = initialValue;
+
+  // Cache for getSnapshot to ensure stable returns and prevent infinite loops
+  // useSyncExternalStore requires getSnapshot to return the same reference
+  // if the data hasn't changed
+  const cacheRef = useRef<{ rawValue: string | null; parsedValue: T } | null>(
+    null
+  );
 
   // SSR check
   const isClient = typeof window !== "undefined";
 
-  // Lazy initialization with sessionStorage read
-  const [storedValue, setStoredValue] = useState<T>(() => {
+  // Subscribe function for useSyncExternalStore
+  // Handles same-tab synchronization (sessionStorage doesn't have cross-tab sync)
+  const subscribeToStore = useCallback(
+    (onStoreChange: () => void) => {
+      // Subscribe to same-tab changes via internal store
+      const unsubscribeStore = subscribe(key, onStoreChange);
+
+      // Note: sessionStorage doesn't fire storage events for changes in the same tab,
+      // and changes in other tabs don't affect this tab's sessionStorage.
+      // So we only use the internal store for synchronization.
+
+      return () => {
+        unsubscribeStore();
+      };
+    },
+    [key]
+  );
+
+  // getSnapshot: Read current value from sessionStorage with caching
+  const getSnapshot = useCallback((): T => {
     if (!isClient) {
-      return resolveInitialValue(initialValue);
+      return resolveInitialValue(initialValueRef.current);
     }
 
     try {
-      const item = window.sessionStorage.getItem(key);
-      if (item !== null) {
-        return deserializerRef.current(item);
+      const rawValue = window.sessionStorage.getItem(key);
+
+      // Check cache: if rawValue is the same, return cached parsed value
+      if (cacheRef.current && cacheRef.current.rawValue === rawValue) {
+        return cacheRef.current.parsedValue;
       }
-      return resolveInitialValue(initialValue);
+
+      // Parse new value
+      let parsedValue: T;
+      if (rawValue !== null) {
+        parsedValue = deserializerRef.current(rawValue);
+      } else {
+        parsedValue = resolveInitialValue(initialValueRef.current);
+      }
+
+      // Update cache
+      cacheRef.current = { rawValue, parsedValue };
+
+      return parsedValue;
     } catch (error) {
       onErrorRef.current?.(error as Error);
-      return resolveInitialValue(initialValue);
+      const fallbackValue = resolveInitialValue(initialValueRef.current);
+      cacheRef.current = { rawValue: null, parsedValue: fallbackValue };
+      return fallbackValue;
     }
-  });
+  }, [key, isClient]);
 
-  // Store current value in ref for stable setValue reference
-  const storedValueRef = useRef<T>(storedValue);
-  storedValueRef.current = storedValue;
+  // getServerSnapshot: Return initial value for SSR
+  const getServerSnapshot = useCallback((): T => {
+    return resolveInitialValue(initialValueRef.current);
+  }, []);
 
-  // setValue - stable reference (only depends on key)
+  // Use useSyncExternalStore for synchronized state
+  const storedValue = useSyncExternalStore(
+    subscribeToStore,
+    getSnapshot,
+    getServerSnapshot
+  );
+
+  // setValue - stable reference that updates sessionStorage and notifies listeners
   const setValue = useCallback<React.Dispatch<React.SetStateAction<T>>>(
     (value) => {
       try {
-        const currentValue = storedValueRef.current;
+        // Get current value for functional updates
+        const currentValue = (() => {
+          try {
+            const item = window.sessionStorage.getItem(key);
+            if (item !== null) {
+              return deserializerRef.current(item);
+            }
+            return resolveInitialValue(initialValueRef.current);
+          } catch {
+            return resolveInitialValue(initialValueRef.current);
+          }
+        })();
+
         const valueToStore =
           value instanceof Function ? value(currentValue) : value;
 
-        setStoredValue(valueToStore);
-
         if (typeof window !== "undefined") {
-          window.sessionStorage.setItem(
-            key,
-            serializerRef.current(valueToStore)
-          );
+          const serialized = serializerRef.current(valueToStore);
+          window.sessionStorage.setItem(key, serialized);
+
+          // Invalidate cache so next getSnapshot reads fresh value
+          cacheRef.current = {
+            rawValue: serialized,
+            parsedValue: valueToStore,
+          };
+
+          // Notify all same-tab listeners
+          notifyListeners(key);
         }
       } catch (error) {
         onErrorRef.current?.(error as Error);
@@ -176,34 +261,19 @@ export function useSessionStorage<T>(
   // removeValue - stable reference
   const removeValue = useCallback(() => {
     try {
-      const initial = resolveInitialValue(initialValueRef.current);
-      setStoredValue(initial);
-
       if (typeof window !== "undefined") {
         window.sessionStorage.removeItem(key);
+
+        // Invalidate cache
+        const initialVal = resolveInitialValue(initialValueRef.current);
+        cacheRef.current = { rawValue: null, parsedValue: initialVal };
+
+        // Notify all same-tab listeners
+        notifyListeners(key);
       }
     } catch (error) {
       onErrorRef.current?.(error as Error);
     }
-  }, [key]);
-
-  // Re-read value when key changes
-  useEffect(() => {
-    if (!isClient) {
-      return;
-    }
-
-    try {
-      const item = window.sessionStorage.getItem(key);
-      if (item !== null) {
-        setStoredValue(deserializerRef.current(item));
-      } else {
-        setStoredValue(resolveInitialValue(initialValueRef.current));
-      }
-    } catch {
-      setStoredValue(resolveInitialValue(initialValueRef.current));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   return [storedValue, setValue, removeValue] as const;

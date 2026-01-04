@@ -5,7 +5,7 @@
 <h1 align="center">@usefy/use-local-storage</h1>
 
 <p align="center">
-  <strong>A powerful React hook for persisting state in localStorage with automatic cross-tab synchronization</strong>
+  <strong>A powerful React hook for persisting state in localStorage with automatic same-tab and cross-tab synchronization</strong>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@
 
 ## Overview
 
-`@usefy/use-local-storage` provides a `useState`-like API for persisting data in localStorage. Features include cross-tab synchronization, custom serialization, lazy initialization, error handling, and a `removeValue` function. Data persists across browser sessions.
+`@usefy/use-local-storage` provides a `useState`-like API for persisting data in localStorage. Features include **same-tab component synchronization**, cross-tab synchronization, custom serialization, lazy initialization, error handling, and a `removeValue` function. Data persists across browser sessions.
 
 **Part of the [@usefy](https://www.npmjs.com/org/usefy) ecosystem** — a collection of production-ready React hooks designed for modern applications.
 
@@ -44,7 +44,9 @@
 - **Zero Dependencies** — Pure React implementation with no external dependencies
 - **TypeScript First** — Full type safety with generics and exported interfaces
 - **useState-like API** — Familiar tuple return: `[value, setValue, removeValue]`
+- **Same-Tab Sync** — Multiple components using the same key stay in sync automatically
 - **Cross-Tab Sync** — Automatic synchronization across browser tabs
+- **React 18+ Optimized** — Built with `useSyncExternalStore` for Concurrent Mode compatibility
 - **Custom Serialization** — Support for Date, Map, Set, or any custom type
 - **Lazy Initialization** — Function initializer support for expensive defaults
 - **Error Handling** — `onError` callback for graceful error recovery
@@ -318,6 +320,35 @@ function RobustStorage() {
 }
 ```
 
+### Same-Tab Component Synchronization
+
+```tsx
+import { useLocalStorage } from "@usefy/use-local-storage";
+
+// Multiple components using the same key automatically stay in sync!
+function Navbar() {
+  const [user] = useLocalStorage<User | null>("user", null);
+  return <span>Welcome, {user?.name || "Guest"}</span>;
+}
+
+function LoginForm() {
+  const [, setUser] = useLocalStorage<User | null>("user", null);
+
+  const handleLogin = async (credentials: Credentials) => {
+    const user = await authenticate(credentials);
+    setUser(user); // Navbar automatically updates!
+  };
+
+  return <button onClick={() => handleLogin(creds)}>Login</button>;
+}
+
+function Sidebar() {
+  const [user] = useLocalStorage<User | null>("user", null);
+  // Also updates when LoginForm calls setUser!
+  return user ? <UserMenu user={user} /> : <LoginPrompt />;
+}
+```
+
 ### Cross-Tab Synchronization
 
 ```tsx
@@ -446,10 +477,10 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 | Category   | Coverage       |
 | ---------- | -------------- |
-| Statements | 95.16% (59/62) |
-| Branches   | 85.71% (24/28) |
-| Functions  | 100% (9/9)     |
-| Lines      | 95.08% (58/61) |
+| Statements | 95.18% (79/83) |
+| Branches   | 86.84% (33/38) |
+| Functions  | 93.75% (15/16) |
+| Lines      | 95.12% (78/82) |
 
 ### Test Categories
 
@@ -462,6 +493,19 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 - Not call initializer when localStorage has data
 - Fallback to initial value when JSON parse fails
 - Call onError when localStorage read fails
+
+</details>
+
+<details>
+<summary><strong>Same-Tab Sync Tests</strong></summary>
+
+- Sync ComponentB when ComponentA updates the same key
+- Sync multiple components using the same key
+- Sync when using functional updates
+- Sync when removeValue is called
+- Not affect components with different keys
+- Handle rapid updates from different components
+- Cleanup listeners on unmount
 
 </details>
 

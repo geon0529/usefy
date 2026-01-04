@@ -5,7 +5,7 @@
 <h1 align="center">@usefy/use-session-storage</h1>
 
 <p align="center">
-  <strong>A lightweight React hook for persisting state in sessionStorage</strong>
+  <strong>A lightweight React hook for persisting state in sessionStorage with automatic same-tab synchronization</strong>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@
 
 ## Overview
 
-`@usefy/use-session-storage` provides a `useState`-like API for persisting data in sessionStorage. Data persists during the browser session (tab lifetime) but clears when the tab is closed. Each tab has isolated storage, making it perfect for temporary form data, wizard steps, and session-specific state.
+`@usefy/use-session-storage` provides a `useState`-like API for persisting data in sessionStorage. Features include **same-tab component synchronization**, custom serialization, lazy initialization, and error handling. Data persists during the browser session (tab lifetime) but clears when the tab is closed. Each tab has isolated storage, making it perfect for temporary form data, wizard steps, and session-specific state.
 
 **Part of the [@usefy](https://www.npmjs.com/org/usefy) ecosystem** — a collection of production-ready React hooks designed for modern applications.
 
@@ -44,7 +44,9 @@
 - **Zero Dependencies** — Pure React implementation with no external dependencies
 - **TypeScript First** — Full type safety with generics and exported interfaces
 - **useState-like API** — Familiar tuple return: `[value, setValue, removeValue]`
+- **Same-Tab Sync** — Multiple components using the same key stay in sync automatically
 - **Tab Isolation** — Each browser tab has its own session storage
+- **React 18+ Optimized** — Built with `useSyncExternalStore` for Concurrent Mode compatibility
 - **Auto-Cleanup** — Data cleared automatically when tab closes
 - **Custom Serialization** — Support for Date, Map, Set, or any custom type
 - **Lazy Initialization** — Function initializer support for expensive defaults
@@ -164,6 +166,39 @@ A hook that persists state in sessionStorage for the duration of the browser ses
 ---
 
 ## Examples
+
+### Same-Tab Component Synchronization
+
+```tsx
+import { useSessionStorage } from "@usefy/use-session-storage";
+
+// Multiple components using the same key automatically stay in sync!
+function WizardProgress() {
+  const [step] = useSessionStorage("wizard-step", 1);
+  return <ProgressBar current={step} total={5} />;
+}
+
+function WizardNavigation() {
+  const [step, setStep] = useSessionStorage("wizard-step", 1);
+
+  return (
+    <div>
+      <button onClick={() => setStep((s) => s - 1)} disabled={step === 1}>
+        Back
+      </button>
+      <button onClick={() => setStep((s) => s + 1)} disabled={step === 5}>
+        Next {/* WizardProgress automatically updates! */}
+      </button>
+    </div>
+  );
+}
+
+function WizardContent() {
+  const [step] = useSessionStorage("wizard-step", 1);
+  // Also updates when WizardNavigation changes step!
+  return <StepContent step={step} />;
+}
+```
 
 ### Multi-Step Wizard
 
@@ -487,12 +522,12 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-| Category   | Coverage       |
-| ---------- | -------------- |
-| Statements | 93.75% (45/48) |
-| Branches   | 78.94% (15/19) |
-| Functions  | 100% (6/6)     |
-| Lines      | 93.75% (45/48) |
+| Category   | Coverage        |
+| ---------- | --------------- |
+| Statements | 94.66% (71/75)  |
+| Branches   | 82.75% (24/29)  |
+| Functions  | 93.33% (14/15)  |
+| Lines      | 94.59% (70/74)  |
 
 ### Test Categories
 
@@ -505,6 +540,19 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 - Not call initializer when sessionStorage has data
 - Fallback to initial value when JSON parse fails
 - Call onError when sessionStorage read fails
+
+</details>
+
+<details>
+<summary><strong>Same-Tab Sync Tests</strong></summary>
+
+- Sync ComponentB when ComponentA updates the same key
+- Sync multiple components using the same key
+- Sync when using functional updates
+- Sync when removeValue is called
+- Not affect components with different keys
+- Handle rapid updates from different components
+- Cleanup listeners on unmount
 
 </details>
 

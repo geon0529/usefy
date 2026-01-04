@@ -387,6 +387,126 @@ function CrossTabSyncDemo() {
 }
 
 /**
+ * Demo component for same-tab component synchronization
+ * Shows how multiple components using the same key stay in sync
+ */
+function ComponentSyncDemo() {
+  return (
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Component Sync Demo</h2>
+      <p className={storyTheme.subtitle}>
+        Multiple components using the same localStorage key automatically stay
+        in sync
+      </p>
+
+      {/* Two synchronized components side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <SyncedComponent name="Component A" color="blue" />
+        <SyncedComponent name="Component B" color="green" />
+      </div>
+
+      {/* Third component */}
+      <div className="mb-6">
+        <SyncedComponent name="Component C" color="purple" />
+      </div>
+
+      {/* Info Box */}
+      <div className={storyTheme.infoBox}>
+        <p className={storyTheme.infoText}>
+          <strong>How it works:</strong>
+          <br />
+          All three components use <code>useLocalStorage("shared-count", 0)</code>
+          <br />
+          When any component updates the value, all others update instantly!
+          <br />
+          <br />
+          <strong>Technical Details:</strong>
+          <br />
+          • Uses <code>useSyncExternalStore</code> for React 18+ compatibility
+          <br />
+          • Internal store manager notifies all subscribers on change
+          <br />• No prop drilling or context needed
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Individual synced component for the demo
+ */
+function SyncedComponent({ name, color }: { name: string; color: string }) {
+  const [count, setCount, resetCount] = useLocalStorage("shared-count", 0);
+
+  const colorClasses = {
+    blue: "bg-blue-500 hover:bg-blue-600 border-blue-600",
+    green: "bg-green-500 hover:bg-green-600 border-green-600",
+    purple: "bg-purple-500 hover:bg-purple-600 border-purple-600",
+  };
+
+  const borderColors = {
+    blue: "border-blue-300",
+    green: "border-green-300",
+    purple: "border-purple-300",
+  };
+
+  const bgColors = {
+    blue: "bg-blue-50",
+    green: "bg-green-50",
+    purple: "bg-purple-50",
+  };
+
+  return (
+    <div
+      className={`p-4 rounded-xl border-2 ${borderColors[color as keyof typeof borderColors]} ${bgColors[color as keyof typeof bgColors]}`}
+      data-testid={`sync-component-${name.toLowerCase().replace(" ", "-")}`}
+    >
+      <h3 className="font-semibold text-gray-800 mb-3 text-center">{name}</h3>
+
+      {/* Count Display */}
+      <div
+        className="text-4xl font-bold text-center mb-4 py-3 bg-white rounded-lg shadow-sm"
+        data-testid={`sync-value-${name.toLowerCase().replace(" ", "-")}`}
+      >
+        {count}
+      </div>
+
+      {/* Controls */}
+      <div className="flex gap-2 justify-center">
+        <button
+          onClick={() => setCount((c) => c - 1)}
+          className={`px-3 py-2 rounded-lg text-white font-medium transition-colors ${colorClasses[color as keyof typeof colorClasses]}`}
+          data-testid={`sync-decrement-${name.toLowerCase().replace(" ", "-")}`}
+        >
+          -1
+        </button>
+        <button
+          onClick={() => setCount((c) => c + 1)}
+          className={`px-3 py-2 rounded-lg text-white font-medium transition-colors ${colorClasses[color as keyof typeof colorClasses]}`}
+          data-testid={`sync-increment-${name.toLowerCase().replace(" ", "-")}`}
+        >
+          +1
+        </button>
+        <button
+          onClick={() => setCount((c) => c + 10)}
+          className={`px-3 py-2 rounded-lg text-white font-medium transition-colors ${colorClasses[color as keyof typeof colorClasses]}`}
+          data-testid={`sync-add10-${name.toLowerCase().replace(" ", "-")}`}
+        >
+          +10
+        </button>
+        <button
+          onClick={resetCount}
+          className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition-colors"
+          data-testid={`sync-reset-${name.toLowerCase().replace(" ", "-")}`}
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Demo component for error handling
  */
 function ErrorHandlingDemo() {
@@ -691,6 +811,66 @@ export const ErrorHandling: Story = {
       expect(canvas.getByTestId("error-demo-value")).toHaveTextContent(
         "Normal value"
       );
+    });
+  },
+};
+
+/**
+ * Same-tab component synchronization demo
+ * Demonstrates how multiple components using the same key stay in sync
+ */
+export const ComponentSync: Story = {
+  render: () => <ComponentSyncDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get all value displays
+    const valueA = canvas.getByTestId("sync-value-component-a");
+    const valueB = canvas.getByTestId("sync-value-component-b");
+    const valueC = canvas.getByTestId("sync-value-component-c");
+
+    // First reset all to 0
+    await userEvent.click(canvas.getByTestId("sync-reset-component-a"));
+    await waitFor(() => {
+      expect(valueA).toHaveTextContent("0");
+      expect(valueB).toHaveTextContent("0");
+      expect(valueC).toHaveTextContent("0");
+    });
+
+    // Click increment on Component A
+    await userEvent.click(canvas.getByTestId("sync-increment-component-a"));
+    await waitFor(() => {
+      // All components should show 1
+      expect(valueA).toHaveTextContent("1");
+      expect(valueB).toHaveTextContent("1");
+      expect(valueC).toHaveTextContent("1");
+    });
+
+    // Click +10 on Component B
+    await userEvent.click(canvas.getByTestId("sync-add10-component-b"));
+    await waitFor(() => {
+      // All components should show 11
+      expect(valueA).toHaveTextContent("11");
+      expect(valueB).toHaveTextContent("11");
+      expect(valueC).toHaveTextContent("11");
+    });
+
+    // Click decrement on Component C
+    await userEvent.click(canvas.getByTestId("sync-decrement-component-c"));
+    await waitFor(() => {
+      // All components should show 10
+      expect(valueA).toHaveTextContent("10");
+      expect(valueB).toHaveTextContent("10");
+      expect(valueC).toHaveTextContent("10");
+    });
+
+    // Reset from Component B
+    await userEvent.click(canvas.getByTestId("sync-reset-component-b"));
+    await waitFor(() => {
+      // All components should show 0
+      expect(valueA).toHaveTextContent("0");
+      expect(valueB).toHaveTextContent("0");
+      expect(valueC).toHaveTextContent("0");
     });
   },
 };

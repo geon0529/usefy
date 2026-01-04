@@ -107,8 +107,8 @@ All packages require React 18 or 19:
 
 ### 📦 Available Hooks
 
-| Hook                                                                                       | Description                                             | npm                                                                                                                                                                | Coverage                                                                            |
-| ------------------------------------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Hook                                                                                                                                            | Description                                             | npm                                                                                                                                                                                                                                             | Coverage                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | <a href="https://www.npmjs.com/package/@usefy/use-toggle" target="_blank" rel="noopener noreferrer">@usefy/use-toggle</a>                       | Boolean state management with toggle, setTrue, setFalse | <a href="https://www.npmjs.com/package/@usefy/use-toggle" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-toggle.svg?style=flat-square&color=007acc" alt="npm version" /></a>                       | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
 | <a href="https://www.npmjs.com/package/@usefy/use-counter" target="_blank" rel="noopener noreferrer">@usefy/use-counter</a>                     | Counter state with increment, decrement, reset          | <a href="https://www.npmjs.com/package/@usefy/use-counter" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-counter.svg?style=flat-square&color=007acc" alt="npm version" /></a>                     | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
 | <a href="https://www.npmjs.com/package/@usefy/use-debounce" target="_blank" rel="noopener noreferrer">@usefy/use-debounce</a>                   | Value debouncing with leading/trailing edge             | <a href="https://www.npmjs.com/package/@usefy/use-debounce" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-debounce.svg?style=flat-square&color=007acc" alt="npm version" /></a>                   | ![91%](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)   |
@@ -509,8 +509,8 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 | use-counter           | 100%       | 100%     | 100%      | 100%  |
 | use-throttle          | 100%       | 100%     | 100%      | 100%  |
 | use-throttle-callback | 100%       | 100%     | 100%      | 100%  |
-| use-local-storage     | 95%        | 86%      | 100%      | 95%   |
-| use-session-storage   | 94%        | 79%      | 100%      | 94%   |
+| use-local-storage     | 95%        | 86%      | 93%       | 95%   |
+| use-session-storage   | 94%        | 82%      | 93%       | 94%   |
 | use-debounce-callback | 94%        | 83%      | 94%       | 94%   |
 | use-click-any-where   | 92%        | 88%      | 100%      | 92%   |
 | use-debounce          | 91%        | 90%      | 67%       | 93%   |
