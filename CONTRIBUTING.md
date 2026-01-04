@@ -20,7 +20,7 @@
 
 ```bash
 # 저장소 클론
-git clone https://github.com/geon0529/usefy.git
+git clone https://github.com/mirunamu00/usefy.git
 cd usefy
 
 # 의존성 설치
@@ -96,7 +96,7 @@ cd packages/use-my-hook
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/geon0529/usefy.git",
+    "url": "https://github.com/mirunamu00/usefy.git",
     "directory": "packages/use-my-hook"
   },
   "license": "MIT",

@@ -43,7 +43,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/geon0529/usefy.git",
+    "url": "https://github.com/mirunamu00/usefy.git",
     "directory": "packages/use-unmount"
   },
   "license": "MIT",

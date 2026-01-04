@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/geon0529/usefy/master/assets/logo.png" alt="usefy logo" width="180" />
+  <img src="https://raw.githubusercontent.com/mirunamu00/usefy/master/assets/logo.png" alt="usefy logo" width="180" />
 </p>
 
 <h1 align="center">usefy</h1>
@@ -18,7 +18,7 @@
   <a href="https://bundlephobia.com/package/@usefy/usefy" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/bundlephobia/minzip/@usefy/usefy?style=flat-square&color=007acc" alt="bundle size" />
   </a>
-  <a href="https://github.com/geon0529/usefy/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">
+  <a href="https://github.com/mirunamu00/usefy/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/npm/l/@usefy/usefy.svg?style=flat-square&color=007acc" alt="license" />
   </a>
 </p>
@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <a href="https://geon0529.github.io/usefy/" target="_blank" rel="noopener noreferrer">
+  <a href="https://mirunamu00.github.io/usefy/" target="_blank" rel="noopener noreferrer">
     <strong>📚 View Storybook Demo</strong>
   </a>
 </p>
@@ -541,7 +541,7 @@ Perfect for initializing services, loading configuration, setting up subscriptio
 
 All packages are comprehensively tested using Vitest to ensure reliability and stability.
 
-📊 <a href="https://geon0529.github.io/usefy/coverage/" target="_blank" rel="noopener noreferrer"><strong>View Detailed Coverage Report</strong></a> (GitHub Pages)
+📊 <a href="https://mirunamu00.github.io/usefy/coverage/" target="_blank" rel="noopener noreferrer"><strong>View Detailed Coverage Report</strong></a> (GitHub Pages)
 
 > 💡 To generate coverage report locally, run `pnpm test:coverage`. The report will be available at `coverage/index.html`.
 
@@ -580,15 +580,15 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 ## Related Links
 
 - 📦 <a href="https://www.npmjs.com/org/usefy" target="_blank" rel="noopener noreferrer">npm Organization</a>
-- 🐙 <a href="https://github.com/geon0529/usefy" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
-- 📝 <a href="https://github.com/geon0529/usefy/blob/master/packages/usefy/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
-- 🐛 <a href="https://github.com/geon0529/usefy/issues" target="_blank" rel="noopener noreferrer">Issue Tracker</a>
+- 🐙 <a href="https://github.com/mirunamu00/usefy" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+- 📝 <a href="https://github.com/mirunamu00/usefy/blob/master/packages/usefy/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+- 🐛 <a href="https://github.com/mirunamu00/usefy/issues" target="_blank" rel="noopener noreferrer">Issue Tracker</a>
 
 ---
 
 ## License
 
-MIT © <a href="https://github.com/geon0529" target="_blank" rel="noopener noreferrer">mirunamu</a>
+MIT © <a href="https://github.com/mirunamu00" target="_blank" rel="noopener noreferrer">mirunamu</a>
 
 ---
 
@@ -597,7 +597,7 @@ MIT © <a href="https://github.com/geon0529" target="_blank" rel="noopener noref
 </p>
 
 <p align="center">
-  <a href="https://github.com/geon0529/usefy" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/github/stars/geon0529/usefy?style=social" alt="GitHub stars" />
+  <a href="https://github.com/mirunamu00/usefy" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/github/stars/mirunamu00/usefy?style=social" alt="GitHub stars" />
   </a>
 </p>

@@ -4,7 +4,7 @@ import { create } from "@storybook/theming/create";
 const theme = create({
   base: "dark",
   brandTitle: "Usefy",
-  brandUrl: "https://github.com/geon0529/usefy",
+  brandUrl: "https://github.com/mirunamu00/usefy",
   brandTarget: "_blank",
 });
 

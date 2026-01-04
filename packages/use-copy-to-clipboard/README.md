@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/geon0529/usefy/master/assets/logo.png" alt="usefy logo" width="120" />
+  <img src="https://raw.githubusercontent.com/mirunamu00/usefy/master/assets/logo.png" alt="usefy logo" width="120" />
 </p>
 
 <h1 align="center">@usefy/use-copy-to-clipboard</h1>
@@ -18,7 +18,7 @@
   <a href="https://bundlephobia.com/package/@usefy/use-copy-to-clipboard">
     <img src="https://img.shields.io/bundlephobia/minzip/@usefy/use-copy-to-clipboard?style=flat-square&color=007acc" alt="bundle size" />
   </a>
-  <a href="https://github.com/geon0529/usefy/blob/master/LICENSE">
+  <a href="https://github.com/mirunamu00/usefy/blob/master/LICENSE">
     <img src="https://img.shields.io/npm/l/@usefy/use-copy-to-clipboard.svg?style=flat-square&color=007acc" alt="license" />
   </a>
 </p>
@@ -32,7 +32,7 @@
 </p>
 
 <p align="center">
-  <a href="https://geon0529.github.io/usefy/?path=/docs/hooks-usecopytoclipboard--docs" target="_blank" rel="noopener noreferrer">
+  <a href="https://mirunamu00.github.io/usefy/?path=/docs/hooks-usecopytoclipboard--docs" target="_blank" rel="noopener noreferrer">
     <strong>📚 View Storybook Demo</strong>
   </a>
 </p>
@@ -395,7 +395,7 @@ This package maintains comprehensive test coverage to ensure reliability and sta
 
 ### Test Coverage
 
-📊 <a href="https://geon0529.github.io/usefy/coverage/use-copy-to-clipboard/src/index.html" target="_blank" rel="noopener noreferrer"><strong>View Detailed Coverage Report</strong></a> (GitHub Pages)
+📊 <a href="https://mirunamu00.github.io/usefy/coverage/use-copy-to-clipboard/src/index.html" target="_blank" rel="noopener noreferrer"><strong>View Detailed Coverage Report</strong></a> (GitHub Pages)
 
 ### Test Categories
 
@@ -445,9 +445,9 @@ pnpm test --coverage
 
 ## License
 
-MIT © [mirunamu](https://github.com/geon0529)
+MIT © [mirunamu](https://github.com/mirunamu00)
 
-This package is part of the [usefy](https://github.com/geon0529/usefy) monorepo.
+This package is part of the [usefy](https://github.com/mirunamu00/usefy) monorepo.
 
 ---
 
