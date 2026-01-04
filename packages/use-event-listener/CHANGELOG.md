@@ -1,5 +1,11 @@
 # @usefy/use-event-listener
 
+## 0.0.26
+
+### Patch Changes
+
+- e7548c1: Update repository references from geon0529 to mirunamu00 in documentation and package files
+
 ## 0.0.25
 
 ## 0.0.24
