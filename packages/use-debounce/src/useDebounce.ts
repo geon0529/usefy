@@ -230,7 +230,10 @@ export function useDebounce<T>(
           () => timerExpiredRef.current(),
           waitRef.current
         );
-        invokeRef.current(time);
+        // Only invoke if at least one edge is enabled (matches lodash behavior)
+        if (leadingRef.current || trailingRef.current) {
+          invokeRef.current(time);
+        }
       }
     } else {
       if (timerIdRef.current === undefined) {

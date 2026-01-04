@@ -680,6 +680,79 @@ describe("useDebounce", () => {
     });
   });
 
+  describe("leading: false and trailing: false", () => {
+    it("should never update when both leading and trailing are false", () => {
+      const { result, rerender } = renderHook(
+        ({ value }) =>
+          useDebounce(value, 500, { leading: false, trailing: false }),
+        { initialProps: { value: "initial" } }
+      );
+
+      rerender({ value: "updated" });
+
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+
+      expect(result.current).toBe("initial");
+    });
+
+    it("should never update even with maxWait when both edges are false", () => {
+      const { result, rerender } = renderHook(
+        ({ value }) =>
+          useDebounce(value, 500, {
+            leading: false,
+            trailing: false,
+            maxWait: 1000,
+          }),
+        { initialProps: { value: "initial" } }
+      );
+
+      // Simulate continuous updates
+      for (let i = 1; i <= 10; i++) {
+        rerender({ value: `update-${i}` });
+        act(() => {
+          vi.advanceTimersByTime(200);
+        });
+      }
+
+      // Even after maxWait time has passed multiple times
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      expect(result.current).toBe("initial");
+    });
+
+    it("should never update with continuous rapid changes and maxWait", () => {
+      const { result, rerender } = renderHook(
+        ({ value }) =>
+          useDebounce(value, 300, {
+            leading: false,
+            trailing: false,
+            maxWait: 500,
+          }),
+        { initialProps: { value: 0 } }
+      );
+
+      // Simulate very rapid updates that would normally trigger maxWait
+      for (let i = 1; i <= 20; i++) {
+        rerender({ value: i });
+        act(() => {
+          vi.advanceTimersByTime(50);
+        });
+      }
+
+      // Wait for any potential trailing edge
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+
+      // Value should never have changed
+      expect(result.current).toBe(0);
+    });
+  });
+
   describe("edge cases", () => {
     it("should handle zero delay", () => {
       const { result, rerender } = renderHook(

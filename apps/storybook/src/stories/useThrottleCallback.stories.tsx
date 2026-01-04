@@ -451,7 +451,137 @@ function ControlMethodsDemo() {
 }
 
 /**
- * 7. API Rate Limiter Demo
+ * 7. Both Edges Demo (Default)
+ */
+function BothEdgesDemo() {
+  const [clickCount, setClickCount] = useState(0);
+  const [processedCount, setProcessedCount] = useState(0);
+  const [lastAction, setLastAction] = useState<string>("");
+
+  const throttledClick = useThrottleCallback(
+    () => {
+      setProcessedCount((prev) => prev + 1);
+      setLastAction(new Date().toLocaleTimeString());
+    },
+    1000,
+    { leading: true, trailing: true }
+  );
+
+  return (
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Both Edges (Default)</h2>
+      <p className={storyTheme.subtitle}>
+        Default behavior: fires <strong>immediately</strong> on first click
+        (leading edge), then <strong>once more</strong> after the interval if
+        there were additional clicks (trailing edge).
+      </p>
+
+      <button
+        onClick={() => {
+          setClickCount((prev) => prev + 1);
+          throttledClick();
+        }}
+        className={storyTheme.buttonFull + " mb-5"}
+      >
+        Click (Both Edges)
+      </button>
+
+      <div className={storyTheme.statBox + " mb-5"}>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Total Clicks:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{clickCount}</span>
+        </div>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Processed:</strong>{" "}
+          <span className={storyTheme.statValue}>{processedCount}</span>
+        </div>
+        {lastAction && (
+          <div className={storyTheme.statLabel}>
+            <strong className={storyTheme.statText}>Last Processed:</strong>{" "}
+            <span className={storyTheme.statTextSecondary}>{lastAction}</span>
+          </div>
+        )}
+      </div>
+
+      <div className={storyTheme.infoBox + " mt-4"}>
+        <p className={storyTheme.infoText}>
+          💡 <strong>Both edges</strong>: Best balance for most use cases.
+          Provides immediate feedback AND ensures the final state is captured.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 8. Both Disabled Demo
+ */
+function BothDisabledDemo() {
+  const [clickCount, setClickCount] = useState(0);
+  const [processedCount, setProcessedCount] = useState(0);
+
+  const throttledClick = useThrottleCallback(
+    () => {
+      setProcessedCount((prev) => prev + 1);
+    },
+    1000,
+    { leading: false, trailing: false }
+  );
+
+  return (
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Both Edges Disabled</h2>
+      <p className={storyTheme.subtitle}>
+        Both leading and trailing disabled. The callback{" "}
+        <strong>never executes</strong>. This is generally not useful but
+        demonstrates the behavior.
+      </p>
+
+      <button
+        onClick={() => {
+          setClickCount((prev) => prev + 1);
+          throttledClick();
+        }}
+        className="w-full py-6 px-8 text-xl bg-gradient-to-br from-gray-400 to-gray-500 text-white border-none rounded-xl cursor-pointer mb-5 transition-all duration-200 shadow-[0_4px_12px_rgba(0,0,0,0.2)] font-semibold"
+      >
+        Click (Nothing Happens)
+      </button>
+
+      <div className="p-5 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Total Clicks:</strong>{" "}
+          <span className={storyTheme.statTextSecondary}>{clickCount}</span>
+        </div>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Processed:</strong>{" "}
+          <span className="text-gray-500 font-bold text-[1.1rem]">
+            {processedCount}
+          </span>
+        </div>
+        <div className={storyTheme.statLabel}>
+          <strong className={storyTheme.statText}>Status:</strong>{" "}
+          <span className="text-red-600 font-bold">
+            Callback never executes! 🚫
+          </span>
+        </div>
+      </div>
+
+      <div className={storyTheme.infoBox + " mt-4 bg-red-50 border-red-200"}>
+        <p className={storyTheme.infoText + " text-red-900"}>
+          ⚠️ <strong>Both edges disabled</strong>: This configuration completely
+          disables the callback. Matches Lodash behavior where{" "}
+          <code className="bg-red-100 px-1 py-0.5 rounded">
+            {"{leading: false, trailing: false}"}
+          </code>{" "}
+          means "nothing happens".
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 9. API Rate Limiter Demo
  */
 function ApiRateLimiterDemo() {
   const [query, setQuery] = useState("");
@@ -1179,6 +1309,190 @@ function ControlMethodsExample() {
     expect(
       canvas.queryByText(/Processed: "test123abc"/)
     ).not.toBeInTheDocument();
+  },
+};
+
+export const BothEdges: Story = {
+  render: () => <BothEdgesDemo />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Default behavior with both leading and trailing edges enabled. Fires immediately on first call (leading), then once more after the interval if additional calls occurred (trailing). Best balance for most use cases.",
+      },
+      source: {
+        code: `import { useThrottleCallback } from "@usefy/use-throttle-callback";
+import { useState } from "react";
+
+function BothEdgesExample() {
+  const [clickCount, setClickCount] = useState(0);
+  const [processedCount, setProcessedCount] = useState(0);
+
+  const throttledClick = useThrottleCallback(
+    () => {
+      setProcessedCount((prev) => prev + 1);
+    },
+    1000,
+    { leading: true, trailing: true }
+  );
+
+  return (
+    <div>
+      <h2>Both Edges (Default)</h2>
+      <p>Default behavior: fires immediately on first click (leading edge), then once more after the interval if there were additional clicks (trailing edge).</p>
+      <button
+        onClick={() => {
+          setClickCount((prev) => prev + 1);
+          throttledClick();
+        }}
+      >
+        Click (Both Edges)
+      </button>
+      <div>
+        <p>Total Clicks: {clickCount}</p>
+        <p>Processed: {processedCount}</p>
+      </div>
+      <p>💡 Both edges: Best balance for most use cases. Provides immediate feedback AND ensures the final state is captured.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", {
+      name: /Click \(Both Edges\)/i,
+    });
+
+    // Helper to get processed count
+    const getProcessedCount = () => {
+      const text = canvas.getByText("Processed:", { exact: false });
+      const parent = text.closest("div");
+      const match = parent?.textContent?.match(/Processed:\s*(\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    };
+
+    // Initially no processing
+    expect(getProcessedCount()).toBe(0);
+
+    // First click - leading edge executes immediately
+    await userEvent.click(button);
+
+    await waitFor(
+      () => {
+        expect(getProcessedCount()).toBe(1);
+      },
+      { timeout: 100 }
+    );
+
+    // Click rapidly within interval
+    await userEvent.click(button);
+    await userEvent.click(button);
+    await userEvent.click(button);
+
+    // Still 1 (throttled)
+    expect(getProcessedCount()).toBe(1);
+
+    // Wait for trailing edge (1000ms + buffer)
+    await waitFor(
+      () => {
+        expect(getProcessedCount()).toBe(2); // trailing edge fires
+      },
+      { timeout: 1200 }
+    );
+  },
+};
+
+export const BothDisabled: Story = {
+  render: () => <BothDisabledDemo />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Both edges disabled - demonstrates what NOT to do. The callback never executes. This configuration completely disables throttling and matches Lodash behavior.",
+      },
+      source: {
+        code: `import { useThrottleCallback } from "@usefy/use-throttle-callback";
+import { useState } from "react";
+
+function BothDisabledExample() {
+  const [clickCount, setClickCount] = useState(0);
+  const [processedCount, setProcessedCount] = useState(0);
+
+  const throttledClick = useThrottleCallback(
+    () => {
+      setProcessedCount((prev) => prev + 1);
+    },
+    1000,
+    { leading: false, trailing: false }
+  );
+
+  return (
+    <div>
+      <h2>Both Edges Disabled</h2>
+      <p>Both leading and trailing disabled. The callback never executes.</p>
+      <button
+        onClick={() => {
+          setClickCount((prev) => prev + 1);
+          throttledClick();
+        }}
+      >
+        Click (Nothing Happens)
+      </button>
+      <div>
+        <p>Total Clicks: {clickCount}</p>
+        <p>Processed: {processedCount}</p>
+        <p>Status: Callback never executes! 🚫</p>
+      </div>
+      <p>⚠️ Both edges disabled: This configuration completely disables the callback. Matches Lodash behavior where {leading: false, trailing: false} means "nothing happens".</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", {
+      name: /Click \(Nothing Happens\)/i,
+    });
+
+    // Helper to get processed count
+    const getProcessedCount = () => {
+      const text = canvas.getByText("Processed:", { exact: false });
+      const parent = text.closest("div");
+      const match = parent?.textContent?.match(/Processed:\s*(\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    };
+
+    // Initially no processing
+    expect(getProcessedCount()).toBe(0);
+
+    // Click multiple times
+    await userEvent.click(button);
+    await userEvent.click(button);
+    await userEvent.click(button);
+
+    // Wait past throttle interval
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+
+    // Still 0 - callback never executes
+    expect(getProcessedCount()).toBe(0);
+
+    // Click more
+    await userEvent.click(button);
+    await userEvent.click(button);
+
+    // Wait again
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+
+    // Still 0
+    expect(getProcessedCount()).toBe(0);
   },
 };
 

@@ -1019,6 +1019,35 @@ describe("useDebounceCallback", () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
+    it("should not invoke callback when both leading and trailing are false even with maxWait", () => {
+      const callback = vi.fn();
+      const { result } = renderHook(() =>
+        useDebounceCallback(callback, 500, {
+          leading: false,
+          trailing: false,
+          maxWait: 1000,
+        })
+      );
+
+      // Simulate continuous calls that would normally trigger maxWait
+      for (let i = 0; i < 10; i++) {
+        act(() => {
+          result.current(`call-${i}`);
+        });
+        act(() => {
+          vi.advanceTimersByTime(200);
+        });
+      }
+
+      // Wait for any potential trailing edge
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Callback should never have been called (matches lodash behavior)
+      expect(callback).not.toHaveBeenCalled();
+    });
+
     it("should handle callback that returns undefined", () => {
       const callback = vi.fn(() => undefined);
       const { result } = renderHook(() =>
