@@ -1,5 +1,13 @@
 # @usefy/use-throttle
 
+## 0.0.26
+
+### Patch Changes
+
+- e7548c1: Update repository references from geon0529 to mirunamu00 in documentation and package files
+- Updated dependencies [e7548c1]
+  - @usefy/use-debounce@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes
