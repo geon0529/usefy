@@ -340,6 +340,244 @@ function SessionBehaviorDemo() {
   );
 }
 
+/**
+ * Demo component for tab isolation info
+ * Shows that sessionStorage is NOT shared across tabs
+ */
+function TabIsolationDemo() {
+  const [message, setMessage] = useSessionStorage("tab-message", "");
+  const [tabId] = useState(() => Math.random().toString(36).substring(2, 8));
+
+  return (
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Tab Isolation Demo</h2>
+      <p className={storyTheme.subtitle}>
+        Unlike localStorage, sessionStorage is NOT shared between tabs
+      </p>
+
+      {/* Tab ID Display */}
+      <div className={storyTheme.cardInfo + " mb-6"}>
+        <div className="text-center">
+          <div className={storyTheme.statLabel}>This Tab's ID</div>
+          <div
+            className="text-2xl font-mono font-bold text-indigo-600 mt-2"
+            data-testid="tab-id"
+          >
+            {tabId}
+          </div>
+        </div>
+      </div>
+
+      {/* Message Display */}
+      <div className={storyTheme.card + " mb-6"}>
+        <label className={storyTheme.label}>Session Message:</label>
+        <div
+          className="text-lg font-mono bg-white p-4 rounded-lg border border-gray-200 min-h-[60px]"
+          data-testid="tab-message"
+        >
+          {message || "(empty)"}
+        </div>
+      </div>
+
+      {/* Quick Messages */}
+      <div className="mb-6">
+        <label className={storyTheme.label}>Set Message:</label>
+        <div className="flex gap-2 flex-wrap">
+          {[`Hello from ${tabId}`, "Tab-specific data", "Session only", ""].map(
+            (msg, i) => (
+              <button
+                key={i}
+                onClick={() => setMessage(msg)}
+                className={storyTheme.buttonNeutral}
+                data-testid={`tab-msg-${i}`}
+              >
+                {msg || "Clear"}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Warning Box */}
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+        <p className="text-amber-800 text-sm">
+          <strong>⚠️ Important:</strong> Each browser tab has its own separate
+          sessionStorage. Changes made here will NOT appear in other tabs!
+        </p>
+      </div>
+
+      {/* Instructions */}
+      <div className={storyTheme.infoBox}>
+        <p className={storyTheme.infoText}>
+          <strong>How to verify:</strong>
+          <br />
+          1. Open this page in another browser tab
+          <br />
+          2. Notice each tab has a different Tab ID
+          <br />
+          3. Set a message in one tab
+          <br />
+          4. The other tab will NOT see the change
+          <br />
+          <br />
+          <strong>Use case:</strong> Perfect for form drafts, wizard steps, or
+          any data that should be unique to each tab.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Demo component for same-tab component synchronization
+ * Shows how multiple components using the same key stay in sync within the same tab
+ */
+function ComponentSyncDemo() {
+  return (
+    <div className={storyTheme.container}>
+      <h2 className={storyTheme.title}>Component Sync Demo</h2>
+      <p className={storyTheme.subtitle}>
+        Multiple components using the same sessionStorage key automatically stay
+        in sync within the same tab
+      </p>
+
+      {/* Two synchronized components side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <SyncedSessionComponent name="Component A" color="teal" />
+        <SyncedSessionComponent name="Component B" color="orange" />
+      </div>
+
+      {/* Third component */}
+      <div className="mb-6">
+        <SyncedSessionComponent name="Component C" color="pink" />
+      </div>
+
+      {/* Info Box */}
+      <div className={storyTheme.infoBox}>
+        <p className={storyTheme.infoText}>
+          <strong>How it works:</strong>
+          <br />
+          All three components use{" "}
+          <code>useSessionStorage("session-shared-count", 0)</code>
+          <br />
+          When any component updates the value, all others update instantly!
+          <br />
+          <br />
+          <strong>Note:</strong>
+          <br />
+          • Sync works within the same tab only
+          <br />
+          • Other tabs have their own separate sessionStorage
+          <br />• Data is cleared when the tab is closed
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Individual synced component for the session storage demo
+ */
+function SyncedSessionComponent({
+  name,
+  color,
+}: {
+  name: string;
+  color: string;
+}) {
+  const [count, setCount, resetCount] = useSessionStorage(
+    "session-shared-count",
+    0
+  );
+
+  const colorClasses = {
+    teal: "bg-teal-500 hover:bg-teal-600 border-teal-600",
+    orange: "bg-orange-500 hover:bg-orange-600 border-orange-600",
+    pink: "bg-pink-500 hover:bg-pink-600 border-pink-600",
+  };
+
+  const borderColors = {
+    teal: "border-teal-300",
+    orange: "border-orange-300",
+    pink: "border-pink-300",
+  };
+
+  const bgColors = {
+    teal: "bg-teal-50",
+    orange: "bg-orange-50",
+    pink: "bg-pink-50",
+  };
+
+  return (
+    <div
+      className={`p-4 rounded-xl border-2 ${
+        borderColors[color as keyof typeof borderColors]
+      } ${bgColors[color as keyof typeof bgColors]}`}
+      data-testid={`session-sync-component-${name
+        .toLowerCase()
+        .replace(" ", "-")}`}
+    >
+      <h3 className="font-semibold text-gray-800 mb-3 text-center">{name}</h3>
+
+      {/* Count Display */}
+      <div
+        className="text-4xl font-bold text-center mb-4 py-3 bg-white rounded-lg shadow-sm"
+        data-testid={`session-sync-value-${name
+          .toLowerCase()
+          .replace(" ", "-")}`}
+      >
+        {count}
+      </div>
+
+      {/* Controls */}
+      <div className="flex gap-2 justify-center">
+        <button
+          onClick={() => setCount((c) => c - 1)}
+          className={`px-3 py-2 rounded-lg text-white font-medium transition-colors ${
+            colorClasses[color as keyof typeof colorClasses]
+          }`}
+          data-testid={`session-sync-decrement-${name
+            .toLowerCase()
+            .replace(" ", "-")}`}
+        >
+          -1
+        </button>
+        <button
+          onClick={() => setCount((c) => c + 1)}
+          className={`px-3 py-2 rounded-lg text-white font-medium transition-colors ${
+            colorClasses[color as keyof typeof colorClasses]
+          }`}
+          data-testid={`session-sync-increment-${name
+            .toLowerCase()
+            .replace(" ", "-")}`}
+        >
+          +1
+        </button>
+        <button
+          onClick={() => setCount((c) => c + 10)}
+          className={`px-3 py-2 rounded-lg text-white font-medium transition-colors ${
+            colorClasses[color as keyof typeof colorClasses]
+          }`}
+          data-testid={`session-sync-add10-${name
+            .toLowerCase()
+            .replace(" ", "-")}`}
+        >
+          +10
+        </button>
+        <button
+          onClick={resetCount}
+          className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition-colors"
+          data-testid={`session-sync-reset-${name
+            .toLowerCase()
+            .replace(" ", "-")}`}
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // Meta configuration
 const meta: Meta<typeof SessionStorageDemo> = {
   title: "Hooks/useSessionStorage",
@@ -477,6 +715,96 @@ export const SessionBehavior: Story = {
     await waitFor(() => {
       const viewCount = canvas.getByTestId("view-count");
       expect(parseInt(viewCount.textContent || "0")).toBeGreaterThan(0);
+    });
+  },
+};
+
+/**
+ * Tab isolation demo - shows that sessionStorage is NOT shared across tabs
+ */
+export const TabIsolation: Story = {
+  render: () => <TabIsolationDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Check tab ID is displayed
+    await expect(canvas.getByTestId("tab-id")).toBeInTheDocument();
+
+    // Click first message button
+    await userEvent.click(canvas.getByTestId("tab-msg-0"));
+    await waitFor(() => {
+      const message = canvas.getByTestId("tab-message");
+      expect(message.textContent).toContain("Hello from");
+    });
+
+    // Click clear button
+    await userEvent.click(canvas.getByTestId("tab-msg-3"));
+    await waitFor(() => {
+      expect(canvas.getByTestId("tab-message")).toHaveTextContent("(empty)");
+    });
+  },
+};
+
+/**
+ * Same-tab component synchronization demo
+ * Demonstrates how multiple components using the same key stay in sync
+ */
+export const ComponentSync: Story = {
+  render: () => <ComponentSyncDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Get all value displays
+    const valueA = canvas.getByTestId("session-sync-value-component-a");
+    const valueB = canvas.getByTestId("session-sync-value-component-b");
+    const valueC = canvas.getByTestId("session-sync-value-component-c");
+
+    // First reset all to 0
+    await userEvent.click(canvas.getByTestId("session-sync-reset-component-a"));
+    await waitFor(() => {
+      expect(valueA).toHaveTextContent("0");
+      expect(valueB).toHaveTextContent("0");
+      expect(valueC).toHaveTextContent("0");
+    });
+
+    // Click increment on Component A
+    await userEvent.click(
+      canvas.getByTestId("session-sync-increment-component-a")
+    );
+    await waitFor(() => {
+      // All components should show 1
+      expect(valueA).toHaveTextContent("1");
+      expect(valueB).toHaveTextContent("1");
+      expect(valueC).toHaveTextContent("1");
+    });
+
+    // Click +10 on Component B
+    await userEvent.click(canvas.getByTestId("session-sync-add10-component-b"));
+    await waitFor(() => {
+      // All components should show 11
+      expect(valueA).toHaveTextContent("11");
+      expect(valueB).toHaveTextContent("11");
+      expect(valueC).toHaveTextContent("11");
+    });
+
+    // Click decrement on Component C
+    await userEvent.click(
+      canvas.getByTestId("session-sync-decrement-component-c")
+    );
+    await waitFor(() => {
+      // All components should show 10
+      expect(valueA).toHaveTextContent("10");
+      expect(valueB).toHaveTextContent("10");
+      expect(valueC).toHaveTextContent("10");
+    });
+
+    // Reset from Component B
+    await userEvent.click(canvas.getByTestId("session-sync-reset-component-b"));
+    await waitFor(() => {
+      // All components should show 0
+      expect(valueA).toHaveTextContent("0");
+      expect(valueB).toHaveTextContent("0");
+      expect(valueC).toHaveTextContent("0");
     });
   },
 };
