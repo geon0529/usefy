@@ -24,7 +24,6 @@ function TimerDemo({
     autoStart,
     loop,
     format,
-    interval: 1,
   });
 
   // Calculate gradient based on progress
@@ -95,7 +94,6 @@ function TimerDemo({
           />
         </div>
       </div>
-
 
       {/* Control Buttons */}
       <div className="flex flex-col gap-3">
@@ -315,6 +313,43 @@ export const Default: Story = {
     loop: false,
     format: "MM:SS",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer } from "@usefy/use-timer";
+
+function TimerExample() {
+  const timer = useTimer(60000, {
+    format: "MM:SS",
+  });
+
+  return (
+    <div>
+      <h2>1 Minute Timer</h2>
+      <div>
+        <div>{timer.time}</div>
+        <div>Status: {timer.status}</div>
+        <div>Progress: {Math.round(timer.progress)}%</div>
+      </div>
+      <div>
+        {!timer.isRunning ? (
+          <button onClick={timer.start} disabled={timer.isFinished}>
+            ▶ Start
+          </button>
+        ) : (
+          <button onClick={timer.pause}>⏸ Pause</button>
+        )}
+        <button onClick={timer.reset}>↺ Reset</button>
+        <button onClick={timer.restart}>🔄 Restart</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -363,6 +398,34 @@ export const FiveMinuteTimer: Story = {
     loop: false,
     format: "MM:SS",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer } from "@usefy/use-timer";
+
+function FiveMinuteTimerExample() {
+  const timer = useTimer(300000, { // 5 minutes = 300000ms
+    format: "MM:SS",
+  });
+
+  return (
+    <div>
+      <h2>5 Minute Timer</h2>
+      <div>{timer.time}</div>
+      <div>Status: {timer.status}</div>
+      <div>
+        <button onClick={timer.start} disabled={timer.isFinished}>Start</button>
+        <button onClick={timer.pause}>Pause</button>
+        <button onClick={timer.reset}>Reset</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
 };
 
 /**
@@ -374,6 +437,34 @@ export const LongTimer: Story = {
     title: "Long Timer",
     format: "HH:MM:SS",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer } from "@usefy/use-timer";
+
+function LongTimerExample() {
+  const timer = useTimer(3661000, { // 1 hour 1 minute 1 second
+    format: "HH:MM:SS",
+  });
+
+  return (
+    <div>
+      <h2>Long Timer</h2>
+      <div>{timer.time}</div>
+      <div>Status: {timer.status}</div>
+      <div>
+        <button onClick={timer.start} disabled={timer.isFinished}>Start</button>
+        <button onClick={timer.pause}>Pause</button>
+        <button onClick={timer.reset}>Reset</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
 };
 
 /**
@@ -384,6 +475,34 @@ export const PrecisionTimer: Story = {
     initialTimeMs: 10000,
     title: "Precision Timer",
     format: "mm:ss.SSS",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer } from "@usefy/use-timer";
+
+function PrecisionTimerExample() {
+  const timer = useTimer(10000, { // 10 seconds
+    format: "mm:ss.SSS", // Shows milliseconds
+  });
+
+  return (
+    <div>
+      <h2>Precision Timer</h2>
+      <div>{timer.time}</div>
+      <div>Status: {timer.status}</div>
+      <div>
+        <button onClick={timer.start} disabled={timer.isFinished}>Start</button>
+        <button onClick={timer.pause}>Pause</button>
+        <button onClick={timer.reset}>Reset</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
   },
 };
 
@@ -397,6 +516,34 @@ export const AutoStart: Story = {
     autoStart: true,
     format: "MM:SS",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer } from "@usefy/use-timer";
+
+function AutoStartTimerExample() {
+  const timer = useTimer(30000, { // 30 seconds
+    autoStart: true, // Automatically starts when component mounts
+    format: "MM:SS",
+  });
+
+  return (
+    <div>
+      <h2>Auto-Start Timer</h2>
+      <div>{timer.time}</div>
+      <div>Status: {timer.status}</div>
+      <div>
+        <button onClick={timer.pause}>Pause</button>
+        <button onClick={timer.reset}>Reset</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
 };
 
 /**
@@ -409,6 +556,36 @@ export const LoopingTimer: Story = {
     loop: true,
     format: "SS",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer } from "@usefy/use-timer";
+
+function LoopingTimerExample() {
+  const timer = useTimer(5000, { // 5 seconds
+    loop: true, // Automatically restarts when finished
+    format: "SS", // Shows only seconds
+  });
+
+  return (
+    <div>
+      <h2>Looping Timer</h2>
+      <div>{timer.time}</div>
+      <div>Status: {timer.status}</div>
+      <div>
+        <button onClick={timer.start} disabled={timer.isFinished}>Start</button>
+        <button onClick={timer.pause}>Pause</button>
+        <button onClick={timer.reset}>Reset</button>
+      </div>
+      <p>💡 This timer automatically restarts when it reaches 0!</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
 };
 
 /**
@@ -419,6 +596,43 @@ export const TimeManipulation: Story = {
     initialTimeMs: 60000,
     title: "Time Manipulation",
     format: "MM:SS",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useTimer, ms } from "@usefy/use-timer";
+
+function TimeManipulationExample() {
+  const timer = useTimer(60000, { // 1 minute
+    format: "MM:SS",
+  });
+
+  return (
+    <div>
+      <h2>Time Manipulation</h2>
+      <div>{timer.time}</div>
+      <div>Status: {timer.status}</div>
+      <div>
+        <button onClick={timer.start} disabled={timer.isFinished}>Start</button>
+        <button onClick={timer.pause}>Pause</button>
+        <button onClick={timer.reset}>Reset</button>
+      </div>
+      <div>
+        <button onClick={() => timer.addTime(ms.seconds(10))}>
+          +10s
+        </button>
+        <button onClick={() => timer.subtractTime(ms.seconds(10))}>
+          -10s
+        </button>
+      </div>
+      <p>💡 Use addTime() and subtractTime() to adjust the timer dynamically!</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -455,6 +669,59 @@ export const KitchenTimer: StoryObj<typeof KitchenTimerDemo> = {
     docs: {
       description: {
         story: "A kitchen timer with preset buttons for common cooking times.",
+      },
+      source: {
+        code: `import { useTimer, ms } from "@usefy/use-timer";
+import { useState } from "react";
+
+function KitchenTimerExample() {
+  const [presetMinutes, setPresetMinutes] = useState(5);
+  const timer = useTimer(ms.minutes(presetMinutes), {
+    format: "MM:SS",
+    interval: 100,
+    onComplete: () => {
+      // Would play a sound in real app
+      console.log("Timer finished!");
+    },
+  });
+
+  const presets = [1, 3, 5, 10, 15, 30];
+
+  return (
+    <div>
+      <h2>⏲️ Kitchen Timer</h2>
+      <p>Set your cooking timer</p>
+      <div>
+        {presets.map((min) => (
+          <button
+            key={min}
+            onClick={() => {
+              setPresetMinutes(min);
+              timer.setTime(ms.minutes(min));
+            }}
+            style={{
+              background: presetMinutes === min ? "#6366f1" : "#f3f4f6",
+              color: presetMinutes === min ? "white" : "#4b5563",
+            }}
+          >
+            {min}m
+          </button>
+        ))}
+      </div>
+      <div>
+        {timer.isFinished ? "Done!" : timer.time}
+      </div>
+      <div>
+        <button onClick={timer.toggle} disabled={timer.isFinished}>
+          {timer.isRunning ? "⏸ Pause" : "▶ Start"}
+        </button>
+        <button onClick={timer.reset}>↺ Reset</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },

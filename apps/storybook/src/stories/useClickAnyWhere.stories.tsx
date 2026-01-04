@@ -25,10 +25,7 @@ function ClickCounterDemo({ enabled = true }: { enabled?: boolean }) {
 
       <div className={storyTheme.gradientBox + " text-center mb-6"}>
         <p className="text-white/80 text-sm mb-2">Total Clicks</p>
-        <p
-          className="text-6xl font-bold text-white"
-          data-testid="click-count"
-        >
+        <p className="text-6xl font-bold text-white" data-testid="click-count">
           {clickCount}
         </p>
       </div>
@@ -153,8 +150,13 @@ function ConditionalDemo() {
 
       <div className={storyTheme.statBox}>
         <p className={storyTheme.statLabel}>
-          <span className={storyTheme.statTextSecondary}>Clicks Detected: </span>
-          <span className={storyTheme.statValue} data-testid="conditional-count">
+          <span className={storyTheme.statTextSecondary}>
+            Clicks Detected:{" "}
+          </span>
+          <span
+            className={storyTheme.statValue}
+            data-testid="conditional-count"
+          >
             {clickCount}
           </span>
         </p>
@@ -215,6 +217,32 @@ export const Default: Story = {
   args: {
     enabled: true,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useClickAnyWhere } from "@usefy/use-click-any-where";
+import { useState } from "react";
+
+function ClickCounter() {
+  const [clickCount, setClickCount] = useState(0);
+
+  useClickAnyWhere(() => {
+    setClickCount((prev) => prev + 1);
+  });
+
+  return (
+    <div>
+      <h2>Click Counter</h2>
+      <p>Total Clicks: {clickCount}</p>
+      <p>Click anywhere on the page to increment!</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -241,6 +269,35 @@ export const Disabled: Story = {
   args: {
     enabled: false,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useClickAnyWhere } from "@usefy/use-click-any-where";
+import { useState } from "react";
+
+function ClickCounter() {
+  const [clickCount, setClickCount] = useState(0);
+
+  useClickAnyWhere(
+    () => {
+      setClickCount((prev) => prev + 1);
+    },
+    { enabled: false } // Disabled - clicks won't be detected
+  );
+
+  return (
+    <div>
+      <h2>Click Counter (Disabled)</h2>
+      <p>Total Clicks: {clickCount}</p>
+      <p>Click listener is disabled</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -262,6 +319,35 @@ export const Disabled: Story = {
  */
 export const ClickPosition: StoryObj<typeof ClickPositionDemo> = {
   render: () => <ClickPositionDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useClickAnyWhere } from "@usefy/use-click-any-where";
+import { useState } from "react";
+
+function ClickPositionTracker() {
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+
+  useClickAnyWhere((event) => {
+    setPosition({ x: event.clientX, y: event.clientY });
+  });
+
+  return (
+    <div>
+      <h2>Click Position Tracker</h2>
+      {position ? (
+        <p>Last click: ({position.x}, {position.y})</p>
+      ) : (
+        <p>Click anywhere to see position</p>
+      )}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -283,6 +369,44 @@ export const ClickPosition: StoryObj<typeof ClickPositionDemo> = {
  */
 export const ConditionalActivation: StoryObj<typeof ConditionalDemo> = {
   render: () => <ConditionalDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useClickAnyWhere } from "@usefy/use-click-any-where";
+import { useState } from "react";
+
+function ConditionalClickCounter() {
+  const [isActive, setIsActive] = useState(true);
+  const [clickCount, setClickCount] = useState(0);
+
+  useClickAnyWhere(
+    () => {
+      setClickCount((prev) => prev + 1);
+    },
+    { enabled: isActive }
+  );
+
+  return (
+    <div>
+      <h2>Conditional Activation</h2>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsActive((prev) => !prev);
+        }}
+      >
+        {isActive ? "Disable" : "Enable"}
+      </button>
+      <p>Clicks: {clickCount}</p>
+      <p>Status: {isActive ? "Active" : "Inactive"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -305,6 +429,8 @@ export const ConditionalActivation: StoryObj<typeof ConditionalDemo> = {
 
     // Click should not increment when disabled
     await userEvent.click(canvasElement);
-    await expect(canvas.getByTestId("conditional-count")).toHaveTextContent("1");
+    await expect(canvas.getByTestId("conditional-count")).toHaveTextContent(
+      "1"
+    );
   },
 };

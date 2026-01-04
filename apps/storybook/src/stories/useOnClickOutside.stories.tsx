@@ -15,10 +15,14 @@ function ModalDemo({ enabled = true }: { enabled?: boolean }) {
   const [clickCount, setClickCount] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  useOnClickOutside(modalRef, () => {
-    setIsOpen(false);
-    setClickCount((prev) => prev + 1);
-  }, { enabled: isOpen && enabled });
+  useOnClickOutside(
+    modalRef,
+    () => {
+      setIsOpen(false);
+      setClickCount((prev) => prev + 1);
+    },
+    { enabled: isOpen && enabled }
+  );
 
   return (
     <div className={storyTheme.containerCentered}>
@@ -398,10 +402,10 @@ function ShouldExcludeDemo() {
 
       <div className="flex gap-4 justify-center mb-6">
         <button
-          className={
-            storyTheme.buttonNeutral + " ignore-outside-click"
+          className={storyTheme.buttonNeutral + " ignore-outside-click"}
+          onClick={() =>
+            setLastClick("Clicked ignore button (menu stays open)")
           }
-          onClick={() => setLastClick("Clicked ignore button (menu stays open)")}
           data-testid="ignore-btn"
         >
           Ignored Button
@@ -473,11 +477,51 @@ export const Default: Story = {
   args: {
     enabled: true,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useOnClickOutside } from "@usefy/use-on-click-outside";
+import { useState, useRef } from "react";
+
+function ModalExample() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(modalRef, () => {
+    setIsOpen(false);
+    setClickCount((prev) => prev + 1);
+  }, { enabled: isOpen });
+
+  return (
+    <div>
+      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+      {isOpen && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div ref={modalRef} style={{ background: "white", padding: "2rem", borderRadius: "0.5rem" }}>
+            <h3>Modal Content</h3>
+            <p>Click anywhere outside this modal to close it.</p>
+            <button onClick={() => setIsOpen(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      <p>Outside clicks: {clickCount}</p>
+      <p>Modal: {isOpen ? "Open" : "Closed"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     // Initial state
-    await expect(canvas.getByTestId("modal-status")).toHaveTextContent("Closed");
+    await expect(canvas.getByTestId("modal-status")).toHaveTextContent(
+      "Closed"
+    );
 
     // Open modal
     await userEvent.click(canvas.getByTestId("open-modal-btn"));
@@ -492,6 +536,73 @@ export const Default: Story = {
  */
 export const Dropdown: StoryObj<typeof DropdownDemo> = {
   render: () => <DropdownDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useOnClickOutside } from "@usefy/use-on-click-outside";
+import { useState, useRef } from "react";
+
+function DropdownExample() {
+  const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside([buttonRef, menuRef], () => setIsOpen(false), {
+    enabled: isOpen,
+  });
+
+  const menuItems = ["Profile", "Settings", "Help", "Logout"];
+
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <button ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? "Close Menu" : "Open Menu"} ▼
+      </button>
+      {isOpen && (
+        <div
+          ref={menuRef}
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            marginTop: "0.5rem",
+            width: "12rem",
+            background: "white",
+            borderRadius: "0.5rem",
+            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+            border: "1px solid #e5e7eb",
+            zIndex: 10,
+          }}
+        >
+          {menuItems.map((item) => (
+            <button
+              key={item}
+              onClick={() => {
+                alert(\`Clicked: \${item}\`);
+                setIsOpen(false);
+              }}
+              style={{
+                width: "100%",
+                padding: "0.75rem 1rem",
+                textAlign: "left",
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+              }}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -514,6 +625,86 @@ export const Dropdown: StoryObj<typeof DropdownDemo> = {
  */
 export const WithExclusion: StoryObj<typeof ExcludeRefsDemo> = {
   render: () => <ExcludeRefsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useOnClickOutside } from "@usefy/use-on-click-outside";
+import { useState, useRef } from "react";
+
+function ExcludeRefsExample() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<string[]>([]);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(modalRef, () => setIsOpen(false), {
+    enabled: isOpen,
+    excludeRefs: [notificationRef],
+  });
+
+  const addNotification = () => {
+    const id = Date.now().toString();
+    setNotifications((prev) => [...prev, id]);
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((n) => n !== id));
+    }, 3000);
+  };
+
+  return (
+    <div>
+      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+      
+      {/* Notification area - excluded from outside click */}
+      <div
+        ref={notificationRef}
+        style={{
+          position: "fixed",
+          top: "1rem",
+          right: "1rem",
+          zIndex: 50,
+        }}
+      >
+        {notifications.map((id) => (
+          <div
+            key={id}
+            style={{
+              background: "#4f46e5",
+              color: "white",
+              padding: "0.75rem 1rem",
+              borderRadius: "0.5rem",
+              marginBottom: "0.5rem",
+            }}
+          >
+            Notification #{id.slice(-4)}
+          </div>
+        ))}
+      </div>
+
+      {isOpen && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 40 }}>
+          <div ref={modalRef} style={{ background: "white", padding: "2rem", borderRadius: "0.5rem", maxWidth: "28rem", width: "100%" }}>
+            <h3>Modal with Excluded Area</h3>
+            <p>
+              Click the button below to add notifications.
+              <br />
+              Clicking on notifications won't close this modal!
+            </p>
+            <div>
+              <button onClick={addNotification}>Add Notification</button>
+              <button onClick={() => setIsOpen(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <p>Modal: {isOpen ? "Open" : "Closed"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -530,6 +721,81 @@ export const WithExclusion: StoryObj<typeof ExcludeRefsDemo> = {
  */
 export const Conditional: StoryObj<typeof ConditionalDemo> = {
   render: () => <ConditionalDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useOnClickOutside } from "@usefy/use-on-click-outside";
+import { useState, useRef } from "react";
+
+function ConditionalExample() {
+  const [isListening, setIsListening] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [outsideClicks, setOutsideClicks] = useState(0);
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(
+    boxRef,
+    () => {
+      setOutsideClicks((prev) => prev + 1);
+      if (isOpen) setIsOpen(false);
+    },
+    { enabled: isListening }
+  );
+
+  return (
+    <div>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsListening((prev) => !prev);
+        }}
+        style={{
+          width: "100%",
+          padding: "1rem",
+          background: isListening ? "#10b981" : "#ef4444",
+          color: "white",
+          border: "none",
+          borderRadius: "0.5rem",
+          cursor: "pointer",
+          marginBottom: "1.5rem",
+        }}
+      >
+        Listener: {isListening ? "Active" : "Inactive"}
+      </button>
+
+      <div
+        ref={boxRef}
+        onClick={() => setIsOpen(true)}
+        style={{
+          padding: "2rem",
+          borderRadius: "0.5rem",
+          cursor: "pointer",
+          background: isOpen ? "linear-gradient(to bottom right, #6366f1, #9333ea)" : "#f3f4f6",
+          color: isOpen ? "white" : "#374151",
+        }}
+      >
+        <p style={{ fontWeight: "600" }}>
+          {isOpen ? "Box is OPEN" : "Click to open"}
+        </p>
+        <p style={{ fontSize: "0.875rem", marginTop: "0.5rem", opacity: 0.8 }}>
+          {isOpen
+            ? "Click outside to close (if listener is active)"
+            : "This box toggles on click"}
+        </p>
+      </div>
+
+      <div style={{ marginTop: "1.5rem" }}>
+        <p>Listener: <span style={{ color: isListening ? "#10b981" : "#ef4444" }}>{isListening ? "Active" : "Inactive"}</span></p>
+        <p>Outside Clicks: {outsideClicks}</p>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -557,6 +823,99 @@ export const Conditional: StoryObj<typeof ConditionalDemo> = {
  */
 export const CustomExclude: StoryObj<typeof ShouldExcludeDemo> = {
   render: () => <ShouldExcludeDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useOnClickOutside } from "@usefy/use-on-click-outside";
+import { useState, useRef } from "react";
+
+function CustomExcludeExample() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [lastClick, setLastClick] = useState<string>("");
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(
+    menuRef,
+    (event) => {
+      const target = event.target as Element;
+      setLastClick(
+        target.className?.includes?.("ignore")
+          ? "Ignored element"
+          : "Outside element"
+      );
+      setIsOpen(false);
+    },
+    {
+      enabled: isOpen,
+      shouldExclude: (target) =>
+        (target as Element).closest?.(".ignore-outside-click") !== null,
+    }
+  );
+
+  return (
+    <div>
+      <button onClick={() => setIsOpen(true)}>Open Menu</button>
+
+      {isOpen && (
+        <div
+          ref={menuRef}
+          style={{
+            background: "white",
+            borderRadius: "0.5rem",
+            padding: "1.5rem",
+            boxShadow: "0 10px 15px rgba(0,0,0,0.1)",
+            border: "1px solid #e5e7eb",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <p style={{ fontWeight: "600", marginBottom: "1rem" }}>
+            Menu Content - Click outside to close
+          </p>
+          <button onClick={() => setIsOpen(false)}>Close</button>
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginBottom: "1.5rem" }}>
+        <button
+          className="ignore-outside-click"
+          onClick={() => setLastClick("Clicked ignore button (menu stays open)")}
+          style={{
+            padding: "0.5rem 1rem",
+            background: "#e5e7eb",
+            border: "none",
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+          }}
+        >
+          Ignored Button
+        </button>
+        <button
+          onClick={() => setLastClick("Clicked normal button")}
+          style={{
+            padding: "0.5rem 1rem",
+            background: "#ef4444",
+            color: "white",
+            border: "none",
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+          }}
+        >
+          Normal Button
+        </button>
+      </div>
+
+      <div>
+        <p>Menu: <span style={{ color: isOpen ? "#10b981" : "#6b7280" }}>{isOpen ? "Open" : "Closed"}</span></p>
+        {lastClick && <p>Last Action: {lastClick}</p>}
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 

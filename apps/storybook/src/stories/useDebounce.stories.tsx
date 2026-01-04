@@ -38,19 +38,27 @@ function SearchInputDemo() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search..."
-        className={storyTheme.input + " mb-5"}
+        className={storyTheme.input + " mb-5 truncate"}
       />
 
       <div className={storyTheme.statBox + " mb-5"}>
-        <div className={storyTheme.statLabel}>
+        <div className={storyTheme.statLabel + " overflow-hidden"}>
           <strong className={storyTheme.statText}>Current Input:</strong>{" "}
-          <span className={storyTheme.statTextSecondary}>
+          <span
+            className={
+              storyTheme.statTextSecondary + " truncate inline-block max-w-full"
+            }
+          >
             {searchTerm || "(empty)"}
           </span>
         </div>
-        <div className={storyTheme.statLabel}>
+        <div className={storyTheme.statLabel + " overflow-hidden"}>
           <strong className={storyTheme.statText}>Debounced Value:</strong>{" "}
-          <span className={storyTheme.statTextSecondary}>
+          <span
+            className={
+              storyTheme.statTextSecondary + " truncate inline-block max-w-full"
+            }
+          >
             {debouncedSearchTerm || "(empty)"}
           </span>
         </div>
@@ -67,7 +75,12 @@ function SearchInputDemo() {
           </h3>
           <ul className="list-none p-0">
             {searchResults.map((result, index) => (
-              <li key={index} className={storyTheme.listItem}>
+              <li
+                key={index}
+                className={
+                  storyTheme.listItem + " break-words overflow-wrap-anywhere"
+                }
+              >
                 {result}
               </li>
             ))}
@@ -124,7 +137,7 @@ function FormValidationDemo() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          className={storyTheme.input}
+          className={storyTheme.input + " truncate"}
         />
       </div>
 
@@ -178,7 +191,7 @@ function AutoSaveDemo() {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Start typing..."
         rows={8}
-        className={storyTheme.textareaMono + " mb-5"}
+        className={storyTheme.textareaMono + " mb-5 overflow-auto break-words"}
       />
 
       <div className={storyTheme.statBox}>
@@ -331,7 +344,7 @@ function APIRequestDemo() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Type to search..."
-        className={storyTheme.input + " mb-5"}
+        className={storyTheme.input + " mb-5 truncate"}
       />
 
       <div className={storyTheme.statBox + " mb-5"}>
@@ -350,9 +363,16 @@ function APIRequestDemo() {
       {!isLoading && data && (
         <div className={storyTheme.messageSuccess}>
           <h3 className="text-lg font-semibold mb-2">Results Found</h3>
-          <div className={storyTheme.statLabel}>
+          <div className={storyTheme.statLabel + " overflow-hidden"}>
             <strong className={storyTheme.statText}>Query:</strong>{" "}
-            <span className={storyTheme.statTextSecondary}>{data.query}</span>
+            <span
+              className={
+                storyTheme.statTextSecondary +
+                " truncate inline-block max-w-full"
+              }
+            >
+              {data.query}
+            </span>
           </div>
           <div className={storyTheme.statLabel}>
             <strong className={storyTheme.statText}>Results:</strong>{" "}
@@ -557,7 +577,7 @@ function MaxWaitDemo() {
         onChange={(e) => setInput(e.target.value)}
         placeholder="Keep typing without stopping for more than 2 seconds..."
         rows={6}
-        className={storyTheme.textareaMono + " mb-5"}
+        className={storyTheme.textareaMono + " mb-5 overflow-auto break-words"}
       />
 
       <div className={storyTheme.statBox + " mb-5"}>
@@ -615,6 +635,37 @@ export const SearchInput: Story = {
         story:
           "Common use case: Debouncing search input to reduce API calls. Only triggers search after user stops typing for 500ms.",
       },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function SearchInput() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      // Perform search API call here
+      console.log("Searching for:", debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search..."
+      />
+      <p>Current: {searchTerm}</p>
+      <p>Debounced: {debouncedSearchTerm}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -650,6 +701,42 @@ export const FormValidation: Story = {
       description: {
         story:
           "Debounce email validation to avoid validating on every keystroke. Validation runs 800ms after user stops typing.",
+      },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function EmailValidation() {
+  const [email, setEmail] = useState("");
+  const [isValid, setIsValid] = useState<boolean | null>(null);
+  const debouncedEmail = useDebounce(email, 800);
+
+  useEffect(() => {
+    if (!debouncedEmail) {
+      setIsValid(null);
+      return;
+    }
+
+    // Validate email after debounce
+    const isValidEmail = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(debouncedEmail);
+    setIsValid(isValidEmail);
+  }, [debouncedEmail]);
+
+  return (
+    <div>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Enter your email"
+      />
+      {isValid === true && <p>✓ Valid email</p>}
+      {isValid === false && <p>✗ Invalid email</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -696,6 +783,37 @@ export const AutoSave: Story = {
         story:
           "Auto-save content after user stops typing. Prevents excessive save operations while providing a seamless user experience.",
       },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function AutoSaveEditor() {
+  const [content, setContent] = useState("");
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const debouncedContent = useDebounce(content, 1000);
+
+  useEffect(() => {
+    if (debouncedContent && content === debouncedContent) {
+      // Auto-save logic here
+      console.log("Saving:", debouncedContent);
+      setLastSaved(new Date());
+    }
+  }, [debouncedContent, content]);
+
+  return (
+    <div>
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Start typing..."
+      />
+      {lastSaved && <p>Last saved: {lastSaved.toLocaleTimeString()}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -727,6 +845,40 @@ export const WindowResize: Story = {
         story:
           "Debounce window resize events to avoid performance issues. Useful for responsive layouts and expensive recalculations.",
       },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function WindowSizeTracker() {
+  const [windowSize, setWindowSize] = useState(() => {
+    if (typeof window !== "undefined") {
+      return \`\${window.innerWidth}x\${window.innerHeight}\`;
+    }
+    return "0x0";
+  });
+  const debouncedWindowSize = useDebounce(windowSize, 300);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize(\`\${window.innerWidth}x\${window.innerHeight}\`);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    // Expensive calculation only runs on debounced value
+    if (debouncedWindowSize !== "0x0") {
+      console.log("Expensive calculation for:", debouncedWindowSize);
+    }
+  }, [debouncedWindowSize]);
+
+  return <div>Window size: {debouncedWindowSize}</div>;
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
 };
@@ -739,6 +891,50 @@ export const APIRequest: Story = {
         story:
           "Debounce API requests with loading state. Shows how to handle async operations with proper loading indicators.",
       },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function SearchAPI() {
+  const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<any>(null);
+  const debouncedQuery = useDebounce(query, 600);
+
+  useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      setData(null);
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Simulate API call
+    fetch(\`/api/search?q=\${debouncedQuery}\`)
+      .then((res) => res.json())
+      .then((result) => {
+        setData(result);
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+  }, [debouncedQuery]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Type to search..."
+      />
+      {isLoading && <p>Loading...</p>}
+      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
 };
@@ -750,6 +946,36 @@ export const Slider: Story = {
       description: {
         story:
           "Debounce slider updates to avoid running expensive calculations on every value change. Only calculates after user stops dragging.",
+      },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function SliderWithDebounce() {
+  const [value, setValue] = useState(50);
+  const debouncedValue = useDebounce(value, 500);
+
+  useEffect(() => {
+    // Expensive calculation only runs after user stops dragging
+    console.log("Expensive calculation for:", debouncedValue);
+  }, [debouncedValue]);
+
+  return (
+    <div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
+      />
+      <p>Current: {value}%</p>
+      <p>Debounced: {debouncedValue}%</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -783,6 +1009,40 @@ export const LeadingEdge: Story = {
       description: {
         story:
           "Demonstrates the difference between leading and trailing edge updates. Leading edge fires immediately on first change, while trailing edge waits for inactivity.",
+      },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function LeadingTrailingDemo() {
+  const [clicks, setClicks] = useState(0);
+
+  // Leading edge: fires immediately on first change
+  const debouncedLeading = useDebounce(clicks, 1000, { leading: true });
+
+  // Trailing edge: fires after delay (default behavior)
+  const debouncedTrailing = useDebounce(clicks, 1000, { trailing: true });
+
+  useEffect(() => {
+    console.log("Leading edge:", debouncedLeading);
+  }, [debouncedLeading]);
+
+  useEffect(() => {
+    console.log("Trailing edge:", debouncedTrailing);
+  }, [debouncedTrailing]);
+
+  return (
+    <div>
+      <button onClick={() => setClicks((prev) => prev + 1)}>
+        Click Me! ({clicks})
+      </button>
+      <p>Leading: {debouncedLeading}</p>
+      <p>Trailing: {debouncedTrailing}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -818,6 +1078,41 @@ export const MaxWait: Story = {
       description: {
         story:
           "Shows the maxWait option which ensures the debounced value updates at least once within the specified maximum time, even during continuous changes. Perfect for auto-save features.",
+      },
+      source: {
+        code: `import { useDebounce } from "@usefy/use-debounce";
+import { useState, useEffect } from "react";
+
+function AutoSaveWithMaxWait() {
+  const [content, setContent] = useState("");
+  
+  // Regular debounce: waits 2 seconds after user stops typing
+  const debouncedRegular = useDebounce(content, 2000);
+  
+  // With maxWait: updates at least once every 5 seconds
+  const debouncedMaxWait = useDebounce(content, 2000, { maxWait: 5000 });
+
+  useEffect(() => {
+    if (debouncedMaxWait) {
+      // Auto-save - ensures save happens at least every 5 seconds
+      console.log("Saving:", debouncedMaxWait);
+    }
+  }, [debouncedMaxWait]);
+
+  return (
+    <div>
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Keep typing..."
+      />
+      <p>Regular debounce: {debouncedRegular}</p>
+      <p>With maxWait: {debouncedMaxWait}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },

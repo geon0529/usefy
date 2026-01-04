@@ -852,6 +852,44 @@ export const ScrollPosition: Story = {
         story:
           "Common use case: Throttling scroll position updates to reduce expensive operations. Only updates at most once per 100ms.",
       },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState } from "react";
+
+function ScrollPositionExample() {
+  const [scrollY, setScrollY] = useState(0);
+  const throttledScrollY = useThrottle(scrollY, 100);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    setScrollY(e.currentTarget.scrollTop);
+  };
+
+  return (
+    <div>
+      <h2>Scroll Position Throttling</h2>
+      <p>Scroll to see throttling in action. Updates at most once per 100ms.</p>
+      <div>
+        <p>Raw scroll position: {scrollY}px</p>
+        <p>Throttled position: {throttledScrollY}px</p>
+      </div>
+      <div
+        onScroll={handleScroll}
+        style={{ height: "300px", overflowY: "scroll", border: "2px solid #e5e7eb", padding: "1.25rem" }}
+      >
+        <div style={{ height: "2000px" }}>
+          <h3>Scroll this content</h3>
+          <p>The throttled value updates at most once per interval, reducing expensive operations.</p>
+          {Array.from({ length: 50 }, (_, i) => (
+            <p key={i}>Line {i + 1}: Lorem ipsum dolor sit amet...</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -894,6 +932,48 @@ export const SearchInput: Story = {
       description: {
         story:
           "Throttle search input to reduce API calls. Uses trailing edge only to wait for user to finish typing before making the call.",
+      },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState, useEffect } from "react";
+
+function SearchInputExample() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const throttledQuery = useThrottle(searchQuery, 300, {
+    leading: false,
+    trailing: true,
+  });
+  const [searchCount, setSearchCount] = useState(0);
+
+  useEffect(() => {
+    if (throttledQuery) {
+      setSearchCount((prev) => prev + 1);
+      // Simulate API call
+      console.log("API call with:", throttledQuery);
+    }
+  }, [throttledQuery]);
+
+  return (
+    <div>
+      <h2>Search Input Throttling</h2>
+      <p>Type to search. API calls are throttled by 300ms.</p>
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Type to search..."
+      />
+      <div>
+        <p>Current Input: {searchQuery || "(empty)"}</p>
+        <p>Throttled Query: {throttledQuery || "(empty)"}</p>
+        <p>API Calls Made: {searchCount}</p>
+      </div>
+      <p>💡 Try typing quickly. The throttled query only updates according to the interval.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -943,6 +1023,55 @@ export const WindowResize: Story = {
         story:
           "Throttle slider updates to avoid running expensive calculations on every value change. Only recalculates after the throttle interval.",
       },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState } from "react";
+
+function WindowResizeExample() {
+  const [width, setWidth] = useState(300);
+  const throttledWidth = useThrottle(width, 200);
+
+  return (
+    <div>
+      <h2>Window Resize Throttling</h2>
+      <p>Drag the slider to simulate window resize. Throttled by 200ms.</p>
+      <div>
+        <p>Raw Width: {width}px</p>
+        <p>Throttled Width: {throttledWidth}px</p>
+      </div>
+      <div>
+        <label>Adjust Width:</label>
+        <input
+          type="range"
+          min="100"
+          max="600"
+          value={width}
+          onChange={(e) => setWidth(Number(e.target.value))}
+        />
+      </div>
+      <div
+        style={{
+          width: \`\${throttledWidth}px\`,
+          height: "200px",
+          background: "linear-gradient(to bottom right, #6366f1, #9333ea)",
+          borderRadius: "0.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+          fontSize: "1.875rem",
+          fontWeight: "bold",
+        }}
+      >
+        {throttledWidth}px
+      </div>
+      <p>💡 The throttled width only updates according to the interval, preventing expensive layout recalculations.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -987,6 +1116,76 @@ export const MouseMovementBothEdges: Story = {
         story:
           "Default behavior with both leading and trailing edges enabled. Updates immediately when movement starts (leading), throttles during movement, and updates one final time when movement stops (trailing). Best balance for most use cases.",
       },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState } from "react";
+
+function MouseMovementExample() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const throttledPos = useThrottle(mousePos, 300);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: Math.round(e.clientX - rect.left),
+      y: Math.round(e.clientY - rect.top),
+    });
+  };
+
+  return (
+    <div>
+      <h2>Mouse Movement - Default (Both Edges)</h2>
+      <p>Move your mouse in the area below. Throttled by 300ms with default settings (leading + trailing).</p>
+      <div
+        onMouseMove={handleMouseMove}
+        style={{
+          height: "300px",
+          border: "2px solid #e5e7eb",
+          borderRadius: "0.5rem",
+          background: "white",
+          position: "relative",
+          cursor: "crosshair",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${throttledPos.x}px\`,
+            top: \`\${throttledPos.y}px\`,
+            width: "24px",
+            height: "24px",
+            background: "#6366f1",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${mousePos.x}px\`,
+            top: \`\${mousePos.y}px\`,
+            width: "8px",
+            height: "8px",
+            background: "#ef4444",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            opacity: 0.6,
+          }}
+        />
+        <div style={{ position: "absolute", top: "1.25rem", left: "1.25rem", background: "rgba(255,255,255,0.9)", padding: "0.75rem", borderRadius: "0.5rem" }}>
+          <div>● Raw position ({mousePos.x}, {mousePos.y})</div>
+          <div>● Throttled ({throttledPos.x}, {throttledPos.y})</div>
+        </div>
+      </div>
+      <p>💡 Default behavior (both edges): Updates immediately when you start moving (leading edge), then throttles updates during movement, and updates one final time when you stop moving (trailing edge).</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -1019,6 +1218,75 @@ export const MouseMovementLeadingOnly: Story = {
         story:
           "Only leading edge enabled. Updates immediately when movement starts, then throttles. No final update when movement stops - the throttled value may lag behind the actual position. Useful when you want instant feedback but don't care about the final position.",
       },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState } from "react";
+
+function MouseMovementLeadingExample() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const throttledPos = useThrottle(mousePos, 300, {
+    leading: true,
+    trailing: false,
+  });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: Math.round(e.clientX - rect.left),
+      y: Math.round(e.clientY - rect.top),
+    });
+  };
+
+  return (
+    <div>
+      <h2>Mouse Movement - Leading Only</h2>
+      <p>Move your mouse. Only leading edge enabled (trailing: false).</p>
+      <div
+        onMouseMove={handleMouseMove}
+        style={{
+          height: "300px",
+          border: "2px solid #86efac",
+          borderRadius: "0.5rem",
+          background: "white",
+          position: "relative",
+          cursor: "crosshair",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${throttledPos.x}px\`,
+            top: \`\${throttledPos.y}px\`,
+            width: "24px",
+            height: "24px",
+            background: "#10b981",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${mousePos.x}px\`,
+            top: \`\${mousePos.y}px\`,
+            width: "8px",
+            height: "8px",
+            background: "#ef4444",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            opacity: 0.6,
+          }}
+        />
+      </div>
+      <p>💡 Leading edge only: Updates immediately when you start moving, then throttles. No final update when you stop! The green dot may lag behind when you stop moving.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -1046,6 +1314,75 @@ export const MouseMovementTrailingOnly: Story = {
       description: {
         story:
           "Only trailing edge enabled. No immediate update when movement starts - the throttled value lags at first. Updates during throttle intervals and catches up when movement stops. Useful when you only care about the final settled position.",
+      },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState } from "react";
+
+function MouseMovementTrailingExample() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const throttledPos = useThrottle(mousePos, 300, {
+    leading: false,
+    trailing: true,
+  });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: Math.round(e.clientX - rect.left),
+      y: Math.round(e.clientY - rect.top),
+    });
+  };
+
+  return (
+    <div>
+      <h2>Mouse Movement - Trailing Only</h2>
+      <p>Move your mouse. Only trailing edge enabled (leading: false).</p>
+      <div
+        onMouseMove={handleMouseMove}
+        style={{
+          height: "300px",
+          border: "2px solid #fde68a",
+          borderRadius: "0.5rem",
+          background: "white",
+          position: "relative",
+          cursor: "crosshair",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${throttledPos.x}px\`,
+            top: \`\${throttledPos.y}px\`,
+            width: "24px",
+            height: "24px",
+            background: "#f59e0b",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${mousePos.x}px\`,
+            top: \`\${mousePos.y}px\`,
+            width: "8px",
+            height: "8px",
+            background: "#ef4444",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            opacity: 0.6,
+          }}
+        />
+      </div>
+      <p>💡 Trailing edge only: No immediate update when you start moving. Updates occur during throttle intervals and catches up when you stop. The orange dot lags at the start but catches up at the end.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -1075,6 +1412,82 @@ export const MouseMovementBothDisabled: Story = {
         story:
           "Both edges disabled - demonstrates what NOT to do. The throttled value never updates and stays at its initial value. This configuration completely disables throttling and is not useful in practice.",
       },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState } from "react";
+
+function MouseMovementNoThrottleExample() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const throttledPos = useThrottle(mousePos, 300, {
+    leading: false,
+    trailing: false,
+  });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: Math.round(e.clientX - rect.left),
+      y: Math.round(e.clientY - rect.top),
+    });
+  };
+
+  return (
+    <div>
+      <h2>Mouse Movement - Both Disabled</h2>
+      <p>Move your mouse. Both edges disabled (leading: false, trailing: false).</p>
+      <div
+        onMouseMove={handleMouseMove}
+        style={{
+          height: "300px",
+          border: "2px solid #fecaca",
+          borderRadius: "0.5rem",
+          background: "white",
+          position: "relative",
+          cursor: "crosshair",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${throttledPos.x}px\`,
+            top: \`\${throttledPos.y}px\`,
+            width: "24px",
+            height: "24px",
+            background: "#ef4444",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            opacity: throttledPos.x === 0 && throttledPos.y === 0 ? 0 : 1,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: \`\${mousePos.x}px\`,
+            top: \`\${mousePos.y}px\`,
+            width: "8px",
+            height: "8px",
+            background: "#ef4444",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            opacity: 0.6,
+          }}
+        />
+        {throttledPos.x === 0 && throttledPos.y === 0 && mousePos.x !== 0 && (
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "1.5rem", fontWeight: "bold", color: "#ef4444", textAlign: "center" }}>
+            ⚠️<br />
+            <span style={{ fontSize: "1rem" }}>No throttle dot visible!</span>
+          </div>
+        )}
+      </div>
+      <p>⚠️ Both edges disabled: The throttle value stays at initial value and never updates! This configuration is not useful - it completely disables throttling.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -1102,6 +1515,80 @@ export const ClickEventThrottle: Story = {
       description: {
         story:
           "Demonstrates throttling click events for token renewal. Using `trailing: false` ensures only the first click triggers the action, and subsequent clicks during the cooldown period are ignored. This pattern is useful for preventing duplicate API calls on rapid button clicks.",
+      },
+      source: {
+        code: `import { useThrottle } from "@usefy/use-throttle";
+import { useState, useEffect } from "react";
+
+function ClickEventThrottleExample() {
+  const [clickCount, setClickCount] = useState(0);
+  const [renewalCount, setRenewalCount] = useState(0);
+  const THROTTLE_INTERVAL = 5000; // 5 seconds
+
+  // Throttle the click count - only leading edge, no trailing
+  // This means: execute immediately on first click, ignore subsequent clicks until interval passes
+  const throttledClickCount = useThrottle(clickCount, THROTTLE_INTERVAL, {
+    leading: true,
+    trailing: false,
+  });
+
+  // When throttled value changes, simulate token renewal
+  useEffect(() => {
+    if (throttledClickCount > 0) {
+      setRenewalCount((prev) => prev + 1);
+      console.log("Token renewed!");
+    }
+  }, [throttledClickCount]);
+
+  const handleClick = () => {
+    setClickCount((prev) => prev + 1);
+  };
+
+  const isOnCooldown = clickCount > renewalCount;
+
+  return (
+    <div>
+      <h2>Click Event Throttling</h2>
+      <p>
+        Simulates a token renewal scenario. Click the button to renew the token,
+        but it can only be renewed once every 5 seconds. Using trailing: false
+        ensures only the first click triggers renewal.
+      </p>
+      <button
+        onClick={handleClick}
+        disabled={isOnCooldown}
+        style={{
+          width: "100%",
+          padding: "1rem",
+          fontSize: "1.125rem",
+          fontWeight: "600",
+          color: "white",
+          background: isOnCooldown
+            ? "linear-gradient(to bottom right, #9ca3af, #6b7280)"
+            : "linear-gradient(to bottom right, #a855f7, #7c3aed)",
+          border: "none",
+          borderRadius: "0.5rem",
+          cursor: isOnCooldown ? "not-allowed" : "pointer",
+        }}
+      >
+        {isOnCooldown ? "Cooldown..." : "🔄 Renew Token"}
+      </button>
+      <div>
+        <p>Total Clicks: {clickCount}</p>
+        <p>Actual Renewals: {renewalCount}</p>
+        <p>Ignored Clicks: {clickCount - renewalCount}</p>
+      </div>
+      <p>
+        💡 Real-world use case: Token renewal on user action. Even if the user clicks
+        rapidly, the token is renewed at most once every 5 seconds. Using trailing: false
+        means only the first click triggers the renewal—subsequent clicks during cooldown
+        are completely ignored.
+      </p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },

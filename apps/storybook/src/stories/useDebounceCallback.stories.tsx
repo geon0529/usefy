@@ -40,7 +40,7 @@ function SearchInputDemo() {
           handleSearch(e.target.value);
         }}
         placeholder="Search..."
-        className={storyTheme.input + " mb-5"}
+        className={storyTheme.input + " mb-5 truncate"}
       />
 
       <div className={storyTheme.buttonGroupFull}>
@@ -59,9 +59,13 @@ function SearchInputDemo() {
       </div>
 
       <div className={storyTheme.statBox + " mb-5"}>
-        <div className={storyTheme.statLabel}>
+        <div className={storyTheme.statLabel + " overflow-hidden"}>
           <strong className={storyTheme.statText}>Current Input:</strong>{" "}
-          <span className={storyTheme.statTextSecondary}>
+          <span
+            className={
+              storyTheme.statTextSecondary + " truncate inline-block max-w-full"
+            }
+          >
             {searchTerm || "(empty)"}
           </span>
         </div>
@@ -78,7 +82,12 @@ function SearchInputDemo() {
           </h3>
           <ul className="list-none p-0">
             {searchResults.map((result, index) => (
-              <li key={index} className={storyTheme.listItem}>
+              <li
+                key={index}
+                className={
+                  storyTheme.listItem + " break-words overflow-wrap-anywhere"
+                }
+              >
                 {result}
               </li>
             ))}
@@ -128,7 +137,7 @@ function AutoSaveFormDemo() {
           value={formData.name}
           onChange={(e) => updateField("name", e.target.value)}
           placeholder="Enter your name"
-          className={storyTheme.input}
+          className={storyTheme.input + " truncate"}
         />
       </div>
 
@@ -145,7 +154,7 @@ function AutoSaveFormDemo() {
           value={formData.email}
           onChange={(e) => updateField("email", e.target.value)}
           placeholder="Enter your email"
-          className={storyTheme.input}
+          className={storyTheme.input + " truncate"}
         />
       </div>
 
@@ -162,7 +171,7 @@ function AutoSaveFormDemo() {
           onChange={(e) => updateField("bio", e.target.value)}
           placeholder="Tell us about yourself"
           rows={4}
-          className={storyTheme.textarea}
+          className={storyTheme.textarea + " overflow-auto break-words"}
         />
       </div>
 
@@ -277,7 +286,7 @@ function MaxWaitDemo() {
         }}
         placeholder="Keep typing without stopping..."
         rows={6}
-        className="w-full py-3.5 px-4 text-base border-2 border-gray-200 rounded-xl mb-5 outline-none transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1)] font-mono resize-y focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+        className="w-full py-3.5 px-4 text-base border-2 border-gray-200 rounded-xl mb-5 outline-none transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.1)] font-mono resize-y focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)] overflow-auto break-words"
       />
 
       <div className="p-5 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
@@ -329,6 +338,46 @@ export const SearchInput: Story = {
         story:
           "Debounce search API calls with cancel and flush methods. Search executes 500ms after typing stops, or can be cancelled/flushed manually.",
       },
+      source: {
+        code: `import { useDebounceCallback } from "@usefy/use-debounce-callback";
+import { useState } from "react";
+
+function SearchInput() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [results, setResults] = useState<string[]>([]);
+
+  const handleSearch = useDebounceCallback((term: string) => {
+    if (term.trim()) {
+      // Perform search API call
+      console.log("Searching for:", term);
+      setResults([\`Result 1 for "\${term}"\`, \`Result 2 for "\${term}"\`]);
+    } else {
+      setResults([]);
+    }
+  }, 500);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          handleSearch(e.target.value);
+        }}
+        placeholder="Search..."
+      />
+      <button onClick={handleSearch.cancel}>Cancel</button>
+      <button onClick={handleSearch.flush}>Search Now</button>
+      {results.map((result, i) => (
+        <div key={i}>{result}</div>
+      ))}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
     },
   },
   play: async ({ canvasElement }) => {
@@ -370,6 +419,49 @@ export const AutoSaveForm: Story = {
       description: {
         story:
           "Auto-save form data with debounced callback. Save executes 1 second after editing stops, with manual cancel and flush options.",
+      },
+      source: {
+        code: `import { useDebounceCallback } from "@usefy/use-debounce-callback";
+import { useState } from "react";
+
+function AutoSaveForm() {
+  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  const handleSave = useDebounceCallback((data: typeof formData) => {
+    // Auto-save logic
+    console.log("Saving:", data);
+    setLastSaved(new Date());
+  }, 1000);
+
+  const updateField = (field: keyof typeof formData, value: string) => {
+    const newData = { ...formData, [field]: value };
+    setFormData(newData);
+    handleSave(newData);
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={formData.name}
+        onChange={(e) => updateField("name", e.target.value)}
+        placeholder="Name"
+      />
+      <input
+        type="email"
+        value={formData.email}
+        onChange={(e) => updateField("email", e.target.value)}
+        placeholder="Email"
+      />
+      <button onClick={handleSave.cancel}>Cancel Save</button>
+      <button onClick={handleSave.flush}>Save Now</button>
+      {lastSaved && <p>Last saved: {lastSaved.toLocaleTimeString()}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -414,6 +506,40 @@ export const LeadingEdge: Story = {
       description: {
         story:
           "Leading edge callback fires immediately on first call, then blocks subsequent calls for the delay period. Useful for actions that should happen immediately but not too frequently.",
+      },
+      source: {
+        code: `import { useDebounceCallback } from "@usefy/use-debounce-callback";
+import { useState } from "react";
+
+function LeadingEdgeButton() {
+  const [clickCount, setClickCount] = useState(0);
+  const [processedCount, setProcessedCount] = useState(0);
+
+  const handleClick = useDebounceCallback(
+    () => {
+      setProcessedCount((prev) => prev + 1);
+    },
+    500,
+    { leading: true }
+  );
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          setClickCount((prev) => prev + 1);
+          handleClick();
+        }}
+      >
+        Click Me! ({clickCount})
+      </button>
+      <p>Processed: {processedCount}</p>
+      {/* Leading edge fires immediately on first click */}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -482,6 +608,42 @@ export const MaxWait: Story = {
       description: {
         story:
           "MaxWait ensures callback executes at least once within the specified maximum time, even during continuous input. Perfect for periodic auto-save during extended editing sessions.",
+      },
+      source: {
+        code: `import { useDebounceCallback } from "@usefy/use-debounce-callback";
+import { useState } from "react";
+
+function AutoSaveWithMaxWait() {
+  const [content, setContent] = useState("");
+  const [saveCount, setSaveCount] = useState(0);
+
+  const handleSave = useDebounceCallback(
+    (_value: string) => {
+      // Auto-save logic
+      setSaveCount((prev) => prev + 1);
+      console.log("Saved:", _value);
+    },
+    2000,
+    { maxWait: 5000 }
+  );
+
+  return (
+    <div>
+      <textarea
+        value={content}
+        onChange={(e) => {
+          setContent(e.target.value);
+          handleSave(e.target.value);
+        }}
+        placeholder="Keep typing..."
+      />
+      <p>Save count: {saveCount}</p>
+      {/* Ensures save happens at least every 5 seconds */}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },
@@ -557,7 +719,7 @@ function CancelDemo() {
             handleSubmit(e.target.value);
           }}
           placeholder="Type something..."
-          className={storyTheme.input}
+          className={storyTheme.input + " truncate"}
         />
       </div>
 
@@ -586,13 +748,17 @@ function CancelDemo() {
       </div>
 
       <div className="p-5 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
-        <div className="mb-2 text-[0.95rem]">
+        <div className="mb-2 text-[0.95rem] overflow-hidden">
           <strong className="text-gray-700">Current Input:</strong>{" "}
-          <span className="text-gray-500">{input || "(empty)"}</span>
+          <span className="text-gray-500 truncate inline-block max-w-full">
+            {input || "(empty)"}
+          </span>
         </div>
-        <div className="mb-2 text-[0.95rem]">
+        <div className="mb-2 text-[0.95rem] overflow-hidden">
           <strong className="text-gray-700">Last Submitted:</strong>{" "}
-          <span className="text-gray-500">{lastSubmitted || "(none)"}</span>
+          <span className="text-gray-500 truncate inline-block max-w-full">
+            {lastSubmitted || "(none)"}
+          </span>
         </div>
         <div className="mb-2 text-[0.95rem]">
           <strong className="text-gray-700">Submit Count:</strong>{" "}
@@ -623,6 +789,39 @@ export const Cancel: Story = {
       description: {
         story:
           "Cancel method allows you to abort pending debounced callbacks. Useful for preventing unwanted API calls or actions when user changes their mind.",
+      },
+      source: {
+        code: `import { useDebounceCallback } from "@usefy/use-debounce-callback";
+import { useState } from "react";
+
+function CancelableSubmit() {
+  const [input, setInput] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = useDebounceCallback((value: string) => {
+    console.log("Submitting:", value);
+    setSubmitted(true);
+  }, 2000);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value);
+          handleSubmit(e.target.value);
+        }}
+        placeholder="Type something..."
+      />
+      <button onClick={handleSubmit.cancel}>Cancel Pending</button>
+      {submitted && <p>Submitted!</p>}
+      {/* Cancel prevents the pending callback from executing */}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
       },
     },
   },

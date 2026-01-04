@@ -315,13 +315,19 @@ function ScrollEventsDemo() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className={storyTheme.statTextSecondary}>Scroll Position</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="scroll-position">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="scroll-position"
+            >
               {Math.round(scrollPosition)}px
             </p>
           </div>
           <div>
             <p className={storyTheme.statTextSecondary}>Scroll Events</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="scroll-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="scroll-count"
+            >
               {scrollCount}
             </p>
           </div>
@@ -442,7 +448,10 @@ function NetworkStatusDemo() {
         }`}
       >
         <p className="text-white/80 text-sm mb-2">Network Status</p>
-        <p className="text-4xl font-bold text-white" data-testid="network-status">
+        <p
+          className="text-4xl font-bold text-white"
+          data-testid="network-status"
+        >
           {isOnline ? "Online" : "Offline"}
         </p>
       </div>
@@ -456,9 +465,7 @@ function NetworkStatusDemo() {
                 key={id}
                 className="flex justify-between items-center text-sm"
               >
-                <span
-                  className={online ? "text-green-600" : "text-red-500"}
-                >
+                <span className={online ? "text-green-600" : "text-red-500"}>
                   {online ? "Online" : "Offline"}
                 </span>
                 <span className="text-gray-400">{time}</span>
@@ -508,6 +515,36 @@ type Story = StoryObj<typeof WindowResizeDemo>;
 
 export const Default: Story = {
   render: () => <WindowResizeDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState } from "react";
+
+function WindowResizeTracker() {
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEventListener("resize", () => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  });
+
+  return (
+    <div>
+      <p>Window Size: {windowSize.width} × {windowSize.height}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("window-size")).toBeInTheDocument();
@@ -517,6 +554,34 @@ export const Default: Story = {
 
 export const KeyboardEvents: StoryObj<typeof KeyboardEventsDemo> = {
   render: () => <KeyboardEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState } from "react";
+
+function KeyboardTracker() {
+  const [lastKey, setLastKey] = useState<string | null>(null);
+
+  useEventListener(
+    "keydown",
+    (event) => {
+      setLastKey(event.key);
+    },
+    document
+  );
+
+  return (
+    <div>
+      <p>Last key pressed: {lastKey || "None"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("no-key-message")).toBeInTheDocument();
@@ -525,12 +590,53 @@ export const KeyboardEvents: StoryObj<typeof KeyboardEventsDemo> = {
 
 export const ElementMouseEvents: StoryObj<typeof ElementMouseEventsDemo> = {
   render: () => <ElementMouseEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function MouseTracker() {
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEventListener(
+    "mousemove",
+    (event) => {
+      if (boxRef.current) {
+        const rect = boxRef.current.getBoundingClientRect();
+        setPosition({
+          x: Math.round(event.clientX - rect.left),
+          y: Math.round(event.clientY - rect.top),
+        });
+      }
+    },
+    boxRef
+  );
+
+  return (
+    <div ref={boxRef} style={{ width: 200, height: 200, border: "1px solid" }}>
+      {position ? (
+        <p>Position: ({position.x}, {position.y})</p>
+      ) : (
+        <p>Hover over this area</p>
+      )}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const box = canvas.getByTestId("tracking-box");
 
     await expect(canvas.getByTestId("hover-message")).toBeInTheDocument();
-    await expect(canvas.getByTestId("inside-status")).toHaveTextContent("Outside");
+    await expect(canvas.getByTestId("inside-status")).toHaveTextContent(
+      "Outside"
+    );
 
     // Simulate mouse enter
     await userEvent.hover(box);
@@ -543,19 +649,91 @@ export const ElementMouseEvents: StoryObj<typeof ElementMouseEventsDemo> = {
 
 export const ScrollEvents: StoryObj<typeof ScrollEventsDemo> = {
   render: () => <ScrollEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function ScrollTracker() {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEventListener(
+    "scroll",
+    () => {
+      if (scrollContainerRef.current) {
+        setScrollPosition(scrollContainerRef.current.scrollTop);
+      }
+    },
+    scrollContainerRef,
+    { passive: true }
+  );
+
+  return (
+    <div>
+      <div ref={scrollContainerRef} style={{ height: 200, overflowY: "scroll" }}>
+        {/* Scrollable content */}
+      </div>
+      <p>Scroll position: {Math.round(scrollPosition)}px</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByTestId("scroll-position")).toHaveTextContent("0px");
+    await expect(canvas.getByTestId("scroll-position")).toHaveTextContent(
+      "0px"
+    );
     await expect(canvas.getByTestId("scroll-count")).toHaveTextContent("0");
   },
 };
 
 export const ConditionalListener: StoryObj<typeof ConditionalListenerDemo> = {
   render: () => <ConditionalListenerDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState } from "react";
+
+function ConditionalClickTracker() {
+  const [isListening, setIsListening] = useState(true);
+  const [clickCount, setClickCount] = useState(0);
+
+  useEventListener(
+    "click",
+    () => {
+      setClickCount((prev) => prev + 1);
+    },
+    document,
+    { enabled: isListening }
+  );
+
+  return (
+    <div>
+      <button onClick={() => setIsListening((prev) => !prev)}>
+        {isListening ? "Disable" : "Enable"}
+      </button>
+      <p>Clicks: {clickCount}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await expect(canvas.getByTestId("listener-status")).toHaveTextContent("Listening");
+    await expect(canvas.getByTestId("listener-status")).toHaveTextContent(
+      "Listening"
+    );
     await expect(canvas.getByTestId("click-count")).toHaveTextContent("0");
 
     // Click to increment
@@ -570,13 +748,43 @@ export const ConditionalListener: StoryObj<typeof ConditionalListenerDemo> = {
     await userEvent.click(toggleButton);
 
     await waitFor(() => {
-      expect(canvas.getByTestId("listener-status")).toHaveTextContent("Disabled");
+      expect(canvas.getByTestId("listener-status")).toHaveTextContent(
+        "Disabled"
+      );
     });
   },
 };
 
 export const NetworkStatus: StoryObj<typeof NetworkStatusDemo> = {
   render: () => <NetworkStatusDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState } from "react";
+
+function NetworkStatusTracker() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEventListener("online", () => {
+    setIsOnline(true);
+  });
+
+  useEventListener("offline", () => {
+    setIsOnline(false);
+  });
+
+  return (
+    <div>
+      <p>Status: {isOnline ? "Online" : "Offline"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("network-status")).toBeInTheDocument();
@@ -696,8 +904,13 @@ function FocusBlurDemo() {
 
       <div className={storyTheme.statBox + " mb-4"}>
         <p className={storyTheme.statLabel}>
-          <span className={storyTheme.statTextSecondary}>Currently Focused: </span>
-          <span className="text-indigo-600 font-semibold" data-testid="focused-element">
+          <span className={storyTheme.statTextSecondary}>
+            Currently Focused:{" "}
+          </span>
+          <span
+            className="text-indigo-600 font-semibold"
+            data-testid="focused-element"
+          >
             {focusedElement || "None"}
           </span>
         </p>
@@ -784,9 +997,7 @@ function TouchEventsDemo() {
   useEventListener(
     "touchend",
     () => {
-      setTouchInfo((prev) =>
-        prev ? { ...prev, type: "touchend" } : null
-      );
+      setTouchInfo((prev) => (prev ? { ...prev, type: "touchend" } : null));
     },
     touchAreaRef
   );
@@ -883,7 +1094,9 @@ function ClipboardEventsDemo() {
 
       <div className="w-80 space-y-4 mb-6">
         <div className="p-4 bg-gray-100 rounded-lg select-all">
-          <p className="text-gray-600 text-sm mb-1">Select and copy this text:</p>
+          <p className="text-gray-600 text-sm mb-1">
+            Select and copy this text:
+          </p>
           <p className="font-mono text-indigo-600" data-testid="copyable-text">
             Hello, useEventListener!
           </p>
@@ -910,7 +1123,10 @@ function ClipboardEventsDemo() {
         }`}
       >
         <p className="text-white/80 text-sm mb-2">Last Action</p>
-        <p className="text-2xl font-bold text-white" data-testid="clipboard-action">
+        <p
+          className="text-2xl font-bold text-white"
+          data-testid="clipboard-action"
+        >
           {clipboardAction?.toUpperCase() || "None"}
         </p>
       </div>
@@ -961,7 +1177,9 @@ function VisibilityChangeDemo() {
       if (!visible) {
         hiddenStartRef.current = Date.now();
       } else if (hiddenStartRef.current) {
-        const duration = Math.round((Date.now() - hiddenStartRef.current) / 1000);
+        const duration = Math.round(
+          (Date.now() - hiddenStartRef.current) / 1000
+        );
         setHiddenDuration((prev) => prev + duration);
         hiddenStartRef.current = null;
       }
@@ -986,11 +1204,16 @@ function VisibilityChangeDemo() {
 
       <div
         className={`${storyTheme.gradientBox} text-center mb-6 ${
-          isVisible ? "from-green-500 to-emerald-600" : "from-gray-500 to-gray-600"
+          isVisible
+            ? "from-green-500 to-emerald-600"
+            : "from-gray-500 to-gray-600"
         }`}
       >
         <p className="text-white/80 text-sm mb-2">Page Status</p>
-        <p className="text-4xl font-bold text-white" data-testid="visibility-status">
+        <p
+          className="text-4xl font-bold text-white"
+          data-testid="visibility-status"
+        >
           {isVisible ? "Visible" : "Hidden"}
         </p>
       </div>
@@ -1067,7 +1290,10 @@ function MouseEventsAdvancedDemo() {
     (e) => {
       e.preventDefault();
       setLastEvent("contextmenu");
-      setEventCounts((prev) => ({ ...prev, contextmenu: prev.contextmenu + 1 }));
+      setEventCounts((prev) => ({
+        ...prev,
+        contextmenu: prev.contextmenu + 1,
+      }));
     },
     boxRef
   );
@@ -1101,7 +1327,10 @@ function MouseEventsAdvancedDemo() {
 
       <div className={storyTheme.gradientBox + " text-center mb-6"}>
         <p className="text-white/80 text-sm mb-2">Last Event</p>
-        <p className="text-2xl font-bold text-white" data-testid="last-mouse-event">
+        <p
+          className="text-2xl font-bold text-white"
+          data-testid="last-mouse-event"
+        >
           {lastEvent || "None"}
         </p>
       </div>
@@ -1110,19 +1339,28 @@ function MouseEventsAdvancedDemo() {
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <p className={storyTheme.statTextSecondary}>Click</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="click-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="click-count"
+            >
               {eventCounts.click}
             </p>
           </div>
           <div>
             <p className={storyTheme.statTextSecondary}>Double</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="dblclick-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="dblclick-count"
+            >
               {eventCounts.dblclick}
             </p>
           </div>
           <div>
             <p className={storyTheme.statTextSecondary}>Right</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="contextmenu-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="contextmenu-count"
+            >
               {eventCounts.contextmenu}
             </p>
           </div>
@@ -1210,19 +1448,28 @@ function FormEventsDemo() {
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <p className={storyTheme.statTextSecondary}>Input</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="input-event-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="input-event-count"
+            >
               {inputEventCount}
             </p>
           </div>
           <div>
             <p className={storyTheme.statTextSecondary}>Change</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="change-event-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="change-event-count"
+            >
               {changeEventCount}
             </p>
           </div>
           <div>
             <p className={storyTheme.statTextSecondary}>Submit</p>
-            <p className="text-xl font-bold text-gray-800" data-testid="submit-count">
+            <p
+              className="text-xl font-bold text-gray-800"
+              data-testid="submit-count"
+            >
               {submitCount}
             </p>
           </div>
@@ -1320,7 +1567,9 @@ function DragDropDemo() {
           }}
           data-testid="draggable"
         >
-          <p style={{ color: "white", fontWeight: 500, textAlign: "center" }}>Drag me</p>
+          <p style={{ color: "white", fontWeight: 500, textAlign: "center" }}>
+            Drag me
+          </p>
         </div>
 
         <div
@@ -1349,7 +1598,9 @@ function DragDropDemo() {
           }}
           data-testid="drop-zone"
         >
-          <p style={{ color: "#6b7280", fontSize: "14px", textAlign: "center" }}>
+          <p
+            style={{ color: "#6b7280", fontSize: "14px", textAlign: "center" }}
+          >
             {dragStatus === "over" ? "Release to drop" : "Drop here"}
           </p>
         </div>
@@ -1453,9 +1704,7 @@ function PointerEventsDemo() {
     "pointerup",
     (e) => {
       setPointerInfo((prev) =>
-        prev
-          ? { ...prev, type: "pointerup", pressure: 0 }
-          : null
+        prev ? { ...prev, type: "pointerup", pressure: 0 } : null
       );
     },
     areaRef
@@ -1484,7 +1733,10 @@ function PointerEventsDemo() {
         {pointerInfo ? (
           <div className="text-center">
             <p className="text-gray-500 text-sm mb-1">{pointerInfo.type}</p>
-            <p className="text-2xl font-bold text-purple-600" data-testid="pointer-position">
+            <p
+              className="text-2xl font-bold text-purple-600"
+              data-testid="pointer-position"
+            >
               ({pointerInfo.x}, {pointerInfo.y})
             </p>
             <p className="text-sm text-gray-500 mt-2">
@@ -1517,28 +1769,112 @@ function PointerEventsDemo() {
 
 export const FocusBlur: StoryObj<typeof FocusBlurDemo> = {
   render: () => <FocusBlurDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function FocusTracker() {
+  const [focusedElement, setFocusedElement] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEventListener(
+    "focus",
+    () => {
+      setFocusedElement("Input");
+    },
+    inputRef
+  );
+
+  useEventListener(
+    "blur",
+    () => {
+      setFocusedElement(null);
+    },
+    inputRef
+  );
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" placeholder="Focus me" />
+      <p>Focused: {focusedElement || "None"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByTestId("focused-element")).toHaveTextContent("None");
+    await expect(canvas.getByTestId("focused-element")).toHaveTextContent(
+      "None"
+    );
 
     const input1 = canvas.getByTestId("input-1");
     await userEvent.click(input1);
 
     await waitFor(() => {
-      expect(canvas.getByTestId("focused-element")).toHaveTextContent("Input 1");
+      expect(canvas.getByTestId("focused-element")).toHaveTextContent(
+        "Input 1"
+      );
     });
 
     const input2 = canvas.getByTestId("input-2");
     await userEvent.click(input2);
 
     await waitFor(() => {
-      expect(canvas.getByTestId("focused-element")).toHaveTextContent("Input 2");
+      expect(canvas.getByTestId("focused-element")).toHaveTextContent(
+        "Input 2"
+      );
     });
   },
 };
 
 export const TouchEvents: StoryObj<typeof TouchEventsDemo> = {
   render: () => <TouchEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function TouchTracker() {
+  const [touchInfo, setTouchInfo] = useState<{ x: number; y: number } | null>(null);
+  const touchAreaRef = useRef<HTMLDivElement>(null);
+
+  useEventListener(
+    "touchstart",
+    (e) => {
+      const touch = e.touches[0];
+      if (touch && touchAreaRef.current) {
+        const rect = touchAreaRef.current.getBoundingClientRect();
+        setTouchInfo({
+          x: Math.round(touch.clientX - rect.left),
+          y: Math.round(touch.clientY - rect.top),
+        });
+      }
+    },
+    touchAreaRef
+  );
+
+  return (
+    <div ref={touchAreaRef} style={{ width: 200, height: 200, border: "1px solid" }}>
+      {touchInfo ? (
+        <p>Touch: ({touchInfo.x}, {touchInfo.y})</p>
+      ) : (
+        <p>Touch this area</p>
+      )}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("touch-message")).toBeInTheDocument();
@@ -1548,23 +1884,149 @@ export const TouchEvents: StoryObj<typeof TouchEventsDemo> = {
 
 export const ClipboardEvents: StoryObj<typeof ClipboardEventsDemo> = {
   render: () => <ClipboardEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState } from "react";
+
+function ClipboardTracker() {
+  const [clipboardAction, setClipboardAction] = useState<string | null>(null);
+  const [copiedText, setCopiedText] = useState<string>("");
+
+  useEventListener(
+    "copy",
+    () => {
+      setClipboardAction("copy");
+      const selection = window.getSelection()?.toString() || "";
+      setCopiedText(selection);
+    },
+    document
+  );
+
+  useEventListener(
+    "paste",
+    (e) => {
+      setClipboardAction("paste");
+      const text = e.clipboardData?.getData("text") || "";
+      console.log("Pasted:", text);
+    },
+    document
+  );
+
+  return (
+    <div>
+      <p>Last action: {clipboardAction || "None"}</p>
+      {copiedText && <p>Copied: {copiedText}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByTestId("clipboard-action")).toHaveTextContent("None");
+    await expect(canvas.getByTestId("clipboard-action")).toHaveTextContent(
+      "None"
+    );
     await expect(canvas.getByTestId("copyable-text")).toBeInTheDocument();
   },
 };
 
 export const VisibilityChange: StoryObj<typeof VisibilityChangeDemo> = {
   render: () => <VisibilityChangeDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState } from "react";
+
+function VisibilityTracker() {
+  const [isVisible, setIsVisible] = useState(!document.hidden);
+
+  useEventListener(
+    "visibilitychange",
+    () => {
+      setIsVisible(!document.hidden);
+    },
+    document
+  );
+
+  return (
+    <div>
+      <p>Page status: {isVisible ? "Visible" : "Hidden"}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByTestId("visibility-status")).toHaveTextContent("Visible");
+    await expect(canvas.getByTestId("visibility-status")).toHaveTextContent(
+      "Visible"
+    );
   },
 };
 
 export const MouseEventsAdvanced: StoryObj<typeof MouseEventsAdvancedDemo> = {
   render: () => <MouseEventsAdvancedDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function MouseEventsTracker() {
+  const [lastEvent, setLastEvent] = useState<string | null>(null);
+  const [clickCount, setClickCount] = useState(0);
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEventListener(
+    "click",
+    () => {
+      setLastEvent("click");
+      setClickCount((prev) => prev + 1);
+    },
+    boxRef
+  );
+
+  useEventListener(
+    "dblclick",
+    () => {
+      setLastEvent("dblclick");
+    },
+    boxRef
+  );
+
+  useEventListener(
+    "contextmenu",
+    (e) => {
+      e.preventDefault();
+      setLastEvent("contextmenu");
+    },
+    boxRef
+  );
+
+  return (
+    <div>
+      <div ref={boxRef} style={{ width: 200, height: 100, border: "1px solid" }}>
+        Click, double-click, or right-click
+      </div>
+      <p>Last event: {lastEvent || "None"}</p>
+      <p>Clicks: {clickCount}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const box = canvas.getByTestId("mouse-box");
@@ -1587,11 +2049,58 @@ export const MouseEventsAdvanced: StoryObj<typeof MouseEventsAdvancedDemo> = {
 
 export const FormEvents: StoryObj<typeof FormEventsDemo> = {
   render: () => <FormEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function FormTracker() {
+  const [inputValue, setInputValue] = useState("");
+  const [inputEventCount, setInputEventCount] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEventListener(
+    "input",
+    (e) => {
+      const target = e.target as HTMLInputElement;
+      setInputValue(target.value);
+      setInputEventCount((prev) => prev + 1);
+    },
+    inputRef
+  );
+
+  useEventListener(
+    "submit",
+    (e) => {
+      e.preventDefault();
+      console.log("Form submitted:", inputValue);
+    },
+    formRef
+  );
+
+  return (
+    <form ref={formRef}>
+      <input ref={inputRef} type="text" placeholder="Type something..." />
+      <button type="submit">Submit</button>
+      <p>Value: {inputValue}</p>
+      <p>Input events: {inputEventCount}</p>
+    </form>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByTestId("form-input");
 
-    await expect(canvas.getByTestId("input-event-count")).toHaveTextContent("0");
+    await expect(canvas.getByTestId("input-event-count")).toHaveTextContent(
+      "0"
+    );
 
     await userEvent.type(input, "test");
 
@@ -1611,6 +2120,61 @@ export const FormEvents: StoryObj<typeof FormEventsDemo> = {
 
 export const DragDrop: StoryObj<typeof DragDropDemo> = {
   render: () => <DragDropDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function DragDropTracker() {
+  const [dragStatus, setDragStatus] = useState<string>("idle");
+  const dropZoneRef = useRef<HTMLDivElement>(null);
+  const draggableRef = useRef<HTMLDivElement>(null);
+
+  useEventListener(
+    "dragstart",
+    (e) => {
+      setDragStatus("dragging");
+      e.dataTransfer?.setData("text/plain", "Dragged Item");
+    },
+    draggableRef
+  );
+
+  useEventListener(
+    "dragover",
+    (e) => {
+      e.preventDefault();
+      setDragStatus("over");
+    },
+    dropZoneRef
+  );
+
+  useEventListener(
+    "drop",
+    (e) => {
+      e.preventDefault();
+      const data = e.dataTransfer?.getData("text/plain");
+      setDragStatus("dropped");
+      console.log("Dropped:", data);
+    },
+    dropZoneRef
+  );
+
+  return (
+    <div>
+      <div ref={draggableRef} draggable>
+        Drag me
+      </div>
+      <div ref={dropZoneRef}>Drop here</div>
+      <p>Status: {dragStatus}</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("drag-status")).toHaveTextContent("idle");
@@ -1621,6 +2185,91 @@ export const DragDrop: StoryObj<typeof DragDropDemo> = {
 
 export const PointerEvents: StoryObj<typeof PointerEventsDemo> = {
   render: () => <PointerEventsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEventListener } from "@usefy/use-event-listener";
+import { useState, useRef } from "react";
+
+function PointerTracker() {
+  const [pointerInfo, setPointerInfo] = useState<{
+    type: string;
+    x: number;
+    y: number;
+    pointerType: string;
+    pressure: number;
+  } | null>(null);
+  const areaRef = useRef<HTMLDivElement>(null);
+
+  useEventListener(
+    "pointerdown",
+    (e) => {
+      if (areaRef.current) {
+        const rect = areaRef.current.getBoundingClientRect();
+        setPointerInfo({
+          type: "pointerdown",
+          x: Math.round(e.clientX - rect.left),
+          y: Math.round(e.clientY - rect.top),
+          pointerType: e.pointerType,
+          pressure: Math.round(e.pressure * 100) / 100,
+        });
+      }
+    },
+    areaRef
+  );
+
+  useEventListener(
+    "pointermove",
+    (e) => {
+      if (areaRef.current && e.buttons > 0) {
+        const rect = areaRef.current.getBoundingClientRect();
+        setPointerInfo({
+          type: "pointermove",
+          x: Math.round(e.clientX - rect.left),
+          y: Math.round(e.clientY - rect.top),
+          pointerType: e.pointerType,
+          pressure: Math.round(e.pressure * 100) / 100,
+        });
+      }
+    },
+    areaRef
+  );
+
+  useEventListener(
+    "pointerup",
+    () => {
+      setPointerInfo((prev) =>
+        prev ? { ...prev, type: "pointerup", pressure: 0 } : null
+      );
+    },
+    areaRef
+  );
+
+  return (
+    <div>
+      <div ref={areaRef} style={{ width: 200, height: 200, border: "1px solid" }}>
+        {pointerInfo ? (
+          <div>
+            <p>{pointerInfo.type}</p>
+            <p>
+              ({pointerInfo.x}, {pointerInfo.y})
+            </p>
+            <p>
+              {pointerInfo.pointerType} • pressure: {pointerInfo.pressure}
+            </p>
+          </div>
+        ) : (
+          <p>Click or touch</p>
+        )}
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("pointer-message")).toBeInTheDocument();

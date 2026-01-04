@@ -215,6 +215,37 @@ export const Default: Story = {
     timeout: 2000,
     showCallbacks: false,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+import { useState } from "react";
+
+function CopyButton() {
+  const [text, setText] = useState("Hello, World!");
+  const [copiedText, copy] = useCopyToClipboard({ timeout: 2000 });
+
+  const isCopied = copiedText !== null;
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={() => copy(text)}>
+        {isCopied ? "Copied!" : "Copy to Clipboard"}
+      </button>
+      {copiedText && <p>Copied: {copiedText}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -243,6 +274,44 @@ export const WithCallbacks: Story = {
     timeout: 2000,
     showCallbacks: true,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+import { useState } from "react";
+
+function CopyWithCallbacks() {
+  const [text, setText] = useState("Hello, World!");
+  const [message, setMessage] = useState<string | null>(null);
+
+  const [copiedText, copy] = useCopyToClipboard({
+    timeout: 2000,
+    onSuccess: (copied) => {
+      setMessage(\`Success: Copied "\${copied}"\`);
+    },
+    onError: (error) => {
+      setMessage(\`Error: \${error.message}\`);
+    },
+  });
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={() => copy(text)}>Copy</button>
+      {message && <p>{message}</p>}
+      {copiedText && <p>Copied: {copiedText}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -264,6 +333,36 @@ export const NoAutoReset: Story = {
     timeout: 0,
     showCallbacks: false,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+import { useState } from "react";
+
+function CopyNoReset() {
+  const [text, setText] = useState("Hello, World!");
+  const [copiedText, copy] = useCopyToClipboard({ timeout: 0 });
+
+  // timeout: 0 means copiedText never auto-resets to null
+  // You'll need to manually reset it if needed
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={() => copy(text)}>Copy</button>
+      {copiedText && <p>Copied: {copiedText} (stays copied)</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -276,7 +375,9 @@ export const NoAutoReset: Story = {
     });
 
     // Verify info shows no auto-reset
-    await expect(canvas.getByText("Timeout: No auto-reset")).toBeInTheDocument();
+    await expect(
+      canvas.getByText("Timeout: No auto-reset")
+    ).toBeInTheDocument();
   },
 };
 
@@ -288,6 +389,35 @@ export const LongTimeout: Story = {
     timeout: 5000,
     showCallbacks: false,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+import { useState } from "react";
+
+function CopyLongTimeout() {
+  const [text, setText] = useState("Hello, World!");
+  const [copiedText, copy] = useCopyToClipboard({ timeout: 5000 });
+
+  // copiedText will reset to null after 5 seconds
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={() => copy(text)}>Copy</button>
+      {copiedText && <p>Copied: {copiedText}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
 };
 
 /**
@@ -295,6 +425,38 @@ export const LongTimeout: Story = {
  */
 export const MultipleInputs: StoryObj<typeof MultipleInputsDemo> = {
   render: () => <MultipleInputsDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+
+function MultipleCopyTargets() {
+  const [copiedText, copy] = useCopyToClipboard({ timeout: 2000 });
+
+  const items = [
+    { label: "Email", value: "example@email.com" },
+    { label: "Phone", value: "+1-234-567-8900" },
+    { label: "Address", value: "123 Main St" },
+  ];
+
+  return (
+    <div>
+      {items.map((item) => (
+        <div key={item.label}>
+          <span>{item.label}: {item.value}</span>
+          <button onClick={() => copy(item.value)}>
+            {copiedText === item.value ? "Copied!" : "Copy"}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -322,6 +484,36 @@ export const CustomText: Story = {
   args: {
     timeout: 2000,
     showCallbacks: false,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCopyToClipboard } from "@usefy/use-copy-to-clipboard";
+import { useState } from "react";
+
+function CustomTextCopy() {
+  const [inputText, setInputText] = useState("");
+  const [copiedText, copy] = useCopyToClipboard({ timeout: 2000 });
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+        placeholder="Enter text to copy..."
+      />
+      <button onClick={() => copy(inputText)}>
+        Copy
+      </button>
+      {copiedText && <p>Copied: {copiedText}</p>}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

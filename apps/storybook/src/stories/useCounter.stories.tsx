@@ -67,6 +67,28 @@ export const Default: Story = {
   args: {
     initialValue: 0,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCounter } from "@usefy/use-counter";
+
+function Counter() {
+  const { count, increment, decrement, reset } = useCounter(0);
+
+  return (
+    <div>
+      <h2>Counter: {count}</h2>
+      <button onClick={increment}>+ Increment</button>
+      <button onClick={decrement}>- Decrement</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -96,6 +118,29 @@ export const WithInitialValue: Story = {
   args: {
     initialValue: 10,
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCounter } from "@usefy/use-counter";
+
+function Counter() {
+  const { count, increment, decrement, reset } = useCounter(10);
+
+  return (
+    <div>
+      <h2>Counter: {count}</h2>
+      <button onClick={increment}>+ Increment</button>
+      <button onClick={decrement}>- Decrement</button>
+      <button onClick={reset}>Reset</button>
+      {/* Reset returns to initial value (10) */}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -120,6 +165,29 @@ export const WithInitialValue: Story = {
 export const WithNegativeInitialValue: Story = {
   args: {
     initialValue: -5,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useCounter } from "@usefy/use-counter";
+
+function Counter() {
+  const { count, increment, decrement, reset } = useCounter(-5);
+
+  return (
+    <div>
+      <h2>Counter: {count}</h2>
+      <button onClick={increment}>+ Increment</button>
+      <button onClick={decrement}>- Decrement</button>
+      <button onClick={reset}>Reset</button>
+      {/* Works with negative values too! */}
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

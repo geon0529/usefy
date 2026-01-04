@@ -621,6 +621,48 @@ export const Default: Story = {
     storageKey: "session-demo-value",
     initialValue: "Hello, Session!",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useSessionStorage } from "@usefy/use-session-storage";
+import { useState } from "react";
+
+function SessionStorageExample() {
+  const [value, setValue, removeValue] = useSessionStorage("session-demo-value", "Hello, Session!");
+  const [inputValue, setInputValue] = useState("");
+
+  return (
+    <div>
+      <h2>useSessionStorage Demo</h2>
+      <p>Values persist during the browser session (cleared when tab closes)</p>
+      <div>
+        <label>Stored Value:</label>
+        <div>{value}</div>
+      </div>
+      <div>
+        <label>New Value:</label>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Enter new value..."
+        />
+      </div>
+      <div>
+        <button onClick={() => { setValue(inputValue); setInputValue(""); }}>
+          Save to Session
+        </button>
+        <button onClick={removeValue}>Remove Value</button>
+      </div>
+      <p>Storage Key: session-demo-value</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -649,6 +691,89 @@ export const Default: Story = {
  */
 export const FormPersistence: Story = {
   render: () => <FormPersistenceDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useSessionStorage } from "@usefy/use-session-storage";
+
+interface FormData {
+  name: string;
+  email: string;
+  step: number;
+}
+
+function FormPersistenceExample() {
+  const [formData, setFormData, clearForm] = useSessionStorage<FormData>(
+    "checkout-form",
+    {
+      name: "",
+      email: "",
+      step: 1,
+    }
+  );
+
+  return (
+    <div>
+      <h2>Form Persistence Demo</h2>
+      <p>Form data persists during your session - refresh won't lose your progress!</p>
+      <div>
+        <p>Current Step: {formData.step} / 3</p>
+        <div style={{ width: "100%", background: "#e5e7eb", height: "8px", borderRadius: "9999px" }}>
+          <div
+            style={{
+              background: "#4f46e5",
+              height: "8px",
+              borderRadius: "9999px",
+              width: \`\${(formData.step / 3) * 100}%\`,
+            }}
+          />
+        </div>
+      </div>
+      <div>
+        <label>Name:</label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+          placeholder="Your name"
+        />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input
+          type="email"
+          value={formData.email}
+          onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+          placeholder="your@email.com"
+        />
+      </div>
+      <div>
+        <button
+          onClick={() => setFormData((prev) => ({ ...prev, step: Math.max(1, prev.step - 1) }))}
+          disabled={formData.step <= 1}
+        >
+          Previous Step
+        </button>
+        <button
+          onClick={() => setFormData((prev) => ({ ...prev, step: Math.min(3, prev.step + 1) }))}
+          disabled={formData.step >= 3}
+        >
+          Next Step
+        </button>
+      </div>
+      <button onClick={clearForm}>Clear Form & Reset</button>
+      <div>
+        <label>Session Data:</label>
+        <pre>{JSON.stringify(formData, null, 2)}</pre>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -677,6 +802,32 @@ export const FormPersistence: Story = {
  */
 export const WithCounter: Story = {
   render: () => <CounterDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useSessionStorage } from "@usefy/use-session-storage";
+
+function SessionCounter() {
+  const [count, setCount, resetCount] = useSessionStorage("session-counter", 0);
+
+  return (
+    <div>
+      <h2>Session Counter</h2>
+      <p>Counter persists during session, resets when tab closes</p>
+      <div>{count}</div>
+      <div>
+        <button onClick={() => setCount((c) => c - 1)}>- Decrement</button>
+        <button onClick={() => setCount((c) => c + 1)}>+ Increment</button>
+        <button onClick={resetCount}>Reset</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -708,6 +859,74 @@ export const WithCounter: Story = {
  */
 export const SessionBehavior: Story = {
   render: () => <SessionBehaviorDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useSessionStorage } from "@usefy/use-session-storage";
+import { useEffect } from "react";
+
+function SessionBehaviorExample() {
+  const [viewCount, setViewCount] = useSessionStorage("page-views", 0);
+
+  // Increment on mount (simulating page view)
+  useEffect(() => {
+    setViewCount((c) => c + 1);
+  }, []);
+
+  return (
+    <div>
+      <h2>Session Behavior</h2>
+      <p>Understanding the difference between localStorage and sessionStorage</p>
+      <div>
+        <p>Story Views This Session</p>
+        <div>{viewCount}</div>
+      </div>
+      <div>
+        <h3>localStorage vs sessionStorage</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>localStorage</th>
+              <th>sessionStorage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Persistence</td>
+              <td>Permanent</td>
+              <td>Until tab closes</td>
+            </tr>
+            <tr>
+              <td>Tab sharing</td>
+              <td>Shared across tabs</td>
+              <td>Per-tab only</td>
+            </tr>
+            <tr>
+              <td>Refresh survives</td>
+              <td>Yes</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Use case</td>
+              <td>User preferences, themes</td>
+              <td>Form drafts, wizard steps</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Tip:</strong> Use sessionStorage for temporary data that should be cleared
+        when the user closes the tab, like form drafts or multi-step wizard progress.
+      </p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -724,6 +943,66 @@ export const SessionBehavior: Story = {
  */
 export const TabIsolation: Story = {
   render: () => <TabIsolationDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useSessionStorage } from "@usefy/use-session-storage";
+import { useState } from "react";
+
+function TabIsolationExample() {
+  const [message, setMessage] = useSessionStorage("tab-message", "");
+  const [tabId] = useState(() => Math.random().toString(36).substring(2, 8));
+
+  return (
+    <div>
+      <h2>Tab Isolation Demo</h2>
+      <p>Unlike localStorage, sessionStorage is NOT shared between tabs</p>
+      <div>
+        <p>This Tab's ID</p>
+        <div>{tabId}</div>
+      </div>
+      <div>
+        <label>Session Message:</label>
+        <div>{message || "(empty)"}</div>
+      </div>
+      <div>
+        <label>Set Message:</label>
+        <div>
+          <button onClick={() => setMessage(\`Hello from \${tabId}\`)}>
+            Hello from {tabId}
+          </button>
+          <button onClick={() => setMessage("Tab-specific data")}>
+            Tab-specific data
+          </button>
+          <button onClick={() => setMessage("Session only")}>Session only</button>
+          <button onClick={() => setMessage("")}>Clear</button>
+        </div>
+      </div>
+      <div style={{ background: "#fef3c7", border: "1px solid #fde68a", padding: "1rem", borderRadius: "0.5rem" }}>
+        <p>
+          <strong>⚠️ Important:</strong> Each browser tab has its own separate sessionStorage.
+          Changes made here will NOT appear in other tabs!
+        </p>
+      </div>
+      <p>
+        <strong>How to verify:</strong>
+        <br />
+        1. Open this page in another browser tab
+        <br />
+        2. Notice each tab has a different Tab ID
+        <br />
+        3. Set a message in one tab
+        <br />
+        4. The other tab will NOT see the change
+      </p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -751,6 +1030,67 @@ export const TabIsolation: Story = {
  */
 export const ComponentSync: Story = {
   render: () => <ComponentSyncDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useSessionStorage } from "@usefy/use-session-storage";
+
+function SyncedSessionComponent({ name }: { name: string }) {
+  const [count, setCount, resetCount] = useSessionStorage("session-shared-count", 0);
+
+  return (
+    <div style={{ padding: "1rem", borderRadius: "0.5rem", border: "2px solid #14b8a6", background: "#f0fdfa" }}>
+      <h3>{name}</h3>
+      <div>{count}</div>
+      <div>
+        <button onClick={() => setCount((c) => c - 1)}>-1</button>
+        <button onClick={() => setCount((c) => c + 1)}>+1</button>
+        <button onClick={() => setCount((c) => c + 10)}>+10</button>
+        <button onClick={resetCount}>Reset</button>
+      </div>
+    </div>
+  );
+}
+
+function ComponentSyncExample() {
+  return (
+    <div>
+      <h2>Component Sync Demo</h2>
+      <p>
+        Multiple components using the same sessionStorage key automatically stay
+        in sync within the same tab
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "1.5rem" }}>
+        <SyncedSessionComponent name="Component A" />
+        <SyncedSessionComponent name="Component B" />
+      </div>
+      <div style={{ marginBottom: "1.5rem" }}>
+        <SyncedSessionComponent name="Component C" />
+      </div>
+      <p>
+        <strong>How it works:</strong>
+        <br />
+        All three components use useSessionStorage("session-shared-count", 0)
+        <br />
+        When any component updates the value, all others update instantly!
+        <br />
+        <br />
+        <strong>Note:</strong>
+        <br />
+        • Sync works within the same tab only
+        <br />
+        • Other tabs have their own separate sessionStorage
+        <br />
+        • Data is cleared when the tab is closed
+      </p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 

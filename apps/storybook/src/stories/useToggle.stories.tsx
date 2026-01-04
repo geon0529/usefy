@@ -120,6 +120,31 @@ export const Default: Story = {
     initialValue: false,
     title: "Basic Toggle",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useToggle } from "@usefy/use-toggle";
+
+function ToggleExample() {
+  const { value, toggle, setTrue, setFalse } = useToggle(false);
+
+  return (
+    <div>
+      <h2>Basic Toggle</h2>
+      <div>State: {value ? "TRUE" : "FALSE"}</div>
+      <div>
+        <button onClick={toggle}>⇄ Toggle</button>
+        <button onClick={setTrue}>✓ Set True</button>
+        <button onClick={setFalse}>✕ Set False</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -166,6 +191,31 @@ export const StartingTrue: Story = {
     initialValue: true,
     title: "Starting with True",
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useToggle } from "@usefy/use-toggle";
+
+function StartingTrueExample() {
+  const { value, toggle, setTrue, setFalse } = useToggle(true);
+
+  return (
+    <div>
+      <h2>Starting with True</h2>
+      <div>State: {value ? "TRUE" : "FALSE"}</div>
+      <div>
+        <button onClick={toggle}>⇄ Toggle</button>
+        <button onClick={setTrue}>✓ Set True</button>
+        <button onClick={setFalse}>✕ Set False</button>
+      </div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -189,6 +239,34 @@ export const SetValueFunction: Story = {
   args: {
     initialValue: false,
     title: "Set Value Function",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useToggle } from "@usefy/use-toggle";
+
+function SetValueExample() {
+  const { value, setValue } = useToggle(false);
+
+  return (
+    <div>
+      <h2>Set Value Function</h2>
+      <div>State: {value ? "TRUE" : "FALSE"}</div>
+      <div>
+        <button onClick={() => setValue(!value)}>
+          Set Value (opposite)
+        </button>
+        <button onClick={() => setValue(true)}>Set to True</button>
+        <button onClick={() => setValue(false)}>Set to False</button>
+      </div>
+      <p>💡 Use setValue() to set the state to any boolean value directly.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -221,6 +299,34 @@ export const IdempotentOperations: Story = {
   args: {
     initialValue: false,
     title: "Idempotent Operations",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useToggle } from "@usefy/use-toggle";
+
+function IdempotentExample() {
+  const { value, setTrue, setFalse } = useToggle(false);
+
+  return (
+    <div>
+      <h2>Idempotent Operations</h2>
+      <div>State: {value ? "TRUE" : "FALSE"}</div>
+      <div>
+        <button onClick={setTrue}>✓ Set True</button>
+        <button onClick={setFalse}>✕ Set False</button>
+      </div>
+      <p>
+        💡 Calling setTrue() or setFalse() multiple times has the same effect
+        as calling it once. These operations are idempotent.
+      </p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

@@ -661,6 +661,52 @@ type Story = StoryObj<typeof BasicDemo>;
 
 export const Default: Story = {
   render: () => <BasicDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useUnmount } from "@usefy/use-unmount";
+import { useState } from "react";
+
+function ChildComponent({ onUnmount }: { onUnmount: () => void }) {
+  useUnmount(() => {
+    onUnmount();
+  });
+
+  return (
+    <div>
+      <p>Mounted Component</p>
+      <p>Will call onUnmount when removed</p>
+    </div>
+  );
+}
+
+function Example() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [unmountCount, setUnmountCount] = useState(0);
+
+  const handleUnmount = () => {
+    setUnmountCount((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      {isVisible ? (
+        <ChildComponent onUnmount={handleUnmount} />
+      ) : (
+        <div>Component Unmounted</div>
+      )}
+      <button onClick={() => setIsVisible((prev) => !prev)}>
+        {isVisible ? "Unmount Component" : "Mount Component"}
+      </button>
+      <div>Unmount Count: {unmountCount}</div>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -692,6 +738,82 @@ export const Default: Story = {
 
 export const ClosureFreshness: StoryObj<typeof ClosureFreshnessDemo> = {
   render: () => <ClosureFreshnessDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useUnmount } from "@usefy/use-unmount";
+import { useState } from "react";
+
+function FormChild({
+  onUnmount,
+}: {
+  onUnmount: (data: { name: string; email: string }) => void;
+}) {
+  const [formData, setFormData] = useState({ name: "", email: "" });
+
+  useUnmount(() => {
+    onUnmount(formData);
+  });
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Name"
+        value={formData.name}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, name: e.target.value }))
+        }
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, email: e.target.value }))
+        }
+      />
+      <p>Data will be saved on unmount</p>
+    </div>
+  );
+}
+
+function Example() {
+  const [isEditing, setIsEditing] = useState(true);
+  const [savedData, setSavedData] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
+
+  const handleUnmount = (data: { name: string; email: string }) => {
+    setSavedData(data);
+  };
+
+  return (
+    <div>
+      {isEditing ? (
+        <FormChild onUnmount={handleUnmount} />
+      ) : (
+        <div>Form Closed</div>
+      )}
+      <button onClick={() => setIsEditing((prev) => !prev)}>
+        {isEditing ? "Close Form (Save)" : "Open Form"}
+      </button>
+      {savedData && (
+        <div>
+          <p>Saved Name: {savedData.name || "(empty)"}</p>
+          <p>Saved Email: {savedData.email || "(empty)"}</p>
+        </div>
+      )}
+      <p>💡 The callback always accesses the latest state values.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -717,6 +839,78 @@ export const ClosureFreshness: StoryObj<typeof ClosureFreshnessDemo> = {
 
 export const ConditionalCleanup: StoryObj<typeof ConditionalCleanupDemo> = {
   render: () => <ConditionalCleanupDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useUnmount } from "@usefy/use-unmount";
+import { useState } from "react";
+
+function ConditionalChild({
+  onUnmount,
+  enabled,
+}: {
+  onUnmount: () => void;
+  enabled: boolean;
+}) {
+  useUnmount(
+    () => {
+      onUnmount();
+    },
+    { enabled }
+  );
+
+  return (
+    <div>
+      <p>{enabled ? "Cleanup Enabled" : "Cleanup Disabled"}</p>
+      <p>
+        {enabled
+          ? "Will call onUnmount when removed"
+          : "Unmount callback is disabled"}
+      </p>
+    </div>
+  );
+}
+
+function Example() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [cleanupEnabled, setCleanupEnabled] = useState(true);
+  const [unmountCount, setUnmountCount] = useState(0);
+
+  const handleUnmount = () => {
+    setUnmountCount((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      {isVisible ? (
+        <ConditionalChild
+          onUnmount={handleUnmount}
+          enabled={cleanupEnabled}
+        />
+      ) : (
+        <div>Component Unmounted</div>
+      )}
+      <div>
+        <button onClick={() => setIsVisible((prev) => !prev)}>
+          {isVisible ? "Unmount" : "Mount"}
+        </button>
+        <button onClick={() => setCleanupEnabled((prev) => !prev)}>
+          {cleanupEnabled ? "Disable Cleanup" : "Enable Cleanup"}
+        </button>
+      </div>
+      <div>
+        <p>Cleanup Status: {cleanupEnabled ? "Enabled" : "Disabled"}</p>
+        <p>Unmount Calls: {unmountCount}</p>
+      </div>
+      <p>💡 Use the enabled option to conditionally run cleanup.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -772,6 +966,79 @@ export const ConditionalCleanup: StoryObj<typeof ConditionalCleanupDemo> = {
 
 export const MultipleInstances: StoryObj<typeof MultipleInstancesDemo> = {
   render: () => <MultipleInstancesDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useUnmount } from "@usefy/use-unmount";
+import { useState } from "react";
+
+function InstanceChild({
+  id,
+  onUnmount,
+}: {
+  id: number;
+  onUnmount: (id: number) => void;
+}) {
+  useUnmount(() => {
+    onUnmount(id);
+  });
+
+  return <div>Instance #{id}</div>;
+}
+
+function Example() {
+  const [instances, setInstances] = useState([1, 2, 3]);
+  const [nextId, setNextId] = useState(4);
+  const [unmountLog, setUnmountLog] = useState<
+    Array<{ id: number; time: string }>
+  >([]);
+
+  const handleUnmount = (id: number) => {
+    setUnmountLog((prev) => [
+      { id, time: new Date().toLocaleTimeString() },
+      ...prev.slice(0, 9),
+    ]);
+  };
+
+  const addInstance = () => {
+    setInstances((prev) => [...prev, nextId]);
+    setNextId((prev) => prev + 1);
+  };
+
+  const removeInstance = (id: number) => {
+    setInstances((prev) => prev.filter((i) => i !== id));
+  };
+
+  return (
+    <div>
+      <div>
+        {instances.map((id) => (
+          <div key={id}>
+            <InstanceChild id={id} onUnmount={handleUnmount} />
+            <button onClick={() => removeInstance(id)}>Remove</button>
+          </div>
+        ))}
+      </div>
+      <button onClick={addInstance}>Add Instance</button>
+      {unmountLog.length > 0 && (
+        <div>
+          <p>Unmount Log:</p>
+          {unmountLog.map(({ id, time }, index) => (
+            <div key={index}>
+              Instance #{id} - {time}
+            </div>
+          ))}
+        </div>
+      )}
+      <p>💡 Each instance has its own independent unmount callback.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -799,6 +1066,85 @@ export const MultipleInstances: StoryObj<typeof MultipleInstancesDemo> = {
 
 export const AnalyticsTracking: StoryObj<typeof AnalyticsTrackingDemo> = {
   render: () => <AnalyticsTrackingDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useUnmount } from "@usefy/use-unmount";
+import { useState } from "react";
+
+function SectionView({
+  section,
+  onUnmount,
+}: {
+  section: string;
+  onUnmount: () => void;
+}) {
+  useUnmount(onUnmount);
+
+  return (
+    <div>
+      <h2>{section}</h2>
+      <p>Currently viewing this section</p>
+    </div>
+  );
+}
+
+function Example() {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [events, setEvents] = useState<
+    Array<{ section: string; event: string; time: string }>
+  >([]);
+
+  const sections = ["Dashboard", "Settings", "Profile"];
+
+  const logEvent = (section: string, event: string) => {
+    setEvents((prev) => [
+      { section, event, time: new Date().toLocaleTimeString() },
+      ...prev.slice(0, 9),
+    ]);
+  };
+
+  return (
+    <div>
+      <div>
+        {sections.map((section) => (
+          <button
+            key={section}
+            onClick={() => {
+              logEvent(section, "view_start");
+              setActiveSection(section);
+            }}
+          >
+            {section}
+          </button>
+        ))}
+      </div>
+      {activeSection && (
+        <SectionView
+          key={activeSection}
+          section={activeSection}
+          onUnmount={() => logEvent(activeSection, "view_end")}
+        />
+      )}
+      {events.length > 0 && (
+        <div>
+          <p>Analytics Events:</p>
+          {events.map(({ section, event, time }, index) => (
+            <div key={index}>
+              {section} • {event} - {time}
+            </div>
+          ))}
+        </div>
+      )}
+      <p>💡 Track page view duration and navigation with unmount callbacks.</p>
+    </div>
+  );
+}`,
+        language: "tsx",
+        type: "code",
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
