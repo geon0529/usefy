@@ -531,7 +531,7 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 
 - 📦 [npm Organization](https://www.npmjs.com/org/usefy)
 - 🐙 [GitHub Repository](https://github.com/geon0529/usefy)
-- 📝 [Changelog](https://github.com/geon0529/usefy/blob/master/CHANGELOG.md)
+- 📝 [Changelog](https://github.com/geon0529/usefy/blob/master/packages/usefy/CHANGELOG.md)
 - 🐛 [Issue Tracker](https://github.com/geon0529/usefy/issues)
 
 ---
