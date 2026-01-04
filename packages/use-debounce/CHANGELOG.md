@@ -1,5 +1,11 @@
 # @usefy/use-debounce
 
+## 0.0.23
+
+### Patch Changes
+
+- 10bb7e8: update READEM.md
+
 ## 0.0.22
 
 ### Patch Changes
