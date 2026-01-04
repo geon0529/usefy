@@ -562,6 +562,7 @@ function AnalyticsTrackingDemo() {
         <div style={{ minHeight: "120px" }}>
           {activeSection && (
             <SectionView
+              key={activeSection}
               section={activeSection}
               onUnmount={() => logEvent(activeSection, "view_end")}
             />
@@ -739,7 +740,8 @@ export const ConditionalCleanup: StoryObj<typeof ConditionalCleanupDemo> = {
     // Mount again
     await userEvent.click(canvas.getByTestId("toggle-visibility-button"));
 
-    // Disable cleanup
+    // Disable cleanup - this triggers the previous cleanup due to effect re-run
+    // (enabled is in the dependency array, so changing it calls the old cleanup)
     await userEvent.click(canvas.getByTestId("toggle-enabled-button"));
 
     await waitFor(() => {
@@ -748,13 +750,21 @@ export const ConditionalCleanup: StoryObj<typeof ConditionalCleanupDemo> = {
       );
     });
 
-    // Unmount with cleanup disabled
-    await userEvent.click(canvas.getByTestId("toggle-visibility-button"));
-
-    // Count should still be 1 (cleanup was disabled)
+    // Count is now 2 because changing enabled from true->false
+    // triggers the previous effect's cleanup function
     await waitFor(() => {
       expect(canvas.getByTestId("conditional-unmount-count")).toHaveTextContent(
-        "1"
+        "2"
+      );
+    });
+
+    // Unmount with cleanup disabled - no additional cleanup should run
+    await userEvent.click(canvas.getByTestId("toggle-visibility-button"));
+
+    // Count should still be 2 (no new cleanup was registered when enabled=false)
+    await waitFor(() => {
+      expect(canvas.getByTestId("conditional-unmount-count")).toHaveTextContent(
+        "2"
       );
     });
   },
@@ -796,7 +806,11 @@ export const AnalyticsTracking: StoryObj<typeof AnalyticsTrackingDemo> = {
     await userEvent.click(canvas.getByTestId("section-dashboard"));
 
     await waitFor(() => {
-      expect(canvas.getByText("Dashboard")).toBeInTheDocument();
+      // Check that section view is displayed (unique text in section view)
+      expect(
+        canvas.getByText("Currently viewing this section")
+      ).toBeInTheDocument();
+      // Check that view_start event was logged
       expect(canvas.getByText("view_start")).toBeInTheDocument();
     });
 
@@ -804,7 +818,11 @@ export const AnalyticsTracking: StoryObj<typeof AnalyticsTrackingDemo> = {
     await userEvent.click(canvas.getByTestId("section-settings"));
 
     await waitFor(() => {
-      expect(canvas.getByText("Settings")).toBeInTheDocument();
+      // Section view should still be visible with new section
+      expect(
+        canvas.getByText("Currently viewing this section")
+      ).toBeInTheDocument();
+      // Check that view_end event was logged (Dashboard was unmounted)
       expect(canvas.getByText("view_end")).toBeInTheDocument();
     });
   },
