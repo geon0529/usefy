@@ -99,16 +99,16 @@ function WebSocketComponent() {
 
 #### Parameters
 
-| Name | Type | Description |
-|------|------|-------------|
-| `callback` | `() => void` | Function to execute when component unmounts |
-| `options` | `UseUnmountOptions` | Optional configuration |
+| Name       | Type                | Description                                 |
+| ---------- | ------------------- | ------------------------------------------- |
+| `callback` | `() => void`        | Function to execute when component unmounts |
+| `options`  | `UseUnmountOptions` | Optional configuration                      |
 
 #### Options
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `enabled` | `boolean` | `true` | Whether to execute callback on unmount |
+| Name      | Type      | Default | Description                            |
+| --------- | --------- | ------- | -------------------------------------- |
+| `enabled` | `boolean` | `true`  | Whether to execute callback on unmount |
 
 ## React StrictMode
 
@@ -137,6 +137,106 @@ Consider using `useEffect` cleanup instead when:
 - Canceling requests (use abort controllers in `useEffect`)
 
 The key difference is that `useUnmount` guarantees access to the latest values, while `useEffect` cleanup captures values at effect creation time.
+
+## Testing
+
+This package maintains comprehensive test coverage to ensure reliability and stability.
+
+### Test Coverage
+
+| Category   | Coverage     |
+| ---------- | ------------ |
+| Statements | 100% (10/10) |
+| Branches   | 100% (4/4)   |
+| Functions  | 100% (3/3)   |
+| Lines      | 100% (10/10) |
+
+### Test Categories
+
+<details>
+<summary><strong>Basic Functionality Tests</strong></summary>
+
+- Callback execution on unmount
+- No callback execution on mount
+- No callback execution on rerender
+
+</details>
+
+<details>
+<summary><strong>Closure Freshness Tests</strong></summary>
+
+- Callback accesses latest values at unmount time
+- Updated callback reference is used on unmount
+- Latest state values are captured in callback
+
+</details>
+
+<details>
+<summary><strong>Enabled Option Tests</strong></summary>
+
+- Default enabled state (true)
+- Explicit enabled: true
+- Disabled when enabled: false
+- Dynamic enabled state changes
+- Multiple enabled toggles
+
+</details>
+
+<details>
+<summary><strong>Error Handling Tests</strong></summary>
+
+- Errors in callback are caught and logged
+- Unmount process continues despite callback errors
+- Non-Error objects thrown are handled
+
+</details>
+
+<details>
+<summary><strong>Multiple Instances Tests</strong></summary>
+
+- Independent instances work correctly
+- Multiple hooks in same component
+- Independent enabled states per instance
+
+</details>
+
+<details>
+<summary><strong>Edge Cases Tests</strong></summary>
+
+- Rapid mount/unmount cycles
+- Undefined options handling
+- Empty options object
+- Null-ish enabled values
+
+</details>
+
+<details>
+<summary><strong>Callback Reference Stability Tests</strong></summary>
+
+- Effect doesn't re-run when callback reference changes
+
+</details>
+
+<details>
+<summary><strong>Async Callback Tests</strong></summary>
+
+- Async callbacks are executed on unmount
+- Async error handling behavior
+
+</details>
+
+### Running Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with coverage report
+pnpm test --coverage
+```
 
 ## License
 

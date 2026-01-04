@@ -86,6 +86,9 @@ importers:
       '@usefy/use-toggle':
         specifier: workspace:*
         version: link:../../packages/use-toggle
+      '@usefy/use-unmount':
+        specifier: workspace:*
+        version: link:../../packages/use-unmount
     devDependencies:
       '@storybook/addon-docs':
         specifier: ^8.6.14

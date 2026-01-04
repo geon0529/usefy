@@ -9,6 +9,7 @@
     "test": "vitest --config vitest.packages.config.ts run",
     "test:coverage": "vitest --config vitest.packages.config.ts run --coverage",
     "test:ui": "vitest --config vitest.packages.config.ts --ui",
+    "test:ui:coverage": "vitest --config vitest.packages.config.ts --ui --coverage",
     "typecheck": "turbo run typecheck",
     "storybook": "turbo run storybook --filter=@usefy/storybook",
     "build-storybook": "turbo run build-storybook --filter=@usefy/storybook",
