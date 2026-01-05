@@ -2192,7 +2192,7 @@ export const BasicUsage: Story = {
     docs: {
       description: {
         story:
-          "The most basic usage. Connect the ref to an element to check visibility with the `inView` state.",
+          "The most basic usage. Attach the ref to an element and use `inView` to check its visibility. Re-renders occur when the element enters or exits the viewport.",
       },
       source: {
         code: `import { useIntersectionObserver } from "@usefy/use-intersection-observer";
@@ -2202,6 +2202,7 @@ function MyComponent() {
   
   return (
     <div ref={ref}>
+      {/* inView updates when element enters/exits viewport */}
       {inView ? 'Visible!' : 'Not visible'}
     </div>
   );
@@ -2255,15 +2256,16 @@ export const Threshold: Story = {
       source: {
         code: `import { useIntersectionObserver } from "@usefy/use-intersection-observer";
 
-// Single threshold
+// Single threshold - triggers when crossing 50% visibility
 const { ref, inView } = useIntersectionObserver({
-  threshold: 0.5 // Trigger when 50% visible
+  threshold: 0.5 // Re-render when element becomes 50% visible or less than 50%
 });
 
-// Multiple thresholds
+// Multiple thresholds - more granular tracking
 const { ref, entry } = useIntersectionObserver({
   threshold: [0, 0.25, 0.5, 0.75, 1.0],
   onChange: (entry) => {
+    // Called when crossing any of these threshold boundaries
     console.log(\`Visibility: \${entry.intersectionRatio * 100}%\`);
   }
 });`,
@@ -2386,14 +2388,15 @@ export const TriggerOnce: Story = {
       source: {
         code: `import { useIntersectionObserver } from "@usefy/use-intersection-observer";
 
-// Trigger only once (suitable for lazy loading)
+// Trigger only once - observer stops after first intersection
 const { ref, inView } = useIntersectionObserver({
-  triggerOnce: true,
-  threshold: 0.1
+  triggerOnce: true, // Element is unobserved after becoming visible
+  threshold: 0.1 // Trigger when 10% visible
 });
 
 return (
   <div ref={ref}>
+    {/* Image loads once and stays loaded */}
     {inView && <img src={imageSrc} />}
   </div>
 );`,
@@ -2473,9 +2476,9 @@ export const Enabled: Story = {
 
 const [isLoading, setIsLoading] = useState(true);
 
-// Disable observation while loading
+// Dynamically control observer lifecycle
 const { ref, inView } = useIntersectionObserver({
-  enabled: !isLoading
+  enabled: !isLoading // Observer disconnects when false, reconnects when true
 });`,
         language: "tsx",
         type: "code",
@@ -2538,12 +2541,13 @@ export const InitialIsIntersecting: Story = {
       source: {
         code: `import { useIntersectionObserver } from "@usefy/use-intersection-observer";
 
-// Assume above-the-fold content is initially visible
+// Set initial state for SSR/SSG
 const { ref, inView } = useIntersectionObserver({
-  initialIsIntersecting: true
+  initialIsIntersecting: true // Assume visible during server-side rendering
 });
 
-// On SSR, inView will be true on first render`,
+// During SSR/first render, inView is true
+// After hydration, actual intersection state takes over`,
         language: "tsx",
         type: "code",
       },
@@ -2603,6 +2607,7 @@ export const OnChange: Story = {
 const { ref } = useIntersectionObserver({
   threshold: [0, 0.5, 1.0],
   onChange: (entry, inView) => {
+    // Called when crossing threshold boundaries or entering/exiting viewport
     if (inView) {
       analytics.track('element_viewed', {
         ratio: entry.intersectionRatio
@@ -2732,7 +2737,7 @@ function ScrollContainer() {
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { ref, inView } = useIntersectionObserver({
-    root: containerRef.current,
+    root: containerRef.current, // Use custom container instead of viewport
     rootMargin: "0px"
   });
 
@@ -2740,6 +2745,7 @@ function ScrollContainer() {
     <div ref={containerRef} style={{ overflow: 'auto', height: 400 }}>
       <div style={{ height: 1000 }}>
         <div ref={ref}>
+          {/* Intersection is detected within the custom container */}
           {inView ? 'Visible in container' : 'Not visible'}
         </div>
       </div>
@@ -2759,13 +2765,13 @@ export const EntryDetails: Story = {
     docs: {
       description: {
         story:
-          "View all detailed information provided by the `entry` object. The entry only updates when threshold boundaries are crossed, not on every scroll event.",
+          "View all detailed information provided by the `entry` object. The hook updates the entry and triggers a re-render when `isIntersecting` or `intersectionRatio` changes (e.g., crossing threshold boundaries or entering/exiting the viewport).",
       },
       source: {
         code: `import { useIntersectionObserver } from "@usefy/use-intersection-observer";
 
 const { ref, entry } = useIntersectionObserver({
-  // Multiple thresholds = more granular updates
+  // Multiple thresholds = more granular updates when visibility changes
   threshold: [0, 0.25, 0.5, 0.75, 1.0]
 });
 
@@ -2780,10 +2786,13 @@ if (entry) {
   entry.intersectionRect;   // visible portion's bounding box
   entry.rootBounds;         // root element's bounding box
   
-  // Metadata (rarely used in practice)
-  entry.time;   // DOMHighResTimeStamp since page load
+  // Metadata
+  entry.time;   // DOMHighResTimeStamp - timestamp when intersection was recorded
   entry.target; // the observed DOM element
-}`,
+}
+
+// Note: Re-renders occur only when isIntersecting or intersectionRatio changes,
+// not on every Intersection Observer callback (which may fire with just time updates)`,
         language: "tsx",
         type: "code",
       },
@@ -2807,9 +2816,9 @@ function LazyImage({ src, alt }) {
   const [loaded, setLoaded] = useState(false);
   
   const { ref, inView } = useIntersectionObserver({
-    triggerOnce: true,  // Stop observing after load
-    threshold: 0.1,     // Start loading when 10% visible
-    rootMargin: "50px"  // Preload 50px ahead
+    triggerOnce: true,  // Stop observing after first detection
+    threshold: 0.1,     // Trigger when 10% visible
+    rootMargin: "50px"  // Start loading 50px before entering viewport
   });
 
   return (
@@ -2850,8 +2859,8 @@ function InfiniteList() {
   const [loading, setLoading] = useState(false);
 
   const { ref, inView } = useIntersectionObserver({
-    threshold: 1.0,
-    rootMargin: "100px"  // Preload 100px ahead
+    threshold: 1.0,     // Trigger when sentinel is fully visible
+    rootMargin: "100px" // Start loading 100px before sentinel enters viewport
   });
 
   useEffect(() => {
@@ -2868,7 +2877,7 @@ function InfiniteList() {
     <div>
       {items.map(item => <Item key={item.id} {...item} />)}
       
-      {/* Sentinel Element */}
+      {/* Sentinel Element - triggers loading when visible */}
       <div ref={ref}>
         {loading && <Spinner />}
       </div>
@@ -2929,8 +2938,8 @@ export const ScrollAnimations: Story = {
 
 function AnimatedCard({ children }) {
   const { ref, inView } = useIntersectionObserver({
-    triggerOnce: true,
-    threshold: 0.3
+    triggerOnce: true, // Animate only once when element enters
+    threshold: 0.3     // Trigger when 30% visible
   });
 
   return (
@@ -2967,12 +2976,13 @@ export const ScrollProgress: Story = {
 function ProgressTracker() {
   const [progress, setProgress] = useState(0);
   
-  // 101 thresholds (0%, 1%, 2%, ... 100%)
+  // 101 thresholds (0%, 1%, 2%, ... 100%) for fine-grained tracking
   const thresholds = Array.from({ length: 101 }, (_, i) => i / 100);
 
   const { ref } = useIntersectionObserver({
     threshold: thresholds,
     onChange: (entry) => {
+      // Called when crossing any threshold boundary (each 1% change)
       setProgress(Math.round(entry.intersectionRatio * 100));
     }
   });
@@ -3035,6 +3045,7 @@ function Section({ id, onVisible }) {
   const { ref } = useIntersectionObserver({
     threshold: 0.6,  // Activate when 60% visible
     onChange: (_, inView) => {
+      // Called when section crosses 60% visibility threshold
       if (inView) onVisible();
     }
   });
