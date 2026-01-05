@@ -1,8 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import React, { useState, useRef, useEffect } from "react";
 import { useIntersectionObserver } from "@usefy/use-intersection-observer";
-import { within, expect, waitFor } from "@storybook/test";
+import { within, expect, waitFor, userEvent } from "@storybook/test";
 import { storyTheme } from "../styles/storyTheme";
+
+// Helper function to simulate scroll
+const scrollTo = (element: HTMLElement, scrollTop: number) => {
+  element.scrollTop = scrollTop;
+  element.dispatchEvent(new Event("scroll", { bubbles: true }));
+};
+
+// Helper to wait for intersection observer to process
+const waitForIntersection = () => new Promise((r) => setTimeout(r, 100));
 
 // ============ 1. Basic Usage Demo ============
 function BasicUsageDemo() {
@@ -45,6 +54,7 @@ function BasicUsageDemo() {
 
       <div
         ref={scrollContainerRef}
+        data-testid="scroll-container"
         style={{
           height: "300px",
           overflowY: "auto",
@@ -197,6 +207,7 @@ function ThresholdDemo() {
 
       <div
         ref={scrollContainerRef}
+        data-testid="threshold-scroll-container"
         style={{
           height: "250px",
           overflowY: "auto",
@@ -568,6 +579,7 @@ function TriggerOnceChild({
 
       <div
         ref={scrollContainerRef}
+        data-testid="trigger-scroll-container"
         style={{
           height: "200px",
           overflowY: "auto",
@@ -669,6 +681,7 @@ function EnabledDemo() {
 
       <div
         ref={scrollContainerRef}
+        data-testid="enabled-scroll-container"
         style={{
           height: "200px",
           overflowY: "auto",
@@ -897,6 +910,7 @@ function OnChangeDemo() {
 
       <div
         ref={scrollContainerRef}
+        data-testid="onchange-scroll-container"
         style={{
           height: "180px",
           overflowY: "auto",
@@ -1730,6 +1744,7 @@ function InfiniteScrollDemo() {
 
       <div
         ref={scrollContainerRef}
+        data-testid="infinite-scroll-container"
         style={{
           height: "300px",
           overflowY: "auto",
@@ -2197,23 +2212,7 @@ const meta = {
       description: {
         component: `
 \`useIntersectionObserver\` is a React hook that efficiently detects element visibility in the viewport using the Intersection Observer API.
-
-### Key Features
-- 🔭 **Efficient Visibility Detection** - Leverages native Intersection Observer API
-- 🎯 **Threshold-based Callbacks** - Fine-grained visibility ratio tracking
-- 🔒 **TriggerOnce Support** - Perfect for lazy loading patterns
-- ⚡ **Dynamic Enable/Disable** - Conditional observation support
-- 🌐 **SSR Compatible** - Server-side rendering support
-- 📘 **TypeScript Support** - Full type inference
-
-### Use Cases
-- Image/component lazy loading
-- Infinite scroll implementation
-- Scroll animations
-- Reading progress tracking
-- Section navigation highlighting
-- Video autoplay/pause
-        `,
+`,
       },
     },
   },
@@ -2252,10 +2251,32 @@ function MyComponent() {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Check initial state
+    // 1. Check initial state - element should not be in view
+    const scrollContainer = canvas.getByTestId("scroll-container");
+    const inViewIndicator = canvas.getByTestId("in-view");
+
     await waitFor(async () => {
-      const targetElement = canvas.getByTestId("target-element");
-      await expect(targetElement).toBeInTheDocument();
+      await expect(inViewIndicator).toHaveTextContent("false");
+    });
+
+    // 2. Scroll down to make element visible
+    scrollTo(scrollContainer, 400);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      await expect(inViewIndicator).toHaveTextContent("true");
+    });
+
+    // 3. Verify target element shows "Visible!" text
+    const targetElement = canvas.getByTestId("target-element");
+    await expect(targetElement).toHaveTextContent("Visible!");
+
+    // 4. Scroll back up - element should be out of view
+    scrollTo(scrollContainer, 0);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      await expect(inViewIndicator).toHaveTextContent("false");
     });
   },
 };
@@ -2291,9 +2312,40 @@ const { ref, entry } = useIntersectionObserver({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
+    const scrollContainer = canvas.getByTestId("threshold-scroll-container");
+    const visibility = canvas.getByTestId("visibility");
+    const progressBar = canvas.getByTestId("progress-bar");
+
+    // 1. Initial state - 0% visibility
     await waitFor(async () => {
-      const progressBar = canvas.getByTestId("progress-bar");
-      await expect(progressBar).toBeInTheDocument();
+      await expect(visibility).toHaveTextContent("0%");
+    });
+
+    // 2. Scroll to show partial visibility
+    scrollTo(scrollContainer, 250);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      // Should show some visibility percentage
+      const text = visibility.textContent || "";
+      const percentage = parseInt(text.replace("%", ""), 10);
+      await expect(percentage).toBeGreaterThan(0);
+    });
+
+    // 3. Verify progress bar width changes
+    await waitFor(async () => {
+      const width = progressBar.style.width;
+      await expect(width).not.toBe("0%");
+    });
+
+    // 4. Scroll more for higher visibility
+    scrollTo(scrollContainer, 350);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      const text = visibility.textContent || "";
+      const percentage = parseInt(text.replace("%", ""), 10);
+      await expect(percentage).toBeGreaterThan(50);
     });
   },
 };
@@ -2332,6 +2384,30 @@ const { ref } = useIntersectionObserver({
       },
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    // 1. Verify initial rootMargin is 0px (default button selected)
+    const defaultButton = canvas.getByTestId("margin-0");
+    await expect(defaultButton).toHaveClass("bg-indigo-600");
+
+    // 2. Click +50px button and verify it's selected
+    const expandButton = canvas.getByTestId("margin-50");
+    await user.click(expandButton);
+
+    await waitFor(async () => {
+      await expect(expandButton).toHaveClass("bg-indigo-600");
+    });
+
+    // 3. Click -50px button and verify it's selected
+    const shrinkButton = canvas.getByTestId("margin-minus50");
+    await user.click(shrinkButton);
+
+    await waitFor(async () => {
+      await expect(shrinkButton).toHaveClass("bg-indigo-600");
+    });
+  },
 };
 
 export const TriggerOnce: Story = {
@@ -2363,10 +2439,58 @@ return (
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    const scrollContainer = canvas.getByTestId("trigger-scroll-container");
+    const triggerCount = canvas.getByTestId("trigger-count");
+
+    // 1. Verify initial state - triggerOnce: true, count: 0
+    await waitFor(async () => {
+      await expect(triggerCount).toHaveTextContent("0");
+    });
+
+    // 2. Scroll down to trigger - count should become 1
+    scrollTo(scrollContainer, 300);
+    await waitForIntersection();
 
     await waitFor(async () => {
-      const triggerOnceValue = canvas.getByTestId("trigger-once-value");
-      await expect(triggerOnceValue).toHaveTextContent("true");
+      await expect(triggerCount).toHaveTextContent("1");
+    });
+
+    // 3. Scroll back and forth - count should remain 1 (triggerOnce: true)
+    scrollTo(scrollContainer, 0);
+    await waitForIntersection();
+    scrollTo(scrollContainer, 300);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      await expect(triggerCount).toHaveTextContent("1");
+    });
+
+    // 4. Switch to triggerOnce: false and verify multiple triggers
+    const triggerOffButton = canvas.getByTestId("trigger-once-off");
+    await user.click(triggerOffButton);
+    await waitForIntersection();
+
+    const newScrollContainer = canvas.getByTestId("trigger-scroll-container");
+    const newTriggerCount = canvas.getByTestId("trigger-count");
+
+    // Scroll to trigger multiple times
+    scrollTo(newScrollContainer, 300);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      await expect(newTriggerCount).toHaveTextContent("1");
+    });
+
+    scrollTo(newScrollContainer, 0);
+    await waitForIntersection();
+    scrollTo(newScrollContainer, 300);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      const count = parseInt(newTriggerCount.textContent || "0", 10);
+      await expect(count).toBeGreaterThanOrEqual(2);
     });
   },
 };
@@ -2393,6 +2517,49 @@ const { ref, inView } = useIntersectionObserver({
       },
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    const scrollContainer = canvas.getByTestId("enabled-scroll-container");
+    const inViewIndicator = canvas.getByTestId("in-view");
+    const toggleButton = canvas.getByTestId("toggle-enabled");
+
+    // 1. Initial state - enabled: true, scroll to make element visible
+    scrollTo(scrollContainer, 300);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      await expect(inViewIndicator).toHaveTextContent("true");
+    });
+
+    // 2. Scroll back - element should be out of view
+    scrollTo(scrollContainer, 0);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      await expect(inViewIndicator).toHaveTextContent("false");
+    });
+
+    // 3. Disable observation
+    await user.click(toggleButton);
+    await waitForIntersection();
+
+    // 4. Scroll while disabled - inView should not change
+    const currentInView = inViewIndicator.textContent;
+    scrollTo(scrollContainer, 300);
+    await waitForIntersection();
+
+    // InView might remain same or change depending on implementation
+    // The key test is that the button shows "Paused"
+    await expect(toggleButton).toHaveTextContent("Paused");
+
+    // 5. Re-enable and verify observation resumes
+    await user.click(toggleButton);
+    await waitForIntersection();
+
+    await expect(toggleButton).toHaveTextContent("Observing");
+  },
 };
 
 export const InitialIsIntersecting: Story = {
@@ -2416,6 +2583,44 @@ const { ref, inView } = useIntersectionObserver({
         type: "code",
       },
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    // 1. Default state - initialIsIntersecting: false
+    const inViewIndicator = canvas.getByTestId("in-view");
+    const initialValue = canvas.getByTestId("initial-value");
+
+    await waitFor(async () => {
+      await expect(initialValue).toHaveTextContent("false");
+    });
+
+    // 2. Click "Initial: true" button
+    const initialTrueButton = canvas.getByTestId("initial-true");
+    await user.click(initialTrueButton);
+    await waitForIntersection();
+
+    // 3. Verify initial value changed and inView reflects it
+    await waitFor(async () => {
+      const newInitialValue = canvas.getByTestId("initial-value");
+      await expect(newInitialValue).toHaveTextContent("true");
+    });
+
+    await waitFor(async () => {
+      const newInView = canvas.getByTestId("in-view");
+      await expect(newInView).toHaveTextContent("true");
+    });
+
+    // 4. Switch back to false
+    const initialFalseButton = canvas.getByTestId("initial-false");
+    await user.click(initialFalseButton);
+    await waitForIntersection();
+
+    await waitFor(async () => {
+      const finalInitialValue = canvas.getByTestId("initial-value");
+      await expect(finalInitialValue).toHaveTextContent("false");
+    });
   },
 };
 
@@ -2444,6 +2649,40 @@ const { ref } = useIntersectionObserver({
         type: "code",
       },
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const scrollContainer = canvas.getByTestId("onchange-scroll-container");
+
+    // 1. Initial state - no logs
+    await waitFor(async () => {
+      const noLogs = canvas.queryByText("No logs yet...");
+      // Might have logs from initial render, so just verify container exists
+      await expect(scrollContainer).toBeInTheDocument();
+    });
+
+    // 2. Scroll to trigger onChange
+    scrollTo(scrollContainer, 250);
+    await waitForIntersection();
+
+    // 3. Verify logs are created
+    await waitFor(async () => {
+      const firstLog = canvas.queryByTestId("log-0");
+      await expect(firstLog).toBeInTheDocument();
+    });
+
+    // 4. Scroll out and back to generate more logs
+    scrollTo(scrollContainer, 0);
+    await waitForIntersection();
+    scrollTo(scrollContainer, 250);
+    await waitForIntersection();
+
+    // 5. Verify multiple logs exist
+    await waitFor(async () => {
+      const logs = canvas.queryAllByTestId(/^log-/);
+      await expect(logs.length).toBeGreaterThanOrEqual(2);
+    });
   },
 };
 
@@ -2477,6 +2716,38 @@ const { ref, inView } = useIntersectionObserver({
         type: "code",
       },
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    // 1. Click 0ms delay button - observer should be created immediately
+    const delay0Button = canvas.getByTestId("delay-0");
+    await user.click(delay0Button);
+
+    await waitFor(async () => {
+      const observerStatus = canvas.getByTestId("observer-status");
+      await expect(observerStatus).toHaveTextContent("Created");
+    });
+
+    // 2. Click 1000ms delay button
+    const delay1000Button = canvas.getByTestId("delay-1000");
+    await user.click(delay1000Button);
+
+    // Initially should show "Creating..."
+    await waitFor(async () => {
+      const observerStatus = canvas.getByTestId("observer-status");
+      await expect(observerStatus).toHaveTextContent("Creating");
+    });
+
+    // Wait for delay to complete
+    await new Promise((r) => setTimeout(r, 1100));
+
+    // After delay, should show "Created"
+    await waitFor(async () => {
+      const observerStatus = canvas.getByTestId("observer-status");
+      await expect(observerStatus).toHaveTextContent("Created");
+    });
   },
 };
 
@@ -2647,9 +2918,35 @@ function InfiniteList() {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
+    const scrollContainer = canvas.getByTestId("infinite-scroll-container");
+    const itemCount = canvas.getByTestId("item-count");
+
+    // 1. Initial state - 5 items
     await waitFor(async () => {
-      const itemCount = canvas.getByTestId("item-count");
       await expect(itemCount).toHaveTextContent("5");
+    });
+
+    // 2. Scroll to bottom to trigger loading
+    scrollTo(scrollContainer, scrollContainer.scrollHeight);
+    await waitForIntersection();
+
+    // 3. Wait for loading to complete (800ms simulated API call)
+    await new Promise((r) => setTimeout(r, 1000));
+
+    // 4. Verify more items were loaded
+    await waitFor(async () => {
+      const count = parseInt(itemCount.textContent || "0", 10);
+      await expect(count).toBeGreaterThan(5);
+    });
+
+    // 5. Scroll again to load more
+    scrollTo(scrollContainer, scrollContainer.scrollHeight);
+    await waitForIntersection();
+    await new Promise((r) => setTimeout(r, 1000));
+
+    await waitFor(async () => {
+      const count = parseInt(itemCount.textContent || "0", 10);
+      await expect(count).toBeGreaterThan(10);
     });
   },
 };

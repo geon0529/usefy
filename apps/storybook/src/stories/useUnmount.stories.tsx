@@ -634,21 +634,7 @@ const meta: Meta<typeof BasicDemo> = {
     docs: {
       description: {
         component: `
-A React hook that executes a callback function when the component unmounts.
-
-## Features
-- **Closure Freshness**: Callback always accesses the latest state/props values
-- **Error Handling**: Errors in callback don't break the unmount process
-- **Conditional Execution**: Use \`enabled\` option to conditionally run cleanup
-- **SSR Compatible**: Works safely in server-side rendering
-- **TypeScript Support**: Full type safety
-
-## Use Cases
-- Save form data before component removal
-- Send analytics events on component exit
-- Clean up resources not managed by useEffect
-- Log debug information during development
-        `,
+A React hook that executes a callback function when the component unmounts.`,
       },
     },
   },

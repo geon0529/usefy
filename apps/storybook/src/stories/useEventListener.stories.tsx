@@ -494,14 +494,6 @@ const meta: Meta<typeof WindowResizeDemo> = {
       description: {
         component: `
 A React hook for adding event listeners to DOM elements with automatic cleanup.
-
-## Features
-- Type-safe event handling with TypeScript inference
-- Support for window, document, HTMLElement, and RefObject
-- Automatic cleanup on unmount
-- Handler stability (no re-registration on handler change)
-- SSR compatible
-- Options: enabled, capture, passive, once
         `,
       },
     },
