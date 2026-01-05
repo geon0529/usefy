@@ -1,8 +1,8 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { useCounter } from "@usefy/use-counter";
 import { within, userEvent, expect } from "@storybook/test";
 import { storyTheme } from "../styles/storyTheme";
+import { useCounter } from "@usefy/use-counter";
 
 function CounterDemo({ initialValue = 0 }: { initialValue?: number }) {
   const { count, increment, decrement, reset } = useCounter(initialValue);
