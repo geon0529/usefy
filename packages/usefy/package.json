@@ -37,7 +37,8 @@
     "@usefy/use-event-listener": "workspace:*",
     "@usefy/use-timer": "workspace:*",
     "@usefy/use-unmount": "workspace:*",
-    "@usefy/use-init": "workspace:*"
+    "@usefy/use-init": "workspace:*",
+    "@usefy/use-geolocation": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
