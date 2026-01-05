@@ -107,24 +107,25 @@ All packages require React 18 or 19:
 
 ### 📦 Available Hooks
 
-| Hook                                                                                                                                            | Description                                             | npm                                                                                                                                                                                                                                             | Coverage                                                                            |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| <a href="https://www.npmjs.com/package/@usefy/use-toggle" target="_blank" rel="noopener noreferrer">@usefy/use-toggle</a>                       | Boolean state management with toggle, setTrue, setFalse | <a href="https://www.npmjs.com/package/@usefy/use-toggle" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-toggle.svg?style=flat-square&color=007acc" alt="npm version" /></a>                       | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
-| <a href="https://www.npmjs.com/package/@usefy/use-counter" target="_blank" rel="noopener noreferrer">@usefy/use-counter</a>                     | Counter state with increment, decrement, reset          | <a href="https://www.npmjs.com/package/@usefy/use-counter" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-counter.svg?style=flat-square&color=007acc" alt="npm version" /></a>                     | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
-| <a href="https://www.npmjs.com/package/@usefy/use-debounce" target="_blank" rel="noopener noreferrer">@usefy/use-debounce</a>                   | Value debouncing with leading/trailing edge             | <a href="https://www.npmjs.com/package/@usefy/use-debounce" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-debounce.svg?style=flat-square&color=007acc" alt="npm version" /></a>                   | ![92%](https://img.shields.io/badge/coverage-92%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-debounce-callback" target="_blank" rel="noopener noreferrer">@usefy/use-debounce-callback</a> | Debounced callbacks with cancel/flush/pending           | <a href="https://www.npmjs.com/package/@usefy/use-debounce-callback" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-debounce-callback.svg?style=flat-square&color=007acc" alt="npm version" /></a> | ![93%](https://img.shields.io/badge/coverage-93%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-throttle" target="_blank" rel="noopener noreferrer">@usefy/use-throttle</a>                   | Value throttling for rate-limiting updates              | <a href="https://www.npmjs.com/package/@usefy/use-throttle" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-throttle.svg?style=flat-square&color=007acc" alt="npm version" /></a>                   | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
-| <a href="https://www.npmjs.com/package/@usefy/use-throttle-callback" target="_blank" rel="noopener noreferrer">@usefy/use-throttle-callback</a> | Throttled callbacks with cancel/flush/pending           | <a href="https://www.npmjs.com/package/@usefy/use-throttle-callback" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-throttle-callback.svg?style=flat-square&color=007acc" alt="npm version" /></a> | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
-| <a href="https://www.npmjs.com/package/@usefy/use-local-storage" target="_blank" rel="noopener noreferrer">@usefy/use-local-storage</a>         | localStorage persistence with cross-tab sync            | <a href="https://www.npmjs.com/package/@usefy/use-local-storage" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-local-storage.svg?style=flat-square&color=007acc" alt="npm version" /></a>         | ![95%](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-session-storage" target="_blank" rel="noopener noreferrer">@usefy/use-session-storage</a>     | sessionStorage persistence for tab lifetime             | <a href="https://www.npmjs.com/package/@usefy/use-session-storage" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-session-storage.svg?style=flat-square&color=007acc" alt="npm version" /></a>     | ![95%](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-click-any-where" target="_blank" rel="noopener noreferrer">@usefy/use-click-any-where</a>     | Document-wide click event detection                     | <a href="https://www.npmjs.com/package/@usefy/use-click-any-where" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-click-any-where.svg?style=flat-square&color=007acc" alt="npm version" /></a>     | ![92%](https://img.shields.io/badge/coverage-92%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-copy-to-clipboard" target="_blank" rel="noopener noreferrer">@usefy/use-copy-to-clipboard</a> | Clipboard copy with fallback support                    | <a href="https://www.npmjs.com/package/@usefy/use-copy-to-clipboard" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-copy-to-clipboard.svg?style=flat-square&color=007acc" alt="npm version" /></a> | ![88%](https://img.shields.io/badge/coverage-88%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-event-listener" target="_blank" rel="noopener noreferrer">@usefy/use-event-listener</a>       | DOM event listener with auto cleanup                    | <a href="https://www.npmjs.com/package/@usefy/use-event-listener" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-event-listener.svg?style=flat-square&color=007acc" alt="npm version" /></a>       | ![96%](https://img.shields.io/badge/coverage-96%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-on-click-outside" target="_blank" rel="noopener noreferrer">@usefy/use-on-click-outside</a>   | Outside click detection for modals/dropdowns            | <a href="https://www.npmjs.com/package/@usefy/use-on-click-outside" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-on-click-outside.svg?style=flat-square&color=007acc" alt="npm version" /></a>   | ![98%](https://img.shields.io/badge/coverage-98%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-unmount" target="_blank" rel="noopener noreferrer">@usefy/use-unmount</a>                     | Execute callback on component unmount                   | <a href="https://www.npmjs.com/package/@usefy/use-unmount" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-unmount.svg?style=flat-square&color=007acc" alt="npm version" /></a>                     | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
-| <a href="https://www.npmjs.com/package/@usefy/use-init" target="_blank" rel="noopener noreferrer">@usefy/use-init</a>                           | One-time initialization with async, retry, timeout      | <a href="https://www.npmjs.com/package/@usefy/use-init" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-init.svg?style=flat-square&color=007acc" alt="npm version" /></a>                           | ![96%](https://img.shields.io/badge/coverage-96%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-timer" target="_blank" rel="noopener noreferrer">@usefy/use-timer</a>                         | Countdown timer with drift compensation and formats     | <a href="https://www.npmjs.com/package/@usefy/use-timer" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-timer.svg?style=flat-square&color=007acc" alt="npm version" /></a>                         | ![84%](https://img.shields.io/badge/coverage-84%25-brightgreen?style=flat-square)   |
-| <a href="https://www.npmjs.com/package/@usefy/use-geolocation" target="_blank" rel="noopener noreferrer">@usefy/use-geolocation</a>             | Device geolocation with real-time tracking and distance | <a href="https://www.npmjs.com/package/@usefy/use-geolocation" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-geolocation.svg?style=flat-square&color=007acc" alt="npm version" /></a>             | ![90%](https://img.shields.io/badge/coverage-90%25-brightgreen?style=flat-square)   |
+| Hook                                                                                                                                                    | Description                                             | npm                                                                                                                                                                                                                                                     | Coverage                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| <a href="https://www.npmjs.com/package/@usefy/use-toggle" target="_blank" rel="noopener noreferrer">@usefy/use-toggle</a>                               | Boolean state management with toggle, setTrue, setFalse | <a href="https://www.npmjs.com/package/@usefy/use-toggle" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-toggle.svg?style=flat-square&color=007acc" alt="npm version" /></a>                               | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
+| <a href="https://www.npmjs.com/package/@usefy/use-counter" target="_blank" rel="noopener noreferrer">@usefy/use-counter</a>                             | Counter state with increment, decrement, reset          | <a href="https://www.npmjs.com/package/@usefy/use-counter" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-counter.svg?style=flat-square&color=007acc" alt="npm version" /></a>                             | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
+| <a href="https://www.npmjs.com/package/@usefy/use-debounce" target="_blank" rel="noopener noreferrer">@usefy/use-debounce</a>                           | Value debouncing with leading/trailing edge             | <a href="https://www.npmjs.com/package/@usefy/use-debounce" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-debounce.svg?style=flat-square&color=007acc" alt="npm version" /></a>                           | ![92%](https://img.shields.io/badge/coverage-92%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-debounce-callback" target="_blank" rel="noopener noreferrer">@usefy/use-debounce-callback</a>         | Debounced callbacks with cancel/flush/pending           | <a href="https://www.npmjs.com/package/@usefy/use-debounce-callback" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-debounce-callback.svg?style=flat-square&color=007acc" alt="npm version" /></a>         | ![93%](https://img.shields.io/badge/coverage-93%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-throttle" target="_blank" rel="noopener noreferrer">@usefy/use-throttle</a>                           | Value throttling for rate-limiting updates              | <a href="https://www.npmjs.com/package/@usefy/use-throttle" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-throttle.svg?style=flat-square&color=007acc" alt="npm version" /></a>                           | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
+| <a href="https://www.npmjs.com/package/@usefy/use-throttle-callback" target="_blank" rel="noopener noreferrer">@usefy/use-throttle-callback</a>         | Throttled callbacks with cancel/flush/pending           | <a href="https://www.npmjs.com/package/@usefy/use-throttle-callback" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-throttle-callback.svg?style=flat-square&color=007acc" alt="npm version" /></a>         | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
+| <a href="https://www.npmjs.com/package/@usefy/use-local-storage" target="_blank" rel="noopener noreferrer">@usefy/use-local-storage</a>                 | localStorage persistence with cross-tab sync            | <a href="https://www.npmjs.com/package/@usefy/use-local-storage" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-local-storage.svg?style=flat-square&color=007acc" alt="npm version" /></a>                 | ![95%](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-session-storage" target="_blank" rel="noopener noreferrer">@usefy/use-session-storage</a>             | sessionStorage persistence for tab lifetime             | <a href="https://www.npmjs.com/package/@usefy/use-session-storage" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-session-storage.svg?style=flat-square&color=007acc" alt="npm version" /></a>             | ![95%](https://img.shields.io/badge/coverage-95%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-click-any-where" target="_blank" rel="noopener noreferrer">@usefy/use-click-any-where</a>             | Document-wide click event detection                     | <a href="https://www.npmjs.com/package/@usefy/use-click-any-where" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-click-any-where.svg?style=flat-square&color=007acc" alt="npm version" /></a>             | ![92%](https://img.shields.io/badge/coverage-92%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-copy-to-clipboard" target="_blank" rel="noopener noreferrer">@usefy/use-copy-to-clipboard</a>         | Clipboard copy with fallback support                    | <a href="https://www.npmjs.com/package/@usefy/use-copy-to-clipboard" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-copy-to-clipboard.svg?style=flat-square&color=007acc" alt="npm version" /></a>         | ![88%](https://img.shields.io/badge/coverage-88%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-event-listener" target="_blank" rel="noopener noreferrer">@usefy/use-event-listener</a>               | DOM event listener with auto cleanup                    | <a href="https://www.npmjs.com/package/@usefy/use-event-listener" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-event-listener.svg?style=flat-square&color=007acc" alt="npm version" /></a>               | ![96%](https://img.shields.io/badge/coverage-96%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-on-click-outside" target="_blank" rel="noopener noreferrer">@usefy/use-on-click-outside</a>           | Outside click detection for modals/dropdowns            | <a href="https://www.npmjs.com/package/@usefy/use-on-click-outside" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-on-click-outside.svg?style=flat-square&color=007acc" alt="npm version" /></a>           | ![98%](https://img.shields.io/badge/coverage-98%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-unmount" target="_blank" rel="noopener noreferrer">@usefy/use-unmount</a>                             | Execute callback on component unmount                   | <a href="https://www.npmjs.com/package/@usefy/use-unmount" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-unmount.svg?style=flat-square&color=007acc" alt="npm version" /></a>                             | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
+| <a href="https://www.npmjs.com/package/@usefy/use-init" target="_blank" rel="noopener noreferrer">@usefy/use-init</a>                                   | One-time initialization with async, retry, timeout      | <a href="https://www.npmjs.com/package/@usefy/use-init" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-init.svg?style=flat-square&color=007acc" alt="npm version" /></a>                                   | ![96%](https://img.shields.io/badge/coverage-96%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-timer" target="_blank" rel="noopener noreferrer">@usefy/use-timer</a>                                 | Countdown timer with drift compensation and formats     | <a href="https://www.npmjs.com/package/@usefy/use-timer" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-timer.svg?style=flat-square&color=007acc" alt="npm version" /></a>                                 | ![84%](https://img.shields.io/badge/coverage-84%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-geolocation" target="_blank" rel="noopener noreferrer">@usefy/use-geolocation</a>                     | Device geolocation with real-time tracking and distance | <a href="https://www.npmjs.com/package/@usefy/use-geolocation" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-geolocation.svg?style=flat-square&color=007acc" alt="npm version" /></a>                     | ![90%](https://img.shields.io/badge/coverage-90%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-intersection-observer" target="_blank" rel="noopener noreferrer">@usefy/use-intersection-observer</a> | Element visibility detection with Intersection Observer | <a href="https://www.npmjs.com/package/@usefy/use-intersection-observer" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-intersection-observer.svg?style=flat-square&color=007acc" alt="npm version" /></a> | ![94%](https://img.shields.io/badge/coverage-94%25-brightgreen?style=flat-square)   |
 
 ---
 
@@ -141,6 +142,7 @@ import {
   useCopyToClipboard,
   useEventListener,
   useOnClickOutside,
+  useIntersectionObserver,
   useUnmount,
   useInit,
 } from "@usefy/usefy";
@@ -161,6 +163,12 @@ function App() {
 
   // Copy functionality
   const [copiedText, copy] = useCopyToClipboard();
+
+  // Lazy loading image
+  const { ref: imageRef, inView } = useIntersectionObserver({
+    triggerOnce: true,
+    rootMargin: "50px",
+  });
 
   return (
     <div data-theme={theme}>
@@ -195,6 +203,11 @@ function App() {
       <button onClick={() => copy("Hello World!")}>
         {copiedText ? "Copied!" : "Copy"}
       </button>
+
+      {/* Lazy Loading */}
+      <div ref={imageRef}>
+        {inView && <img src="large-image.jpg" alt="Lazy loaded" />}
+      </div>
     </div>
   );
 }
@@ -510,6 +523,66 @@ Perfect for location-based apps, maps, navigation, distance tracking, and geofen
 
 </details>
 
+### 👁️ Visibility
+
+<details>
+<summary><strong>useIntersectionObserver</strong> — Efficient element visibility detection with Intersection Observer API</summary>
+
+```tsx
+import { useIntersectionObserver } from "@usefy/use-intersection-observer";
+
+// Basic usage - detect when element enters viewport
+const { ref, inView, entry } = useIntersectionObserver();
+
+// Lazy loading images
+const { ref, inView } = useIntersectionObserver({
+  triggerOnce: true, // Stop observing after first detection
+  threshold: 0.1, // Trigger when 10% visible
+  rootMargin: "50px", // Start loading 50px before entering viewport
+});
+
+// Infinite scroll with sentinel element
+const { ref, inView } = useIntersectionObserver({
+  threshold: 1.0,
+  rootMargin: "100px", // Preload 100px ahead
+});
+
+useEffect(() => {
+  if (inView) loadMoreItems();
+}, [inView]);
+
+// Scroll animations
+const { ref, inView } = useIntersectionObserver({
+  triggerOnce: true,
+  threshold: 0.3,
+});
+
+// Progress tracking with multiple thresholds
+const thresholds = Array.from({ length: 101 }, (_, i) => i / 100);
+const { ref, entry } = useIntersectionObserver({
+  threshold: thresholds,
+  onChange: (entry) => {
+    setProgress(Math.round(entry.intersectionRatio * 100));
+  },
+});
+
+// Custom scroll container
+const containerRef = useRef<HTMLDivElement>(null);
+const { ref, inView } = useIntersectionObserver({
+  root: containerRef.current,
+  rootMargin: "0px",
+});
+
+// Delayed observation
+const { ref, inView } = useIntersectionObserver({
+  delay: 500, // Wait 500ms before creating observer
+});
+```
+
+Perfect for lazy loading, infinite scroll, scroll animations, progress tracking, and any visibility-based interactions with smart re-render optimization.
+
+</details>
+
 ### 🔄 Lifecycle
 
 <details>
@@ -591,24 +664,25 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 
 > 💡 To generate coverage report locally, run `pnpm test:coverage`. The report will be available at `coverage/index.html`.
 
-| Package               | Statements | Branches | Functions | Lines  |
-| --------------------- | ---------- | -------- | --------- | ------ |
-| use-toggle            | 100%       | 100%     | 100%      | 100%   |
-| use-counter           | 100%       | 100%     | 100%      | 100%   |
-| use-throttle          | 100%       | 100%     | 100%      | 100%   |
-| use-throttle-callback | 100%       | 100%     | 100%      | 100%   |
-| use-on-click-outside  | 97.61%     | 93.93%   | 100%      | 97.61% |
-| use-event-listener    | 96.29%     | 91.66%   | 100%      | 96.29% |
-| use-init              | 96.1%      | 88.63%   | 100%      | 96%    |
-| use-local-storage     | 95.18%     | 86.84%   | 93.75%    | 95.12% |
-| use-session-storage   | 94.66%     | 82.75%   | 93.33%    | 94.59% |
-| use-debounce-callback | 93.2%      | 76%      | 93.75%    | 93.13% |
-| use-click-any-where   | 92.3%      | 87.5%    | 100%      | 92.3%  |
-| use-debounce          | 90%        | 82.6%    | 66.66%    | 91.95% |
-| use-copy-to-clipboard | 87.87%     | 79.16%   | 85.71%    | 87.87% |
-| use-unmount           | 100%       | 100%     | 100%      | 100%   |
-| use-timer             | 83.8%      | 72.63%   | 93.93%    | 84.13% |
-| use-geolocation       | 90%        | 85%      | 95%       | 90%    |
+| Package                   | Statements | Branches | Functions | Lines  |
+| ------------------------- | ---------- | -------- | --------- | ------ |
+| use-toggle                | 100%       | 100%     | 100%      | 100%   |
+| use-counter               | 100%       | 100%     | 100%      | 100%   |
+| use-throttle              | 100%       | 100%     | 100%      | 100%   |
+| use-throttle-callback     | 100%       | 100%     | 100%      | 100%   |
+| use-on-click-outside      | 97.61%     | 93.93%   | 100%      | 97.61% |
+| use-event-listener        | 96.29%     | 91.66%   | 100%      | 96.29% |
+| use-init                  | 96.1%      | 88.63%   | 100%      | 96%    |
+| use-local-storage         | 95.18%     | 86.84%   | 93.75%    | 95.12% |
+| use-session-storage       | 94.66%     | 82.75%   | 93.33%    | 94.59% |
+| use-debounce-callback     | 93.2%      | 76%      | 93.75%    | 93.13% |
+| use-click-any-where       | 92.3%      | 87.5%    | 100%      | 92.3%  |
+| use-debounce              | 90%        | 82.6%    | 66.66%    | 91.95% |
+| use-copy-to-clipboard     | 87.87%     | 79.16%   | 85.71%    | 87.87% |
+| use-unmount               | 100%       | 100%     | 100%      | 100%   |
+| use-timer                 | 83.8%      | 72.63%   | 93.93%    | 84.13% |
+| use-geolocation           | 90%        | 85%      | 95%       | 90%    |
+| use-intersection-observer | 94%        | 85%      | 95%       | 93.93% |
 
 ---
 
