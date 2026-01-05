@@ -9,6 +9,13 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
+    docs: {
+      description: {
+        component: `
+\`useGeolocation\` is a feature-rich React hook for accessing device geolocation with real-time tracking, distance calculation, and comprehensive error handling. It provides a simple API for getting current position, watching position changes, calculating distances, and tracking permission states.
+        `,
+      },
+    },
   },
 } satisfies Meta;
 
