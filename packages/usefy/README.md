@@ -124,6 +124,7 @@ All packages require React 18 or 19:
 | <a href="https://www.npmjs.com/package/@usefy/use-unmount" target="_blank" rel="noopener noreferrer">@usefy/use-unmount</a>                     | Execute callback on component unmount                   | <a href="https://www.npmjs.com/package/@usefy/use-unmount" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-unmount.svg?style=flat-square&color=007acc" alt="npm version" /></a>                     | ![100%](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square) |
 | <a href="https://www.npmjs.com/package/@usefy/use-init" target="_blank" rel="noopener noreferrer">@usefy/use-init</a>                           | One-time initialization with async, retry, timeout      | <a href="https://www.npmjs.com/package/@usefy/use-init" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-init.svg?style=flat-square&color=007acc" alt="npm version" /></a>                           | ![96%](https://img.shields.io/badge/coverage-96%25-brightgreen?style=flat-square)   |
 | <a href="https://www.npmjs.com/package/@usefy/use-timer" target="_blank" rel="noopener noreferrer">@usefy/use-timer</a>                         | Countdown timer with drift compensation and formats     | <a href="https://www.npmjs.com/package/@usefy/use-timer" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-timer.svg?style=flat-square&color=007acc" alt="npm version" /></a>                         | ![84%](https://img.shields.io/badge/coverage-84%25-brightgreen?style=flat-square)   |
+| <a href="https://www.npmjs.com/package/@usefy/use-geolocation" target="_blank" rel="noopener noreferrer">@usefy/use-geolocation</a>             | Device geolocation with real-time tracking and distance | <a href="https://www.npmjs.com/package/@usefy/use-geolocation" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/use-geolocation.svg?style=flat-square&color=007acc" alt="npm version" /></a>             | ![90%](https://img.shields.io/badge/coverage-90%25-brightgreen?style=flat-square)   |
 
 ---
 
@@ -464,6 +465,51 @@ Modern Clipboard API with automatic fallback for older browsers.
 
 </details>
 
+### 📍 Location
+
+<details>
+<summary><strong>useGeolocation</strong> — Device geolocation with real-time tracking and distance calculation</summary>
+
+```tsx
+import { useGeolocation } from "@usefy/use-geolocation";
+
+// Basic usage - get current position
+const { position, loading, error } = useGeolocation();
+
+// Real-time tracking
+const { position, watchPosition, clearWatch } = useGeolocation({
+  immediate: false,
+  watch: false,
+  onPositionChange: (pos) => console.log("Position updated:", pos),
+});
+
+// Distance calculation
+const { position, distanceFrom, bearingTo } = useGeolocation();
+
+// Calculate distance to New York (in meters)
+const distance = distanceFrom(40.7128, -74.006);
+
+// Calculate bearing/direction to London (0-360 degrees)
+const bearing = bearingTo(51.5074, -0.1278);
+
+// High accuracy mode
+const { position } = useGeolocation({
+  enableHighAccuracy: true,
+  timeout: 10000,
+});
+
+// Permission tracking
+const { permission } = useGeolocation({
+  onPermissionChange: (state) => {
+    console.log("Permission:", state); // "prompt" | "granted" | "denied" | "unavailable"
+  },
+});
+```
+
+Perfect for location-based apps, maps, navigation, distance tracking, and geofencing with built-in Haversine distance calculation and bearing utilities.
+
+</details>
+
 ### 🔄 Lifecycle
 
 <details>
@@ -562,6 +608,7 @@ All packages are comprehensively tested using Vitest to ensure reliability and s
 | use-copy-to-clipboard | 87.87%     | 79.16%   | 85.71%    | 87.87% |
 | use-unmount           | 100%       | 100%     | 100%      | 100%   |
 | use-timer             | 83.8%      | 72.63%   | 93.93%    | 84.13% |
+| use-geolocation       | 90%        | 85%      | 95%       | 90%    |
 
 ---
 
