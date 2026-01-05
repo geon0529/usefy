@@ -93,3 +93,17 @@ export {
   type UseInitOptions,
   type UseInitResult,
 } from "@usefy/use-init";
+
+// useGeolocation
+export {
+  useGeolocation,
+  haversineDistance,
+  calculateBearing,
+  type GeoCoordinates,
+  type GeoPosition,
+  type GeolocationError,
+  type GeolocationErrorCode,
+  type PermissionState,
+  type UseGeolocationOptions,
+  type UseGeolocationReturn,
+} from "@usefy/use-geolocation";

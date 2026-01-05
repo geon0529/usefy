@@ -29,6 +29,12 @@ export const storyTheme = {
   card: "p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)]",
   cardInfo:
     "p-5 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-[0_2px_8px_rgba(99,102,241,0.1)]",
+  cardSuccess:
+    "p-5 bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-[0_2px_8px_rgba(34,197,94,0.1)]",
+  cardWarning:
+    "p-5 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl shadow-[0_2px_8px_rgba(245,158,11,0.1)]",
+  cardError:
+    "p-5 bg-gradient-to-br from-red-50 to-rose-50 rounded-xl shadow-[0_2px_8px_rgba(239,68,68,0.1)]",
 
   // Buttons
   buttonPrimary:
