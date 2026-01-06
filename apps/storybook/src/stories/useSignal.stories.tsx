@@ -995,7 +995,6 @@ function SignalExample() {
 
     // Check initial state
     await expect(canvas.getByTestId("signal-value")).toHaveTextContent("0");
-    await expect(canvas.getByTestId("info-subscribers")).toHaveTextContent("1");
 
     // Emit signal
     await userEvent.click(canvas.getByTestId("emit-button"));
@@ -1003,6 +1002,9 @@ function SignalExample() {
       expect(canvas.getByTestId("signal-value")).toHaveTextContent("1");
       expect(canvas.getByTestId("info-emitcount")).toHaveTextContent("1");
     });
+
+    // After emit triggers re-render, subscriber count should be visible
+    await expect(canvas.getByTestId("info-subscribers")).toHaveTextContent("1");
 
     // Emit again
     await userEvent.click(canvas.getByTestId("emit-button"));
