@@ -77,6 +77,9 @@ importers:
       '@usefy/use-local-storage':
         specifier: workspace:*
         version: link:../../packages/use-local-storage
+      '@usefy/use-memory-monitor':
+        specifier: workspace:*
+        version: link:../../packages/use-memory-monitor
       '@usefy/use-on-click-outside':
         specifier: workspace:*
         version: link:../../packages/use-on-click-outside
