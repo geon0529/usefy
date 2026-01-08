@@ -901,6 +901,26 @@ function OverviewDashboard() {
   });
 
   const [showRawData, setShowRawData] = useState(false);
+  const [snapshots, setSnapshots] = useState<Array<{ id: string; heapUsed: string; timestamp: number }>>([]);
+
+  const handleTakeSnapshot = () => {
+    const id = `snap-${Date.now()}`;
+    const snapshot = takeSnapshot(id);
+    if (snapshot) {
+      setSnapshots((prev) => [
+        ...prev,
+        {
+          id: snapshot.id,
+          heapUsed: formatted.heapUsed,
+          timestamp: snapshot.timestamp,
+        },
+      ]);
+    }
+  };
+
+  const handleClearSnapshots = () => {
+    setSnapshots([]);
+  };
 
   // Transform history for area chart
   const chartData = useMemo(() => {
@@ -1351,13 +1371,14 @@ function OverviewDashboard() {
           </div>
         </div>
 
-        {/* Actions */}
+        {/* Actions & Snapshots */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
           <h3 className="font-bold text-slate-800 mb-3">Actions</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-4">
             <button
-              onClick={() => takeSnapshot(`snap-${Date.now()}`)}
+              onClick={handleTakeSnapshot}
               className="px-3 py-1.5 text-sm bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
+              data-testid="snapshot-btn"
             >
               📷 Snapshot
             </button>
@@ -1365,7 +1386,7 @@ function OverviewDashboard() {
               onClick={clearHistory}
               className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
-              🗑️ Clear
+              🗑️ Clear History
             </button>
             <button
               onClick={() => setShowRawData(!showRawData)}
@@ -1374,6 +1395,36 @@ function OverviewDashboard() {
               {showRawData ? "Hide" : "Show"} Raw
             </button>
           </div>
+          {/* Snapshots List */}
+          {snapshots.length > 0 && (
+            <div className="border-t border-slate-100 pt-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs font-medium text-slate-500">
+                  Snapshots ({snapshots.length})
+                </span>
+                <button
+                  onClick={handleClearSnapshots}
+                  className="text-xs text-red-500 hover:text-red-600"
+                >
+                  Clear All
+                </button>
+              </div>
+              <div className="space-y-1 max-h-24 overflow-y-auto" data-testid="snapshots-list">
+                {snapshots.map((snap, idx) => (
+                  <div
+                    key={snap.id}
+                    className="text-xs bg-slate-50 rounded px-2 py-1 flex justify-between"
+                  >
+                    <span className="text-slate-600">#{idx + 1}</span>
+                    <span className="font-medium text-slate-700">{snap.heapUsed}</span>
+                    <span className="text-slate-400">
+                      {new Date(snap.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
