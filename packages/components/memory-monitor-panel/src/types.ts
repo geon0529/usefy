@@ -51,6 +51,33 @@ export interface TriggerPosition {
 }
 
 /**
+ * Snapshot schedule interval options
+ */
+export type SnapshotScheduleInterval =
+  | "off"      // Disabled
+  | "1sec"     // Every 1 second (for testing)
+  | "10sec"    // Every 10 seconds (for testing)
+  | "1min"     // Every 1 minute
+  | "5min"     // Every 5 minutes
+  | "10min"    // Every 10 minutes
+  | "30min"    // Every 30 minutes
+  | "1hour"    // Every 1 hour
+  | "6hour"    // Every 6 hours
+  | "24hour";  // Every 24 hours
+
+/**
+ * Snapshot settings
+ */
+export interface SnapshotSettings {
+  /** Maximum number of snapshots to store (1-50) */
+  maxSnapshots: number;
+  /** Automatic snapshot schedule interval */
+  scheduleInterval: SnapshotScheduleInterval;
+  /** Auto-delete oldest snapshot when max reached */
+  autoDeleteOldest: boolean;
+}
+
+/**
  * Panel settings that can be persisted
  */
 export interface PanelSettings {
@@ -68,6 +95,8 @@ export interface PanelSettings {
   theme: ThemeSetting;
   /** Panel width in pixels */
   panelWidth: number;
+  /** Snapshot configuration */
+  snapshot: SnapshotSettings;
 }
 
 /**
@@ -95,6 +124,8 @@ export interface PanelSnapshot {
   domNodes?: number;
   eventListeners?: number;
   notes?: string;
+  /** Whether this snapshot was created automatically by scheduler */
+  isAuto?: boolean;
 }
 
 /**

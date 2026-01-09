@@ -73,6 +73,11 @@ export function SnapshotCard({
           <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
             {snapshot.label}
           </span>
+          {snapshot.isAuto && (
+            <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+              Auto
+            </span>
+          )}
           <span className="text-xs text-slate-500">
             {formatTime(snapshot.timestamp)}
           </span>
@@ -115,9 +120,16 @@ export function SnapshotCard({
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-700/50">
         <div className="min-w-0">
-          <h4 className="font-semibold text-slate-800 dark:text-slate-100 truncate">
-            {snapshot.label}
-          </h4>
+          <div className="flex items-center gap-2">
+            <h4 className="font-semibold text-slate-800 dark:text-slate-100 truncate">
+              {snapshot.label}
+            </h4>
+            {snapshot.isAuto && (
+              <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                Auto
+              </span>
+            )}
+          </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             {formatTime(snapshot.timestamp)}
           </p>

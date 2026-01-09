@@ -29,13 +29,41 @@ export const DEFAULT_CRITICAL_THRESHOLD = 90;
 
 /**
  * Default leak detection window size
+ * Increased to ensure sufficient samples for reliable analysis
  */
-export const DEFAULT_LEAK_WINDOW_SIZE = 10;
+export const DEFAULT_LEAK_WINDOW_SIZE = 20;
 
 /**
  * Minimum samples required for leak detection
  */
-export const MIN_LEAK_DETECTION_SAMPLES = 5;
+export const MIN_LEAK_DETECTION_SAMPLES = 10;
+
+/**
+ * Minimum observation time for reliable leak detection (ms)
+ * Leak detection requires at least 30 seconds of data
+ */
+export const MIN_OBSERVATION_TIME_MS = 30000;
+
+/**
+ * GC detection threshold - memory drop percentage to consider as GC event
+ * If memory drops by more than 10%, consider it a GC event
+ */
+export const GC_DETECTION_THRESHOLD = 0.10;
+
+/**
+ * Minimum number of GC cycles to observe before making leak determination
+ */
+export const MIN_GC_CYCLES_FOR_ANALYSIS = 2;
+
+/**
+ * Baseline growth threshold - percentage growth from baseline to consider significant
+ */
+export const BASELINE_GROWTH_THRESHOLD = 0.20;
+
+/**
+ * Leak probability threshold - minimum probability to report as leak
+ */
+export const LEAK_PROBABILITY_THRESHOLD = 70;
 
 /**
  * Sensitivity configuration for leak detection
@@ -44,22 +72,34 @@ export const MIN_LEAK_DETECTION_SAMPLES = 5;
  */
 export const LEAK_SENSITIVITY_CONFIG: Record<
   LeakSensitivity,
-  { minSlope: number; minR2: number; probabilityMultiplier: number }
+  {
+    minSlope: number;
+    minR2: number;
+    probabilityMultiplier: number;
+    minGCCycles: number;
+    minObservationTime: number;
+  }
 > = {
   low: {
     minSlope: 100000, // 100KB/sample
-    minR2: 0.7,
-    probabilityMultiplier: 0.8,
+    minR2: 0.8,
+    probabilityMultiplier: 0.7,
+    minGCCycles: 3,
+    minObservationTime: 60000, // 60 seconds
   },
   medium: {
     minSlope: 50000, // 50KB/sample
-    minR2: 0.6,
+    minR2: 0.7,
     probabilityMultiplier: 1.0,
+    minGCCycles: 2,
+    minObservationTime: 30000, // 30 seconds
   },
   high: {
     minSlope: 10000, // 10KB/sample
-    minR2: 0.5,
+    minR2: 0.6,
     probabilityMultiplier: 1.2,
+    minGCCycles: 1,
+    minObservationTime: 15000, // 15 seconds
   },
 };
 

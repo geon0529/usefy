@@ -29,7 +29,13 @@ export interface PanelTriggerProps {
 /**
  * Memory icon SVG
  */
-function MemoryIcon({ className }: { className?: string }) {
+function MemoryIcon({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -40,6 +46,7 @@ function MemoryIcon({ className }: { className?: string }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
+      style={style}
     >
       <rect x="4" y="4" width="16" height="16" rx="2" />
       <rect x="9" y="9" width="6" height="6" />
@@ -91,10 +98,10 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
         aria-label={ariaLabel}
         className={cn(
           "fixed",
-          "flex items-center justify-center",
           "w-12 h-12 rounded-2xl",
+          "p-0 border-0",
           "shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30",
-          "transition-all duration-300 ease-out",
+          "transition-all duration-300 ease-out transform-gpu will-change-transform",
           "hover:scale-110 active:scale-95",
           "focus:outline-none focus:ring-2 focus:ring-offset-2",
           // Default colors
@@ -107,6 +114,8 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
         )}
         style={{
           ...positionStyle,
+          // Ensure transform origin is center for proper scaling
+          transformOrigin: "center center",
           // Add severity-based glow
           boxShadow:
             severity !== "normal"
@@ -114,7 +123,14 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
               : undefined,
         }}
       >
-        {children || <MemoryIcon className="w-6 h-6" />}
+        {children || (
+          <MemoryIcon
+            className="w-6 h-6 absolute inset-0 m-auto"
+            style={{
+              display: "block",
+            }}
+          />
+        )}
       </button>
     );
   }

@@ -1,4 +1,4 @@
-import type { PanelSettings, TriggerPosition, Severity } from "./types";
+import type { PanelSettings, TriggerPosition, Severity, SnapshotSettings, SnapshotScheduleInterval } from "./types";
 
 /**
  * Severity color scheme type
@@ -30,6 +30,11 @@ export const DEFAULT_SETTINGS: PanelSettings = {
   interval: 1000,
   theme: "system",
   panelWidth: 400,
+  snapshot: {
+    maxSnapshots: 10,
+    scheduleInterval: "off",
+    autoDeleteOldest: true,
+  },
 };
 
 /**
@@ -65,9 +70,54 @@ export const ANIMATION_DURATION = {
 export const AUTO_GC_COOLDOWN_MS = 10000;
 
 /**
- * Maximum number of snapshots to store
+ * Default maximum number of snapshots to store
  */
-export const MAX_SNAPSHOTS = 10;
+export const DEFAULT_MAX_SNAPSHOTS = 10;
+
+/**
+ * Maximum allowed snapshots limit
+ */
+export const MAX_SNAPSHOTS_LIMIT = 50;
+
+/**
+ * Minimum allowed snapshots
+ */
+export const MIN_SNAPSHOTS_LIMIT = 1;
+
+/**
+ * Snapshot schedule options with their interval in milliseconds
+ */
+export const SNAPSHOT_SCHEDULE_OPTIONS: readonly {
+  label: string;
+  value: SnapshotScheduleInterval;
+  intervalMs: number;
+}[] = [
+  { label: "Off", value: "off", intervalMs: 0 },
+  { label: "Every 1 sec", value: "1sec", intervalMs: 1000 },
+  { label: "Every 10 sec", value: "10sec", intervalMs: 10 * 1000 },
+  { label: "Every 1 min", value: "1min", intervalMs: 60 * 1000 },
+  { label: "Every 5 min", value: "5min", intervalMs: 5 * 60 * 1000 },
+  { label: "Every 10 min", value: "10min", intervalMs: 10 * 60 * 1000 },
+  { label: "Every 30 min", value: "30min", intervalMs: 30 * 60 * 1000 },
+  { label: "Every 1 hour", value: "1hour", intervalMs: 60 * 60 * 1000 },
+  { label: "Every 6 hours", value: "6hour", intervalMs: 6 * 60 * 60 * 1000 },
+  { label: "Every 24 hours", value: "24hour", intervalMs: 24 * 60 * 60 * 1000 },
+] as const;
+
+/**
+ * Default snapshot settings
+ */
+export const DEFAULT_SNAPSHOT_SETTINGS: SnapshotSettings = {
+  maxSnapshots: DEFAULT_MAX_SNAPSHOTS,
+  scheduleInterval: "off",
+  autoDeleteOldest: true,
+};
+
+/**
+ * @deprecated Use DEFAULT_MAX_SNAPSHOTS instead
+ * Maximum number of snapshots to store (legacy)
+ */
+export const MAX_SNAPSHOTS = DEFAULT_MAX_SNAPSHOTS;
 
 /**
  * Polling interval options in milliseconds

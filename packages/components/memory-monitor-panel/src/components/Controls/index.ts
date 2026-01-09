@@ -9,3 +9,6 @@ export type { ActionButtonsProps } from "./ActionButtons";
 
 export { IntervalSelector } from "./IntervalSelector";
 export type { IntervalSelectorProps } from "./IntervalSelector";
+
+export { SnapshotSettings } from "./SnapshotSettings";
+export type { SnapshotSettingsProps } from "./SnapshotSettings";

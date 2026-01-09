@@ -7,9 +7,9 @@ import {
   DEFAULT_SHORTCUT,
   PANEL_DIMENSIONS,
   Z_INDEX,
-  MAX_SNAPSHOTS,
   SEVERITY_COLORS,
   formatBytes,
+  SNAPSHOT_SCHEDULE_OPTIONS,
 } from "./constants";
 import { cn, isSSR, getShouldRender, getShouldActivate } from "./utils";
 import {
@@ -40,6 +40,7 @@ import {
   AutoGCToggle,
   ActionButtons,
   IntervalSelector,
+  SnapshotSettings,
 } from "./components/Controls";
 import { SnapshotList, SnapshotCompare } from "./components/Snapshots";
 
@@ -264,6 +265,9 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
     useKeyboardShortcut(shortcut, toggle, mounted && shouldRender);
     useEscapeKey(close, mounted && shouldRender && isOpen);
 
+    // Snapshot scheduler ref to track last auto-snapshot time
+    const lastAutoSnapshotRef = React.useRef<number>(0);
+
     // Current severity
     const severity: Severity = monitor.severity;
 
@@ -283,11 +287,38 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
     );
 
     // Take snapshot handler
-    const handleTakeSnapshot = useCallback(() => {
-      if (snapshots.length >= MAX_SNAPSHOTS) return;
+    const handleTakeSnapshot = useCallback((isAuto = false) => {
+      const maxSnapshots = settings.snapshot?.maxSnapshots ?? DEFAULT_SETTINGS.snapshot.maxSnapshots;
+      const autoDeleteOldest = settings.snapshot?.autoDeleteOldest ?? true;
+
+      // If at max capacity
+      if (snapshots.length >= maxSnapshots) {
+        if (autoDeleteOldest) {
+          // Delete oldest and add new one
+          setSnapshots((prev) => {
+            const remaining = prev.slice(1);
+            const id = `snapshot-${Date.now()}`;
+            const label = isAuto ? `Auto ${remaining.length + 1}` : `Snapshot ${remaining.length + 1}`;
+            const newSnapshot: PanelSnapshot = {
+              id,
+              label,
+              timestamp: Date.now(),
+              heapUsed: monitor.memory?.heapUsed ?? 0,
+              heapTotal: monitor.memory?.heapTotal ?? 0,
+              heapLimit: monitor.memory?.heapLimit ?? 0,
+              domNodes: monitor.domNodes ?? undefined,
+              eventListeners: monitor.eventListeners ?? undefined,
+              isAuto,
+            };
+            monitor.takeSnapshot(id);
+            return [...remaining, newSnapshot];
+          });
+        }
+        return;
+      }
 
       const id = `snapshot-${Date.now()}`;
-      const label = `Snapshot ${snapshots.length + 1}`;
+      const label = isAuto ? `Auto ${snapshots.length + 1}` : `Snapshot ${snapshots.length + 1}`;
 
       const newSnapshot: PanelSnapshot = {
         id,
@@ -298,11 +329,46 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
         heapLimit: monitor.memory?.heapLimit ?? 0,
         domNodes: monitor.domNodes ?? undefined,
         eventListeners: monitor.eventListeners ?? undefined,
+        isAuto,
       };
 
       setSnapshots((prev) => [...prev, newSnapshot]);
       monitor.takeSnapshot(id);
-    }, [snapshots.length, monitor]);
+    }, [snapshots.length, monitor, settings.snapshot]);
+
+    // Ref for the latest handleTakeSnapshot to avoid stale closure in interval
+    const handleTakeSnapshotRef = React.useRef(handleTakeSnapshot);
+    useEffect(() => {
+      handleTakeSnapshotRef.current = handleTakeSnapshot;
+    }, [handleTakeSnapshot]);
+
+    // Snapshot scheduler effect
+    useEffect(() => {
+      const scheduleInterval = settings.snapshot?.scheduleInterval ?? "off";
+      if (scheduleInterval === "off" || !shouldActivate) {
+        return;
+      }
+
+      const scheduleOption = SNAPSHOT_SCHEDULE_OPTIONS.find(
+        (opt) => opt.value === scheduleInterval
+      );
+      if (!scheduleOption || scheduleOption.intervalMs === 0) {
+        return;
+      }
+
+      // Take first snapshot immediately when schedule is enabled
+      lastAutoSnapshotRef.current = Date.now();
+      handleTakeSnapshotRef.current(true);
+
+      const intervalId = setInterval(() => {
+        lastAutoSnapshotRef.current = Date.now();
+        handleTakeSnapshotRef.current(true);
+      }, scheduleOption.intervalMs);
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, [settings.snapshot?.scheduleInterval, shouldActivate]);
 
     // Select snapshot handler
     const handleSelectSnapshot = useCallback((snapshot: PanelSnapshot) => {
@@ -326,6 +392,13 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
       if (selectedSnapshotId === id) setSelectedSnapshotId(null);
       if (compareSnapshotId === id) setCompareSnapshotId(null);
     }, [selectedSnapshotId, compareSnapshotId]);
+
+    // Delete all snapshots handler
+    const handleDeleteAllSnapshots = useCallback(() => {
+      setSnapshots([]);
+      setSelectedSnapshotId(null);
+      setCompareSnapshotId(null);
+    }, []);
 
     // Memoized tab content
     const tabContent = useMemo(() => {
@@ -360,7 +433,10 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
               compareSnapshot={compareSnapshot}
               onSelect={handleSelectSnapshot}
               onDelete={handleDeleteSnapshot}
-              onTakeSnapshot={handleTakeSnapshot}
+              onDeleteAll={handleDeleteAllSnapshots}
+              onTakeSnapshot={() => handleTakeSnapshot(false)}
+              maxSnapshots={settings.snapshot?.maxSnapshots ?? DEFAULT_SETTINGS.snapshot.maxSnapshots}
+              autoDeleteOldest={settings.snapshot?.autoDeleteOldest ?? true}
               isDark={isDark}
             />
           );
@@ -388,6 +464,7 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
       handleTakeSnapshot,
       handleSelectSnapshot,
       handleDeleteSnapshot,
+      handleDeleteAllSnapshots,
     ]);
 
     // Don't render on server
@@ -632,7 +709,10 @@ interface SnapshotsTabProps {
   compareSnapshot: PanelSnapshot | null;
   onSelect: (snapshot: PanelSnapshot) => void;
   onDelete: (id: string) => void;
+  onDeleteAll: () => void;
   onTakeSnapshot: () => void;
+  maxSnapshots: number;
+  autoDeleteOldest: boolean;
   isDark: boolean;
 }
 
@@ -642,25 +722,59 @@ function SnapshotsTab({
   compareSnapshot,
   onSelect,
   onDelete,
+  onDeleteAll,
   onTakeSnapshot,
-  isDark,
+  maxSnapshots,
+  autoDeleteOldest,
 }: SnapshotsTabProps) {
+  const isAtCapacity = snapshots.length >= maxSnapshots;
+  const canTakeSnapshot = !isAtCapacity || autoDeleteOldest;
+
   return (
     <div className="space-y-4">
-      {/* Take Snapshot Button */}
-      <button
-        type="button"
-        onClick={onTakeSnapshot}
-        disabled={snapshots.length >= MAX_SNAPSHOTS}
-        className={cn(
-          "w-full px-4 py-2 text-sm font-medium rounded-lg",
-          "bg-blue-500 hover:bg-blue-600 text-white",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          "transition-colors"
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        {/* Take Snapshot Button */}
+        <button
+          type="button"
+          onClick={onTakeSnapshot}
+          disabled={!canTakeSnapshot}
+          className={cn(
+            "flex-1 px-4 py-2 text-sm font-medium rounded-lg",
+            "bg-blue-500 hover:bg-blue-600 text-white",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "transition-colors"
+          )}
+        >
+          {isAtCapacity && autoDeleteOldest
+            ? "Take Snapshot (replace oldest)"
+            : "Take Snapshot"}
+        </button>
+
+        {/* Delete All Button */}
+        <button
+          type="button"
+          onClick={onDeleteAll}
+          disabled={snapshots.length === 0}
+          className={cn(
+            "px-4 py-2 text-sm font-medium rounded-lg",
+            "bg-red-500 hover:bg-red-600 text-white",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "transition-colors"
+          )}
+          title="Delete all snapshots"
+        >
+          Delete All
+        </button>
+      </div>
+
+      {/* Capacity indicator */}
+      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+        <span>{snapshots.length} / {maxSnapshots} snapshots</span>
+        {autoDeleteOldest && isAtCapacity && (
+          <span className="text-amber-500">Auto-delete enabled</span>
         )}
-      >
-        Take Snapshot
-      </button>
+      </div>
 
       {/* Snapshot Comparison */}
       {selectedSnapshot && compareSnapshot && (
@@ -676,7 +790,7 @@ function SnapshotsTab({
         selectedId={selectedSnapshot?.id}
         onSelect={onSelect}
         onDelete={onDelete}
-        maxSnapshots={MAX_SNAPSHOTS}
+        maxSnapshots={maxSnapshots}
       />
 
       {/* Help text */}
@@ -696,7 +810,7 @@ interface SettingsTabProps {
   isDark: boolean;
 }
 
-function SettingsTab({ settings, updateSettings, isSupported, isDark }: SettingsTabProps) {
+function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps) {
   const handleWarningChange = useCallback((value: number) => {
     updateSettings({ warningThreshold: value });
   }, [updateSettings]);
@@ -716,6 +830,13 @@ function SettingsTab({ settings, updateSettings, isSupported, isDark }: Settings
   const handleIntervalChange = useCallback((interval: number) => {
     updateSettings({ interval });
   }, [updateSettings]);
+
+  const handleSnapshotSettingsChange = useCallback(
+    (snapshotSettings: typeof settings.snapshot) => {
+      updateSettings({ snapshot: snapshotSettings });
+    },
+    [updateSettings]
+  );
 
   return (
     <div className="space-y-6">
@@ -754,6 +875,14 @@ function SettingsTab({ settings, updateSettings, isSupported, isDark }: Settings
         value={settings.interval}
         onChange={handleIntervalChange}
       />
+
+      {/* Snapshot Settings */}
+      <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+        <SnapshotSettings
+          value={settings.snapshot ?? DEFAULT_SETTINGS.snapshot}
+          onChange={handleSnapshotSettingsChange}
+        />
+      </div>
 
       {/* Theme Settings */}
       <div className="space-y-2">

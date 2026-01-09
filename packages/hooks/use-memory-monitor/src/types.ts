@@ -45,6 +45,58 @@ export interface SnapshotDiff {
 }
 
 /**
+ * GC (Garbage Collection) event detected in memory samples
+ */
+export interface GCEvent {
+  /** Index in the sample array where GC was detected */
+  sampleIndex: number;
+  /** Memory before GC (bytes) */
+  memoryBefore: number;
+  /** Memory after GC (bytes) */
+  memoryAfter: number;
+  /** Recovery amount (bytes freed) */
+  recoveryAmount: number;
+  /** Recovery ratio (0-1) */
+  recoveryRatio: number;
+  /** Timestamp of GC event */
+  timestamp: number;
+}
+
+/**
+ * GC analysis result
+ */
+export interface GCAnalysis {
+  /** Number of GC events detected */
+  gcEventCount: number;
+  /** All detected GC events */
+  gcEvents: GCEvent[];
+  /** Average memory recovery ratio after GC (0-1) */
+  avgRecoveryRatio: number;
+  /** Timestamp of last GC event */
+  lastGCTimestamp: number | null;
+  /** Whether GC is effectively reclaiming memory */
+  isGCEffective: boolean;
+}
+
+/**
+ * Baseline analysis for leak detection
+ */
+export interface BaselineAnalysis {
+  /** Baseline heap value (average of post-GC minimums) */
+  baselineHeap: number;
+  /** Current heap value */
+  currentHeap: number;
+  /** Growth from baseline (bytes) */
+  growthFromBaseline: number;
+  /** Growth ratio from baseline (0-1) */
+  growthRatio: number;
+  /** Whether baseline is established (enough GC cycles observed) */
+  isBaselineEstablished: boolean;
+  /** Whether growth from baseline exceeds threshold */
+  isSignificantGrowth: boolean;
+}
+
+/**
  * Result of memory leak analysis
  */
 export interface LeakAnalysis {
@@ -62,6 +114,32 @@ export interface LeakAnalysis {
   samples: MemoryInfo[];
   /** Human-readable recommendation */
   recommendation?: string;
+  /** GC analysis results */
+  gcAnalysis?: GCAnalysis;
+  /** Baseline analysis results */
+  baselineAnalysis?: BaselineAnalysis;
+  /** Total observation time in milliseconds */
+  observationTime?: number;
+  /** Confidence level of the analysis (0-100) */
+  confidence?: number;
+  /** Reasons contributing to the probability score */
+  factors?: LeakProbabilityFactors;
+}
+
+/**
+ * Factors contributing to leak probability calculation
+ */
+export interface LeakProbabilityFactors {
+  /** Contribution from slope analysis (0-30) */
+  slopeContribution: number;
+  /** Contribution from R² fit quality (0-20) */
+  rSquaredContribution: number;
+  /** Contribution from GC ineffectiveness (0-25) */
+  gcContribution: number;
+  /** Contribution from observation time (0-15) */
+  timeContribution: number;
+  /** Contribution from baseline growth (0-10) */
+  baselineContribution: number;
 }
 
 /**

@@ -155,8 +155,8 @@ export function TrendIndicator({
           </div>
         </div>
 
-        {/* Leak probability badge */}
-        {leakProbability !== undefined && leakProbability > 0 && (
+        {/* Leak probability badge - only show if probability is meaningful (>= 30%) */}
+        {leakProbability !== undefined && leakProbability >= 30 && (
           <div
             className={cn(
               "px-2 py-1 rounded-full text-xs font-medium",

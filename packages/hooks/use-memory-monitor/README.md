@@ -342,28 +342,94 @@ function LeakDetector() {
 
 #### How Leak Detection Works
 
-The hook uses **Linear Regression Analysis** to detect memory leaks:
+The hook uses an **Enhanced Multi-Factor Analysis** algorithm to detect memory leaks accurately while minimizing false positives:
 
-1. **Data Collection**: Collects memory samples over time (configurable via `sampleSize`)
-2. **Linear Regression**: Applies least squares regression to find the best-fit line through the memory data points
-3. **Slope Analysis**: The slope indicates memory growth rate (bytes per sample)
-4. **R² Coefficient**: Measures how well the data fits the linear model (0-1, higher = more consistent growth)
-5. **Probability Calculation**: Combines slope and R² to calculate leak probability
+##### Algorithm Overview
+
+1. **Data Collection**: Requires minimum 10 samples over 30+ seconds of observation
+2. **GC Event Detection**: Identifies garbage collection events by detecting significant memory drops (≥10%)
+3. **Baseline Calculation**: Calculates baseline from post-GC memory values
+4. **Baseline Trend Analysis**: Monitors if post-GC baselines are increasing over time
+5. **Weighted Probability Calculation**: Combines multiple factors for accurate detection
+
+##### Probability Factors (Weighted Scoring)
+
+| Factor | Max Points | Description |
+|--------|------------|-------------|
+| Slope | 30 | How fast memory is growing |
+| R² Fit | 20 | How consistent the growth pattern is |
+| GC Ineffectiveness | 25 | Whether GC fails to reclaim memory |
+| Observation Time | 15 | Longer observation = more confidence |
+| Baseline Growth | 10 | Whether post-GC baseline is rising |
+
+**Total: 100 points maximum**
+
+##### Key Principles
+
+- **GC-Aware**: True leaks persist even after garbage collection cycles
+- **Time-Based**: Requires sufficient observation time before making judgment
+- **Baseline Tracking**: Monitors if the memory "floor" after GC is rising
+- **False Positive Reduction**: If GC is effective and baseline is stable, probability is reduced
 
 ```
-Leak Probability = f(slope, R², sensitivity)
-
-- High slope + High R² = High probability (consistent memory growth)
-- High slope + Low R² = Lower probability (fluctuating memory)
-- Low slope = Low probability (stable memory)
+Leak Detection Flow:
+1. Collect samples (min 10, min 30 seconds)
+   ↓
+2. Detect GC events (memory drops ≥10%)
+   ↓
+3. Calculate baseline (average post-GC memory)
+   ↓
+4. Analyze baseline trend (is it rising?)
+   ↓
+5. Calculate weighted probability
+   ↓
+6. Apply corrections (GC effectiveness, trend)
+   ↓
+7. Final determination (≥70% = leak detected)
 ```
 
-**Sensitivity Levels:**
-| Sensitivity | Min Slope | Min R² | Description |
-|-------------|-----------|--------|-------------|
-| `low` | 10KB/sample | 0.8 | Only detects obvious leaks |
-| `medium` | 5KB/sample | 0.6 | Balanced detection (default) |
-| `high` | 1KB/sample | 0.4 | Detects subtle leaks |
+##### Sensitivity Levels
+
+| Sensitivity | Min Slope | Min R² | Min GC Cycles | Min Observation |
+|-------------|-----------|--------|---------------|-----------------|
+| `low` | 100KB/sample | 0.8 | 3 | 60 seconds |
+| `medium` | 50KB/sample | 0.7 | 2 | 30 seconds |
+| `high` | 10KB/sample | 0.6 | 1 | 15 seconds |
+
+##### LeakAnalysis Response
+
+The `LeakAnalysis` object now includes detailed analysis information:
+
+```typescript
+interface LeakAnalysis {
+  isLeaking: boolean;           // Whether a leak is detected (probability ≥ 70%)
+  probability: number;          // Leak probability (0-100)
+  confidence: number;           // Analysis confidence (0-100)
+  trend: Trend;                 // 'increasing' | 'stable' | 'decreasing'
+  averageGrowth: number;        // Bytes per sample
+  rSquared: number;             // Regression fit quality
+  observationTime?: number;     // Total observation time in ms
+  gcAnalysis?: {
+    gcEventCount: number;       // Number of GC events detected
+    avgRecoveryRatio: number;   // Average memory recovered per GC
+    isGCEffective: boolean;     // Whether GC is reclaiming memory
+  };
+  baselineAnalysis?: {
+    baselineHeap: number;       // Average post-GC memory
+    currentHeap: number;        // Current heap usage
+    growthRatio: number;        // Growth from baseline
+    isSignificantGrowth: boolean;
+  };
+  factors?: {
+    slopeContribution: number;
+    rSquaredContribution: number;
+    gcContribution: number;
+    timeContribution: number;
+    baselineContribution: number;
+  };
+  recommendation?: string;      // Human-readable recommendation
+}
+```
 
 ### Threshold Alerts
 
