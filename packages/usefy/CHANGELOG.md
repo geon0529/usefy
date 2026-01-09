@@ -1,5 +1,30 @@
 # @usefy/usefy
 
+## 0.0.37
+
+### Patch Changes
+
+- eff700e: Rename umbrella package from @usefy/usefy to @usefy/hooks for clearer naming convention
+  - @usefy/use-click-any-where@0.0.37
+  - @usefy/use-copy-to-clipboard@0.0.37
+  - @usefy/use-counter@0.0.37
+  - @usefy/use-debounce@0.0.37
+  - @usefy/use-debounce-callback@0.0.37
+  - @usefy/use-event-listener@0.0.37
+  - @usefy/use-geolocation@0.0.37
+  - @usefy/use-init@0.0.37
+  - @usefy/use-intersection-observer@0.0.37
+  - @usefy/use-local-storage@0.0.37
+  - @usefy/use-memory-monitor@0.0.37
+  - @usefy/use-on-click-outside@0.0.37
+  - @usefy/use-session-storage@0.0.37
+  - @usefy/use-signal@0.0.37
+  - @usefy/use-throttle@0.0.37
+  - @usefy/use-throttle-callback@0.0.37
+  - @usefy/use-timer@0.0.37
+  - @usefy/use-toggle@0.0.37
+  - @usefy/use-unmount@0.0.37
+
 ## 0.0.36
 
 ### Patch Changes
