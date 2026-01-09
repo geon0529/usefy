@@ -8,6 +8,8 @@ export interface SnapshotCardProps {
   snapshot: PanelSnapshot;
   /** Whether this snapshot is selected */
   selected?: boolean;
+  /** Selection role for comparison (baseline = older, current = newer) */
+  selectionRole?: "baseline" | "current" | null;
   /** Click callback */
   onClick?: () => void;
   /** Delete callback */
@@ -41,17 +43,39 @@ function TrashIcon({ className }: { className?: string }) {
 }
 
 /**
+ * Role badge styles
+ */
+const ROLE_STYLES = {
+  baseline: {
+    bg: "bg-amber-100 dark:bg-amber-900/30",
+    text: "text-amber-700 dark:text-amber-300",
+    border: "border-amber-300 dark:border-amber-700",
+    ring: "ring-amber-200 dark:ring-amber-800",
+    label: "Baseline",
+  },
+  current: {
+    bg: "bg-emerald-100 dark:bg-emerald-900/30",
+    text: "text-emerald-700 dark:text-emerald-300",
+    border: "border-emerald-300 dark:border-emerald-700",
+    ring: "ring-emerald-200 dark:ring-emerald-800",
+    label: "Current",
+  },
+} as const;
+
+/**
  * Snapshot card component displaying individual snapshot data
  */
 export function SnapshotCard({
   snapshot,
   selected = false,
+  selectionRole,
   onClick,
   onDelete,
   compact = false,
   className,
 }: SnapshotCardProps) {
   const usagePercentage = (snapshot.heapUsed / snapshot.heapLimit) * 100;
+  const roleStyle = selectionRole ? ROLE_STYLES[selectionRole] : null;
 
   if (compact) {
     return (
@@ -59,7 +83,9 @@ export function SnapshotCard({
         className={cn(
           "flex items-center justify-between p-2.5 rounded-lg cursor-pointer",
           "border transition-all duration-200",
-          selected
+          roleStyle
+            ? cn(roleStyle.bg, roleStyle.border, "ring-1", roleStyle.ring)
+            : selected
             ? "bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 ring-1 ring-blue-200 dark:ring-blue-800"
             : "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm",
           className
@@ -70,6 +96,15 @@ export function SnapshotCard({
         onKeyDown={(e) => e.key === "Enter" && onClick?.()}
       >
         <div className="flex items-center gap-2 min-w-0">
+          {roleStyle && (
+            <span className={cn(
+              "px-1.5 py-0.5 text-[10px] font-bold rounded",
+              roleStyle.bg,
+              roleStyle.text
+            )}>
+              {roleStyle.label}
+            </span>
+          )}
           <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
             {snapshot.label}
           </span>
@@ -107,7 +142,9 @@ export function SnapshotCard({
     <div
       className={cn(
         "rounded-xl border overflow-hidden cursor-pointer transition-all duration-200",
-        selected
+        roleStyle
+          ? cn(roleStyle.bg, roleStyle.border, "ring-1", roleStyle.ring, "shadow-sm")
+          : selected
           ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800 ring-1 ring-blue-200 dark:ring-blue-800 shadow-sm"
           : "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md",
         className
@@ -121,6 +158,15 @@ export function SnapshotCard({
       <div className="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-700/50">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
+            {roleStyle && (
+              <span className={cn(
+                "px-2 py-0.5 text-[10px] font-bold rounded",
+                roleStyle.bg,
+                roleStyle.text
+              )}>
+                {roleStyle.label}
+              </span>
+            )}
             <h4 className="font-semibold text-slate-800 dark:text-slate-100 truncate">
               {snapshot.label}
             </h4>

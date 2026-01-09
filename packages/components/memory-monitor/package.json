@@ -1,5 +1,5 @@
 {
-  "name": "@usefy/memory-monitor-panel",
+  "name": "@usefy/memory-monitor",
   "version": "0.1.0",
   "description": "Enterprise-grade React component for real-time browser memory monitoring with slide-in panel UI",
   "main": "./dist/index.js",
@@ -25,7 +25,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "generate:mock-reports": "npx tsx scripts/generate-mock-report.ts"
   },
   "dependencies": {
     "@usefy/use-memory-monitor": "workspace:*",
@@ -68,12 +69,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/usefy/usefy.git",
-    "directory": "packages/components/memory-monitor-panel"
+    "directory": "packages/components/memory-monitor"
   },
   "bugs": {
     "url": "https://github.com/usefy/usefy/issues"
   },
-  "homepage": "https://github.com/usefy/usefy/tree/main/packages/components/memory-monitor-panel#readme",
+  "homepage": "https://github.com/usefy/usefy/tree/main/packages/components/memory-monitor#readme",
   "publishConfig": {
     "access": "public"
   }

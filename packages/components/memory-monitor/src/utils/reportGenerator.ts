@@ -188,14 +188,17 @@ export function calculateStatistics(
 
   const heapUsedValues = snapshots.map((s) => s.heapUsed);
   const heapTotalValues = snapshots.map((s) => s.heapTotal);
-  const usageValues = snapshots.map(
-    (s) => (s.heapUsed / s.heapLimit) * 100
-  );
+  const usageValues = snapshots.map((s) => (s.heapUsed / s.heapLimit) * 100);
 
   const stats: ReportStatistics = {
     heapUsed: calculateStatsSummary(heapUsedValues, labels, ids, timestamps),
     heapTotal: calculateStatsSummary(heapTotalValues, labels, ids, timestamps),
-    usagePercentage: calculateStatsSummary(usageValues, labels, ids, timestamps),
+    usagePercentage: calculateStatsSummary(
+      usageValues,
+      labels,
+      ids,
+      timestamps
+    ),
   };
 
   // DOM Nodes (if available)
@@ -318,7 +321,8 @@ function classifyLeakPattern(snapshots: PanelSnapshot[]): LeakPattern {
   // Calculate time-normalized slope (bytes per second)
   const timeSpan =
     (snapshots[snapshots.length - 1].timestamp - snapshots[0].timestamp) / 1000;
-  const normalizedSlope = timeSpan > 0 ? (slope * snapshots.length) / timeSpan : 0;
+  const normalizedSlope =
+    timeSpan > 0 ? (slope * snapshots.length) / timeSpan : 0;
 
   // Check for spikes
   if (detectSpikes(heapValues)) {
@@ -509,7 +513,9 @@ function generateSummary(
   } else if (grade === "D") {
     return `Memory health issues detected. Average usage at ${avgUsage}% (max ${maxUsage}%). ${
       leakReport.detected
-        ? `${leakReport.pattern} leak pattern with ${leakReport.confidence.toFixed(0)}% confidence.`
+        ? `${
+            leakReport.pattern
+          } leak pattern with ${leakReport.confidence.toFixed(0)}% confidence.`
         : ""
     } Investigation required.`;
   } else {
@@ -544,11 +550,15 @@ function generateRecommendations(
   // Leak-related recommendations
   if (leakReport.detected) {
     recommendations.push(
-      `Investigate ${leakReport.pattern} memory leak pattern (${leakReport.confidence.toFixed(0)}% confidence).`
+      `Investigate ${
+        leakReport.pattern
+      } memory leak pattern (${leakReport.confidence.toFixed(0)}% confidence).`
     );
     if (leakReport.growthRate > 0) {
       recommendations.push(
-        `Memory growing at approximately ${formatBytes(leakReport.growthRate)}/second.`
+        `Memory growing at approximately ${formatBytes(
+          leakReport.growthRate
+        )}/second.`
       );
     }
   }
@@ -617,9 +627,8 @@ export function assessMemoryHealth(
   score -= leakReport.confidence * 0.3;
 
   // Deduct for variability (coefficient of variation)
-  const cv = stats.heapUsed.mean > 0
-    ? stats.heapUsed.stdDev / stats.heapUsed.mean
-    : 0;
+  const cv =
+    stats.heapUsed.mean > 0 ? stats.heapUsed.stdDev / stats.heapUsed.mean : 0;
   if (cv > 0.5) {
     score -= 20;
   } else if (cv > 0.3) {
@@ -751,28 +760,44 @@ export function generateMemoryReport(
 
   // DOM and Event Listener data for charts
   const hasDOMData = sortedSnapshots.some((s) => s.domNodes !== undefined);
-  const hasListenerData = sortedSnapshots.some((s) => s.eventListeners !== undefined);
+  const hasListenerData = sortedSnapshots.some(
+    (s) => s.eventListeners !== undefined
+  );
   const domNodesData = sortedSnapshots.map((s) => s.domNodes ?? 0);
   const listenersData = sortedSnapshots.map((s) => s.eventListeners ?? 0);
 
   // Trend distribution for pie chart
   const trendCounts = {
-    stable: sortedSnapshots.filter((s) => s.analysisContext?.trend === "stable").length,
-    increasing: sortedSnapshots.filter((s) => s.analysisContext?.trend === "increasing").length,
-    decreasing: sortedSnapshots.filter((s) => s.analysisContext?.trend === "decreasing").length,
+    stable: sortedSnapshots.filter((s) => s.analysisContext?.trend === "stable")
+      .length,
+    increasing: sortedSnapshots.filter(
+      (s) => s.analysisContext?.trend === "increasing"
+    ).length,
+    decreasing: sortedSnapshots.filter(
+      (s) => s.analysisContext?.trend === "decreasing"
+    ).length,
     unknown: sortedSnapshots.filter((s) => !s.analysisContext?.trend).length,
   };
 
   // Severity distribution
   const severityCounts = {
-    normal: sortedSnapshots.filter((s) => s.analysisContext?.severity === "normal").length,
-    warning: sortedSnapshots.filter((s) => s.analysisContext?.severity === "warning").length,
-    critical: sortedSnapshots.filter((s) => s.analysisContext?.severity === "critical").length,
+    normal: sortedSnapshots.filter(
+      (s) => s.analysisContext?.severity === "normal"
+    ).length,
+    warning: sortedSnapshots.filter(
+      (s) => s.analysisContext?.severity === "warning"
+    ).length,
+    critical: sortedSnapshots.filter(
+      (s) => s.analysisContext?.severity === "critical"
+    ).length,
     unknown: sortedSnapshots.filter((s) => !s.analysisContext?.severity).length,
   };
 
   // Calculate coefficient of variation for stability metric
-  const cv = stats.heapUsed.mean > 0 ? (stats.heapUsed.stdDev / stats.heapUsed.mean) * 100 : 0;
+  const cv =
+    stats.heapUsed.mean > 0
+      ? (stats.heapUsed.stdDev / stats.heapUsed.mean) * 100
+      : 0;
   const stabilityScore = Math.max(0, 100 - cv * 2);
 
   const html = `
@@ -781,29 +806,31 @@ export function generateMemoryReport(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memory Diagnostic Report${fullConfig.appName ? ` - ${fullConfig.appName}` : ""}</title>
+  <title>Memory Diagnostic Report${
+    fullConfig.appName ? ` - ${fullConfig.appName}` : ""
+  }</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --color-success: #10b981;
-      --color-success-light: #d1fae5;
+      --color-success-light: #ecfdf5;
       --color-warning: #f59e0b;
-      --color-warning-light: #fef3c7;
+      --color-warning-light: #fffbeb;
       --color-critical: #ef4444;
-      --color-critical-light: #fee2e2;
+      --color-critical-light: #fef2f2;
       --color-primary: #6366f1;
-      --color-primary-light: #e0e7ff;
+      --color-primary-light: #eef2ff;
       --color-secondary: #8b5cf6;
       --color-accent: #06b6d4;
-      --color-accent-light: #cffafe;
-      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-      --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --color-accent-light: #ecfeff;
+      --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+      --gradient-info: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
       --bg-primary: #ffffff;
       --bg-secondary: #f8fafc;
       --bg-tertiary: #f1f5f9;
@@ -812,7 +839,7 @@ export function generateMemoryReport(
       --text-secondary: #475569;
       --text-muted: #94a3b8;
       --border-color: #e2e8f0;
-      --border-radius: 16px;
+      --border-radius: 12px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -843,6 +870,8 @@ export function generateMemoryReport(
       color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .report-container {
@@ -875,8 +904,9 @@ export function generateMemoryReport(
     }
 
     .report-header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
       margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
@@ -884,17 +914,18 @@ export function generateMemoryReport(
     }
 
     .report-header h1 svg {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
     }
 
     .header-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 2rem;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      opacity: 0.9;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.95;
     }
 
     .header-meta-item {
@@ -966,13 +997,14 @@ export function generateMemoryReport(
     }
 
     .card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
     }
 
     .card-title {
       font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -1005,12 +1037,12 @@ export function generateMemoryReport(
     .health-score-ring .ring-bg {
       fill: none;
       stroke: var(--bg-tertiary);
-      stroke-width: 12;
+      stroke-width: 10;
     }
 
     .health-score-ring .ring-progress {
       fill: none;
-      stroke-width: 12;
+      stroke-width: 10;
       stroke-linecap: round;
       transition: stroke-dashoffset 1s ease-out;
     }
@@ -1024,13 +1056,15 @@ export function generateMemoryReport(
     }
 
     .health-score-number {
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
       line-height: 1;
     }
 
     .health-score-label {
       font-size: 0.875rem;
+      font-weight: 500;
       color: var(--text-muted);
       margin-top: 0.25rem;
     }
@@ -1046,6 +1080,7 @@ export function generateMemoryReport(
       font-weight: 700;
       color: white;
       margin-bottom: 1rem;
+      box-shadow: var(--shadow-md);
     }
 
     .health-info {
@@ -1054,8 +1089,9 @@ export function generateMemoryReport(
 
     .health-info h3 {
       font-size: 1.25rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 0.5rem;
+      color: var(--text-primary);
     }
 
     .health-info p {
@@ -1067,6 +1103,11 @@ export function generateMemoryReport(
     .metric-card {
       text-align: center;
       padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
 
     .metric-icon {
@@ -1077,6 +1118,7 @@ export function generateMemoryReport(
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: var(--shadow-sm);
     }
 
     .metric-icon svg {
@@ -1091,34 +1133,37 @@ export function generateMemoryReport(
     .metric-icon.info { background: var(--gradient-info); }
 
     .metric-value {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 1.875rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
       color: var(--text-primary);
       line-height: 1.2;
     }
 
     .metric-label {
       font-size: 0.875rem;
+      font-weight: 500;
       color: var(--text-muted);
       margin-top: 0.5rem;
     }
 
     .metric-change {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 600;
       margin-top: 0.5rem;
       padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
+      border-radius: 6px;
       display: inline-block;
     }
 
     .metric-change.positive {
       background: var(--color-success-light);
-      color: var(--color-success);
+      color: #059669;
     }
 
     .metric-change.negative {
       background: var(--color-critical-light);
-      color: var(--color-critical);
+      color: #dc2626;
     }
 
     /* Chart Container */
@@ -1134,14 +1179,18 @@ export function generateMemoryReport(
     }
 
     .chart-title {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .chart-wrapper {
       position: relative;
       height: 300px;
+      width: 100%;
     }
 
     .chart-wrapper.small {
@@ -1190,11 +1239,13 @@ export function generateMemoryReport(
     .progress-bar-label {
       font-size: 0.875rem;
       color: var(--text-secondary);
+      font-weight: 500;
     }
 
     .progress-bar-value {
       font-size: 0.875rem;
       font-weight: 600;
+      color: var(--text-primary);
     }
 
     .progress-bar {
@@ -1213,6 +1264,8 @@ export function generateMemoryReport(
     /* Table Styles */
     .table-container {
       overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
     }
 
     table {
@@ -1222,13 +1275,13 @@ export function generateMemoryReport(
     }
 
     th, td {
-      padding: 1rem;
+      padding: 0.875rem 1rem;
       text-align: left;
       border-bottom: 1px solid var(--border-color);
     }
 
     th {
-      background: var(--bg-tertiary);
+      background: var(--bg-secondary);
       font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
@@ -1236,21 +1289,23 @@ export function generateMemoryReport(
       letter-spacing: 0.05em;
     }
 
-    th:first-child { border-radius: 8px 0 0 0; }
-    th:last-child { border-radius: 0 8px 0 0; }
+    tr:last-child td {
+      border-bottom: none;
+    }
 
     tr:hover td {
-      background: var(--bg-secondary);
+      background: var(--bg-tertiary);
     }
 
     /* Badge Styles */
     .badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
+      padding: 0.25rem 0.625rem;
+      border-radius: 6px;
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 600;
+      line-height: 1;
     }
 
     .badge-success {
@@ -1276,13 +1331,37 @@ export function generateMemoryReport(
     /* Leak Pattern Card */
     .leak-pattern-card {
       display: flex;
-      gap: 2rem;
-      align-items: flex-start;
+      gap: 2.5rem;
+      align-items: stretch;
+      min-height: 400px;
     }
 
     .leak-chart-container {
-      width: 200px;
-      flex-shrink: 0;
+      flex: 0 0 45%;
+      min-width: 320px;
+      max-width: 500px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .leak-chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    @media (max-width: 992px) {
+      .leak-pattern-card {
+        flex-direction: column;
+        align-items: center;
+      }
+      .leak-chart-container {
+        flex: none;
+        width: 100%;
+        max-width: 400px;
+        min-width: unset;
+      }
     }
 
     .leak-details {
@@ -1291,7 +1370,7 @@ export function generateMemoryReport(
 
     .leak-pattern-badge {
       font-size: 1.25rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
@@ -1302,6 +1381,7 @@ export function generateMemoryReport(
       width: 12px;
       height: 12px;
       border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--bg-tertiary);
     }
 
     .pattern-gradual { background: var(--color-critical); }
@@ -1326,17 +1406,41 @@ export function generateMemoryReport(
     }
 
     .recommendation-item:hover {
-      transform: translateX(4px);
+      transform: translateX(2px);
+      background: var(--bg-tertiary);
     }
 
     .recommendation-item.critical {
       border-left-color: var(--color-critical);
-      background: var(--color-critical-light);
+      background: #fef2f2;
+    }
+
+    .recommendation-item.critical .recommendation-text {
+      color: #991b1b;
     }
 
     .recommendation-item.warning {
       border-left-color: var(--color-warning);
-      background: var(--color-warning-light);
+      background: #fffbeb;
+    }
+
+    .recommendation-item.warning .recommendation-text {
+      color: #92400e;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .recommendation-item.critical {
+        background: rgba(239, 68, 68, 0.15);
+      }
+      .recommendation-item.critical .recommendation-text {
+        color: #fca5a5;
+      }
+      .recommendation-item.warning {
+        background: rgba(245, 158, 11, 0.15);
+      }
+      .recommendation-item.warning .recommendation-text {
+        color: #fcd34d;
+      }
     }
 
     .recommendation-icon {
@@ -1348,6 +1452,7 @@ export function generateMemoryReport(
     .recommendation-text {
       flex: 1;
       color: var(--text-secondary);
+      font-weight: 500;
     }
 
     /* Guidance List */
@@ -1403,10 +1508,12 @@ export function generateMemoryReport(
       width: 20px;
       height: 20px;
       transition: transform 0.2s;
+      color: var(--text-muted);
     }
 
     .collapsible-header.open svg {
       transform: rotate(180deg);
+      color: var(--color-primary);
     }
 
     .collapsible-content {
@@ -1422,10 +1529,8 @@ export function generateMemoryReport(
     .report-footer {
       margin-top: 3rem;
       padding: 2rem;
-      background: var(--bg-card);
-      border-radius: var(--border-radius);
       text-align: center;
-      border: 1px solid var(--border-color);
+      color: var(--text-muted);
     }
 
     .footer-brand {
@@ -1437,7 +1542,6 @@ export function generateMemoryReport(
 
     .footer-info {
       font-size: 0.875rem;
-      color: var(--text-muted);
     }
 
     /* Mini Charts Grid */
@@ -1451,11 +1555,12 @@ export function generateMemoryReport(
       background: var(--bg-secondary);
       border-radius: 12px;
       padding: 1rem;
+      border: 1px solid var(--border-color);
     }
 
     .mini-chart-label {
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
       margin-bottom: 0.5rem;
@@ -1516,19 +1621,27 @@ export function generateMemoryReport(
         Memory Diagnostic Report
       </h1>
       <div class="header-meta">
-        ${fullConfig.appName ? `
+        ${
+          fullConfig.appName
+            ? `
         <div class="header-meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
           <span>${fullConfig.appName}</span>
         </div>
-        ` : ""}
+        `
+            : ""
+        }
         <div class="header-meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>${formatTimestamp(firstTimestamp)} - ${formatTimestamp(lastTimestamp)}</span>
+          <span>${formatTimestamp(firstTimestamp)} - ${formatTimestamp(
+    lastTimestamp
+  )}</span>
         </div>
         <div class="header-meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          <span>${sortedSnapshots.length} Snapshots (${formatDuration(duration)})</span>
+          <span>${sortedSnapshots.length} Snapshots (${formatDuration(
+    duration
+  )})</span>
         </div>
         <div class="header-meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -1554,15 +1667,21 @@ export function generateMemoryReport(
                 <circle class="ring-progress" cx="80" cy="80" r="70"
                   stroke="${getGradeColor(health.grade)}"
                   stroke-dasharray="${2 * Math.PI * 70}"
-                  stroke-dashoffset="${2 * Math.PI * 70 * (1 - health.score / 100)}"/>
+                  stroke-dashoffset="${
+                    2 * Math.PI * 70 * (1 - health.score / 100)
+                  }"/>
               </svg>
               <div class="health-score-value">
-                <div class="health-score-number" style="color: ${getGradeColor(health.grade)}">${health.score.toFixed(0)}</div>
+                <div class="health-score-number" style="color: ${getGradeColor(
+                  health.grade
+                )}">${health.score.toFixed(0)}</div>
                 <div class="health-score-label">Health Score</div>
               </div>
             </div>
             <div class="health-info">
-              <div class="health-grade" style="background: ${getGradeColor(health.grade)}">${health.grade}</div>
+              <div class="health-grade" style="background: ${getGradeColor(
+                health.grade
+              )}">${health.grade}</div>
               <h3>Memory Health Assessment</h3>
               <p>${health.summary}</p>
             </div>
@@ -1587,7 +1706,9 @@ export function generateMemoryReport(
             <div class="metric-icon primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
-            <div class="metric-value">${stats.usagePercentage.mean.toFixed(1)}%</div>
+            <div class="metric-value">${stats.usagePercentage.mean.toFixed(
+              1
+            )}%</div>
             <div class="metric-label">Average Usage</div>
           </div>
         </div>
@@ -1597,9 +1718,17 @@ export function generateMemoryReport(
             <div class="metric-icon warning">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
-            <div class="metric-value">${stats.usagePercentage.max.toFixed(1)}%</div>
+            <div class="metric-value">${stats.usagePercentage.max.toFixed(
+              1
+            )}%</div>
             <div class="metric-label">Peak Usage</div>
-            ${stats.usagePercentage.max > 80 ? `<div class="metric-change negative">High Risk</div>` : stats.usagePercentage.max > 60 ? `<div class="metric-change" style="background: var(--color-warning-light); color: var(--color-warning);">Moderate</div>` : `<div class="metric-change positive">Normal</div>`}
+            ${
+              stats.usagePercentage.max > 80
+                ? `<div class="metric-change negative">High Risk</div>`
+                : stats.usagePercentage.max > 60
+                ? `<div class="metric-change" style="background: var(--color-warning-light); color: var(--color-warning);">Moderate</div>`
+                : `<div class="metric-change positive">Normal</div>`
+            }
           </div>
         </div>
 
@@ -1620,7 +1749,23 @@ export function generateMemoryReport(
             </div>
             <div class="metric-value">${stabilityScore.toFixed(0)}%</div>
             <div class="metric-label">Stability Score</div>
-            <div class="metric-change ${stabilityScore >= 80 ? 'positive' : stabilityScore >= 60 ? '' : 'negative'}" ${stabilityScore >= 60 && stabilityScore < 80 ? 'style="background: var(--color-warning-light); color: var(--color-warning);"' : ''}>${stabilityScore >= 80 ? 'Stable' : stabilityScore >= 60 ? 'Moderate' : 'Unstable'}</div>
+            <div class="metric-change ${
+              stabilityScore >= 80
+                ? "positive"
+                : stabilityScore >= 60
+                ? ""
+                : "negative"
+            }" ${
+    stabilityScore >= 60 && stabilityScore < 80
+      ? 'style="background: var(--color-warning-light); color: var(--color-warning);"'
+      : ""
+  }>${
+    stabilityScore >= 80
+      ? "Stable"
+      : stabilityScore >= 60
+      ? "Moderate"
+      : "Unstable"
+  }</div>
           </div>
         </div>
       </div>
@@ -1696,7 +1841,9 @@ export function generateMemoryReport(
       </div>
     </section>
 
-    ${hasDOMData || hasListenerData ? `
+    ${
+      hasDOMData || hasListenerData
+        ? `
     <!-- DOM & Events Section -->
     <section class="section">
       <h2 class="section-title">
@@ -1717,7 +1864,9 @@ export function generateMemoryReport(
         </div>
       </div>
     </section>
-    ` : ""}
+    `
+        : ""
+    }
 
     <!-- Statistical Analysis Section -->
     <section class="section">
@@ -1750,7 +1899,11 @@ export function generateMemoryReport(
                     <td>${formatBytes(stats.heapUsed.mean)}</td>
                     <td>${formatBytes(stats.heapUsed.median)}</td>
                     <td>${formatBytes(stats.heapUsed.stdDev)}</td>
-                    <td><span class="badge ${stats.heapUsed.outliers.length > 0 ? 'badge-warning' : 'badge-success'}">${stats.heapUsed.outliers.length}</span></td>
+                    <td><span class="badge ${
+                      stats.heapUsed.outliers.length > 0
+                        ? "badge-warning"
+                        : "badge-success"
+                    }">${stats.heapUsed.outliers.length}</span></td>
                   </tr>
                   <tr>
                     <td><strong>Heap Total</strong></td>
@@ -1759,7 +1912,11 @@ export function generateMemoryReport(
                     <td>${formatBytes(stats.heapTotal.mean)}</td>
                     <td>${formatBytes(stats.heapTotal.median)}</td>
                     <td>${formatBytes(stats.heapTotal.stdDev)}</td>
-                    <td><span class="badge ${stats.heapTotal.outliers.length > 0 ? 'badge-warning' : 'badge-success'}">${stats.heapTotal.outliers.length}</span></td>
+                    <td><span class="badge ${
+                      stats.heapTotal.outliers.length > 0
+                        ? "badge-warning"
+                        : "badge-success"
+                    }">${stats.heapTotal.outliers.length}</span></td>
                   </tr>
                   <tr>
                     <td><strong>Usage %</strong></td>
@@ -1768,9 +1925,15 @@ export function generateMemoryReport(
                     <td>${stats.usagePercentage.mean.toFixed(1)}%</td>
                     <td>${stats.usagePercentage.median.toFixed(1)}%</td>
                     <td>${stats.usagePercentage.stdDev.toFixed(1)}%</td>
-                    <td><span class="badge ${stats.usagePercentage.outliers.length > 0 ? 'badge-warning' : 'badge-success'}">${stats.usagePercentage.outliers.length}</span></td>
+                    <td><span class="badge ${
+                      stats.usagePercentage.outliers.length > 0
+                        ? "badge-warning"
+                        : "badge-success"
+                    }">${stats.usagePercentage.outliers.length}</span></td>
                   </tr>
-                  ${stats.domNodes ? `
+                  ${
+                    stats.domNodes
+                      ? `
                   <tr>
                     <td><strong>DOM Nodes</strong></td>
                     <td>${stats.domNodes.min.toLocaleString()}</td>
@@ -1778,10 +1941,18 @@ export function generateMemoryReport(
                     <td>${stats.domNodes.mean.toFixed(0)}</td>
                     <td>${stats.domNodes.median.toFixed(0)}</td>
                     <td>${stats.domNodes.stdDev.toFixed(0)}</td>
-                    <td><span class="badge ${stats.domNodes.outliers.length > 0 ? 'badge-warning' : 'badge-success'}">${stats.domNodes.outliers.length}</span></td>
+                    <td><span class="badge ${
+                      stats.domNodes.outliers.length > 0
+                        ? "badge-warning"
+                        : "badge-success"
+                    }">${stats.domNodes.outliers.length}</span></td>
                   </tr>
-                  ` : ""}
-                  ${stats.eventListeners ? `
+                  `
+                      : ""
+                  }
+                  ${
+                    stats.eventListeners
+                      ? `
                   <tr>
                     <td><strong>Event Listeners</strong></td>
                     <td>${stats.eventListeners.min.toLocaleString()}</td>
@@ -1789,16 +1960,24 @@ export function generateMemoryReport(
                     <td>${stats.eventListeners.mean.toFixed(0)}</td>
                     <td>${stats.eventListeners.median.toFixed(0)}</td>
                     <td>${stats.eventListeners.stdDev.toFixed(0)}</td>
-                    <td><span class="badge ${stats.eventListeners.outliers.length > 0 ? 'badge-warning' : 'badge-success'}">${stats.eventListeners.outliers.length}</span></td>
+                    <td><span class="badge ${
+                      stats.eventListeners.outliers.length > 0
+                        ? "badge-warning"
+                        : "badge-success"
+                    }">${stats.eventListeners.outliers.length}</span></td>
                   </tr>
-                  ` : ""}
+                  `
+                      : ""
+                  }
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        ${stats.heapUsed.outliers.length > 0 ? `
+        ${
+          stats.heapUsed.outliers.length > 0
+            ? `
         <div class="col-12">
           <div class="card">
             <h3 class="card-title">Outlier Snapshots</h3>
@@ -1813,24 +1992,34 @@ export function generateMemoryReport(
                   </tr>
                 </thead>
                 <tbody>
-                  ${stats.heapUsed.outliers.map((o) => `
+                  ${stats.heapUsed.outliers
+                    .map(
+                      (o) => `
                   <tr>
                     <td><strong>${o.snapshotLabel}</strong></td>
                     <td>${formatBytes(o.value)}</td>
-                    <td><span class="badge badge-warning">${o.deviation.toFixed(1)}σ</span></td>
+                    <td><span class="badge badge-warning">${o.deviation.toFixed(
+                      1
+                    )}σ</span></td>
                     <td>${formatTimestamp(o.timestamp)}</td>
                   </tr>
-                  `).join("")}
+                  `
+                    )
+                    .join("")}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        ` : ""}
+        `
+            : ""
+        }
       </div>
     </section>
 
-    ${fullConfig.includeLeakAnalysis ? `
+    ${
+      fullConfig.includeLeakAnalysis
+        ? `
     <!-- Leak Analysis Section -->
     <section class="section">
       <h2 class="section-title">
@@ -1847,7 +2036,9 @@ export function generateMemoryReport(
               </div>
               <div class="leak-details">
                 <div class="leak-pattern-badge">
-                  <span class="pattern-indicator pattern-${leakReport.pattern}"></span>
+                  <span class="pattern-indicator pattern-${
+                    leakReport.pattern
+                  }"></span>
                   ${getPatternDescription(leakReport.pattern)}
                 </div>
 
@@ -1856,54 +2047,83 @@ export function generateMemoryReport(
                     <div class="mini-chart-label">Confidence</div>
                     <div class="progress-bar-container">
                       <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${leakReport.confidence}%; background: ${leakReport.confidence > 60 ? 'var(--color-critical)' : leakReport.confidence > 30 ? 'var(--color-warning)' : 'var(--color-success)'}"></div>
+                        <div class="progress-bar-fill" style="width: ${
+                          leakReport.confidence
+                        }%; background: ${
+            leakReport.confidence > 60
+              ? "var(--color-critical)"
+              : leakReport.confidence > 30
+              ? "var(--color-warning)"
+              : "var(--color-success)"
+          }"></div>
                       </div>
                     </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">${leakReport.confidence.toFixed(0)}%</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">${leakReport.confidence.toFixed(
+                      0
+                    )}%</div>
                   </div>
                   <div class="mini-chart-item">
                     <div class="mini-chart-label">Growth Rate</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">${leakReport.growthRate > 0 ? formatBytes(leakReport.growthRate) + '/s' : 'N/A'}</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">${
+                      leakReport.growthRate > 0
+                        ? formatBytes(leakReport.growthRate) + "/s"
+                        : "N/A"
+                    }</div>
                   </div>
                 </div>
 
-                ${leakReport.detected ? `
+                ${
+                  leakReport.detected
+                    ? `
                 <div class="guidance-section">
                   <div class="guidance-title">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                     Suspected Causes
                   </div>
                   <ul class="guidance-list">
-                    ${leakReport.suspectedCauses.slice(0, 4).map((cause) => `<li>${cause}</li>`).join("")}
+                    ${leakReport.suspectedCauses
+                      .slice(0, 4)
+                      .map((cause) => `<li>${cause}</li>`)
+                      .join("")}
                   </ul>
                 </div>
-                ` : `
+                `
+                    : `
                 <div style="padding: 1rem; background: var(--color-success-light); border-radius: 8px; margin-top: 1rem;">
                   <div style="display: flex; align-items: center; gap: 0.5rem; color: #059669;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     <strong>No significant memory leak patterns detected</strong>
                   </div>
                 </div>
-                `}
+                `
+                }
               </div>
             </div>
 
-            ${leakReport.detected ? `
+            ${
+              leakReport.detected
+                ? `
             <div class="guidance-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
               <div class="guidance-title">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                 Investigation Guide
               </div>
               <ul class="guidance-list">
-                ${leakReport.investigationGuidance.map((guide) => `<li>${guide}</li>`).join("")}
+                ${leakReport.investigationGuidance
+                  .map((guide) => `<li>${guide}</li>`)
+                  .join("")}
               </ul>
             </div>
-            ` : ""}
+            `
+                : ""
+            }
           </div>
         </div>
       </div>
     </section>
-    ` : ""}
+    `
+        : ""
+    }
 
     <!-- Recommendations Section -->
     <section class="section">
@@ -1916,18 +2136,34 @@ export function generateMemoryReport(
         <div class="col-12">
           <div class="card">
             <div class="recommendations-grid">
-              ${health.recommendations.map((rec) => {
-                const isCritical = rec.toLowerCase().includes("critical");
-                const isWarning = rec.toLowerCase().includes("warning");
-                return `
-                <div class="recommendation-item ${isCritical ? "critical" : isWarning ? "warning" : ""}">
-                  <svg class="recommendation-icon" viewBox="0 0 24 24" fill="none" stroke="${isCritical ? '#dc2626' : isWarning ? '#d97706' : 'var(--color-primary)'}" stroke-width="2">
-                    ${isCritical ? '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' : isWarning ? '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>' : '<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/>'}
+              ${health.recommendations
+                .map((rec) => {
+                  const isCritical = rec.toLowerCase().includes("critical");
+                  const isWarning = rec.toLowerCase().includes("warning");
+                  return `
+                <div class="recommendation-item ${
+                  isCritical ? "critical" : isWarning ? "warning" : ""
+                }">
+                  <svg class="recommendation-icon" viewBox="0 0 24 24" fill="none" stroke="${
+                    isCritical
+                      ? "#dc2626"
+                      : isWarning
+                      ? "#d97706"
+                      : "var(--color-primary)"
+                  }" stroke-width="2">
+                    ${
+                      isCritical
+                        ? '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+                        : isWarning
+                        ? '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
+                        : '<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/>'
+                    }
                   </svg>
                   <span class="recommendation-text">${rec}</span>
                 </div>
                 `;
-              }).join("")}
+                })
+                .join("")}
             </div>
           </div>
         </div>
@@ -1959,17 +2195,35 @@ export function generateMemoryReport(
                 </tr>
               </thead>
               <tbody>
-                ${sortedSnapshots.map((s) => `
+                ${sortedSnapshots
+                  .map(
+                    (s) => `
                 <tr>
                   <td><strong>${s.label}</strong></td>
                   <td>${formatTimestamp(s.timestamp)}</td>
                   <td>${formatBytes(s.heapUsed)}</td>
                   <td>${((s.heapUsed / s.heapLimit) * 100).toFixed(1)}%</td>
-                  <td><span class="badge ${s.analysisContext?.trend === 'increasing' ? 'badge-warning' : s.analysisContext?.trend === 'decreasing' ? 'badge-success' : 'badge-info'}">${s.analysisContext?.trend ?? "N/A"}</span></td>
-                  <td><span class="badge ${s.analysisContext?.severity === 'critical' ? 'badge-critical' : s.analysisContext?.severity === 'warning' ? 'badge-warning' : 'badge-success'}">${s.analysisContext?.severity ?? "N/A"}</span></td>
-                  <td><span class="badge badge-info">${s.isAuto ? "Auto" : "Manual"}</span></td>
+                  <td><span class="badge ${
+                    s.analysisContext?.trend === "increasing"
+                      ? "badge-warning"
+                      : s.analysisContext?.trend === "decreasing"
+                      ? "badge-success"
+                      : "badge-info"
+                  }">${s.analysisContext?.trend ?? "N/A"}</span></td>
+                  <td><span class="badge ${
+                    s.analysisContext?.severity === "critical"
+                      ? "badge-critical"
+                      : s.analysisContext?.severity === "warning"
+                      ? "badge-warning"
+                      : "badge-success"
+                  }">${s.analysisContext?.severity ?? "N/A"}</span></td>
+                  <td><span class="badge badge-info">${
+                    s.isAuto ? "Auto" : "Manual"
+                  }</span></td>
                 </tr>
-                `).join("")}
+                `
+                  )
+                  .join("")}
               </tbody>
             </table>
           </div>
@@ -2116,7 +2370,13 @@ export function generateMemoryReport(
         datasets: [{
           data: [${leakReport.confidence}, ${100 - leakReport.confidence}],
           backgroundColor: [
-            ${leakReport.confidence > 60 ? "'#ef4444'" : leakReport.confidence > 30 ? "'#f59e0b'" : "'#10b981'"},
+            ${
+              leakReport.confidence > 60
+                ? "'#ef4444'"
+                : leakReport.confidence > 30
+                ? "'#f59e0b'"
+                : "'#10b981'"
+            },
             isDarkMode ? '#334155' : '#e2e8f0'
           ],
           borderWidth: 0,
@@ -2143,7 +2403,9 @@ export function generateMemoryReport(
           ctx.font = 'bold 28px Inter, sans-serif';
           ctx.fillStyle = textColor;
           ctx.textAlign = 'center';
-          ctx.fillText('${leakReport.confidence.toFixed(0)}%', centerX, centerY);
+          ctx.fillText('${leakReport.confidence.toFixed(
+            0
+          )}%', centerX, centerY);
           ctx.font = '12px Inter, sans-serif';
           ctx.fillStyle = mutedColor;
           ctx.fillText('Leak Risk', centerX, centerY + 20);
@@ -2161,9 +2423,13 @@ export function generateMemoryReport(
           label: 'Usage %',
           data: [
             ${stats.usagePercentage.min.toFixed(1)},
-            ${(stats.usagePercentage.mean - stats.usagePercentage.stdDev).toFixed(1)},
+            ${(
+              stats.usagePercentage.mean - stats.usagePercentage.stdDev
+            ).toFixed(1)},
             ${stats.usagePercentage.median.toFixed(1)},
-            ${(stats.usagePercentage.mean + stats.usagePercentage.stdDev).toFixed(1)},
+            ${(
+              stats.usagePercentage.mean + stats.usagePercentage.stdDev
+            ).toFixed(1)},
             ${stats.usagePercentage.max.toFixed(1)}
           ],
           backgroundColor: [
@@ -2202,7 +2468,9 @@ export function generateMemoryReport(
       data: {
         labels: ['Stable', 'Increasing', 'Decreasing', 'Unknown'],
         datasets: [{
-          data: [${trendCounts.stable}, ${trendCounts.increasing}, ${trendCounts.decreasing}, ${trendCounts.unknown}],
+          data: [${trendCounts.stable}, ${trendCounts.increasing}, ${
+    trendCounts.decreasing
+  }, ${trendCounts.unknown}],
           backgroundColor: ['#10b981', '#f59e0b', '#06b6d4', '#94a3b8'],
           borderWidth: 0,
         }]
@@ -2223,7 +2491,9 @@ export function generateMemoryReport(
       data: {
         labels: ['Normal', 'Warning', 'Critical', 'Unknown'],
         datasets: [{
-          data: [${severityCounts.normal}, ${severityCounts.warning}, ${severityCounts.critical}, ${severityCounts.unknown}],
+          data: [${severityCounts.normal}, ${severityCounts.warning}, ${
+    severityCounts.critical
+  }, ${severityCounts.unknown}],
           backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#94a3b8'],
           borderWidth: 0,
         }]
@@ -2238,14 +2508,18 @@ export function generateMemoryReport(
       }
     });
 
-    ${hasDOMData || hasListenerData ? `
+    ${
+      hasDOMData || hasListenerData
+        ? `
     // DOM & Event Listeners Chart
     new Chart(document.getElementById('domChart'), {
       type: 'line',
       data: {
         labels: ${JSON.stringify(chartLabels)},
         datasets: [
-          ${hasDOMData ? `{
+          ${
+            hasDOMData
+              ? `{
             label: 'DOM Nodes',
             data: ${JSON.stringify(domNodesData)},
             borderColor: '#f59e0b',
@@ -2253,8 +2527,12 @@ export function generateMemoryReport(
             fill: true,
             tension: 0.4,
             yAxisID: 'y',
-          },` : ''}
-          ${hasListenerData ? `{
+          },`
+              : ""
+          }
+          ${
+            hasListenerData
+              ? `{
             label: 'Event Listeners',
             data: ${JSON.stringify(listenersData)},
             borderColor: '#8b5cf6',
@@ -2262,7 +2540,9 @@ export function generateMemoryReport(
             fill: true,
             tension: 0.4,
             yAxisID: 'y1',
-          }` : ''}
+          }`
+              : ""
+          }
         ]
       },
       options: {
@@ -2291,7 +2571,9 @@ export function generateMemoryReport(
         }
       }
     });
-    ` : ''}
+    `
+        : ""
+    }
 
     // Leak Pattern Chart
     new Chart(document.getElementById('leakPatternChart'), {
@@ -2301,9 +2583,11 @@ export function generateMemoryReport(
         datasets: [{
           label: 'Pattern Analysis',
           data: [
-            ${leakReport.pattern === 'gradual' ? leakReport.confidence : 10},
-            ${leakReport.pattern === 'sudden' ? leakReport.confidence : 10},
-            ${leakReport.pattern === 'intermittent' ? leakReport.confidence : 10},
+            ${leakReport.pattern === "gradual" ? leakReport.confidence : 10},
+            ${leakReport.pattern === "sudden" ? leakReport.confidence : 10},
+            ${
+              leakReport.pattern === "intermittent" ? leakReport.confidence : 10
+            },
             ${stabilityScore},
             ${100 - leakReport.confidence}
           ],
@@ -2342,11 +2626,10 @@ export function generateMemoryReport(
 /**
  * Download HTML report as a file
  */
-export function downloadReport(
-  htmlContent: string,
-  filename?: string
-): void {
-  const defaultFilename = `memory-report-${new Date().toISOString().slice(0, 10)}.html`;
+export function downloadReport(htmlContent: string, filename?: string): void {
+  const defaultFilename = `memory-report-${new Date()
+    .toISOString()
+    .slice(0, 10)}.html`;
   const finalFilename = filename ?? defaultFilename;
 
   const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });

@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { MemoryMonitorPanel } from "@usefy/memory-monitor-panel";
+import { MemoryMonitorPanel } from "@usefy/memory-monitor";
 
 /**
  * MemoryMonitorPanel is an enterprise-grade React component for real-time
@@ -160,7 +160,7 @@ export const Overview: Story = {
             Quick Start
           </h2>
           <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto">
-            {`import { MemoryMonitorPanel } from "@usefy/memory-monitor-panel";
+            {`import { MemoryMonitorPanel } from "@usefy/memory-monitor";
 
 function App() {
   return (
@@ -224,7 +224,7 @@ function App() {
   parameters: {
     docs: {
       source: {
-        code: `import { MemoryMonitorPanel } from "@usefy/memory-monitor-panel";
+        code: `import { MemoryMonitorPanel } from "@usefy/memory-monitor";
 
 // Basic usage - renders in development mode only
 <MemoryMonitorPanel />

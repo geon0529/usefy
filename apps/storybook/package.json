@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "storybook": "storybook dev -p 6006",
+    "prebuild-storybook": "node scripts/copy-reports.js",
     "build-storybook": "storybook build",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -22,7 +23,7 @@
     "@usefy/use-intersection-observer": "workspace:*",
     "@usefy/use-local-storage": "workspace:*",
     "@usefy/use-memory-monitor": "workspace:*",
-    "@usefy/memory-monitor-panel": "workspace:*",
+    "@usefy/memory-monitor": "workspace:*",
     "@usefy/use-on-click-outside": "workspace:*",
     "@usefy/use-session-storage": "workspace:*",
     "@usefy/use-signal": "workspace:*",

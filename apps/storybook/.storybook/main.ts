@@ -14,6 +14,7 @@ const config: StorybookConfig = {
     name: "@storybook/react-vite",
     options: {},
   },
+  staticDirs: ["../public"],
   async viteFinal(config) {
     config.css = config.css || {};
     config.css.postcss = {

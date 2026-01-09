@@ -55,16 +55,28 @@ function ArrowDownIcon({ className }: { className?: string }) {
 }
 
 /**
+ * Check if a value is valid for comparison
+ */
+function isValidNumber(value: number | undefined | null): value is number {
+  return value != null && !Number.isNaN(value) && Number.isFinite(value);
+}
+
+/**
  * Calculate difference between two values
  */
 function calculateDiff(
-  baseline: number,
-  current: number
-): { diff: number; percentage: number; direction: "up" | "down" | "same" } {
+  baseline: number | undefined | null,
+  current: number | undefined | null
+): { diff: number; percentage: number; direction: "up" | "down" | "same"; isValid: boolean } {
+  // Handle invalid values
+  if (!isValidNumber(baseline) || !isValidNumber(current)) {
+    return { diff: 0, percentage: 0, direction: "same", isValid: false };
+  }
+
   const diff = current - baseline;
   const percentage = baseline > 0 ? (diff / baseline) * 100 : 0;
   const direction = diff > 0 ? "up" : diff < 0 ? "down" : "same";
-  return { diff, percentage, direction };
+  return { diff, percentage, direction, isValid: true };
 }
 
 /**
@@ -75,6 +87,7 @@ interface DiffBadgeProps {
   percentage: number;
   direction: "up" | "down" | "same";
   format?: (value: number) => string;
+  isValid?: boolean;
 }
 
 function DiffBadge({
@@ -82,7 +95,17 @@ function DiffBadge({
   percentage,
   direction,
   format = formatBytes,
+  isValid = true,
 }: DiffBadgeProps) {
+  // Handle invalid/unavailable data
+  if (!isValid) {
+    return (
+      <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+        N/A
+      </span>
+    );
+  }
+
   if (direction === "same") {
     return (
       <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -94,6 +117,10 @@ function DiffBadge({
   const isIncrease = direction === "up";
   const Icon = isIncrease ? ArrowUpIcon : ArrowDownIcon;
 
+  // Use absolute value for formatting (formatBytes doesn't handle negative numbers)
+  const formattedValue = format(Math.abs(diff));
+  const formattedPercentage = Math.abs(percentage).toFixed(1);
+
   return (
     <div
       className={cn(
@@ -103,13 +130,26 @@ function DiffBadge({
           : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
       )}
     >
-      <Icon className="w-3 h-3" />
+      <Icon className="w-3 h-3 flex-shrink-0" />
       <span>
-        {isIncrease ? "+" : ""}
-        {format(diff)} ({percentage.toFixed(1)}%)
+        {isIncrease ? "+" : "-"}
+        {formattedValue} ({formattedPercentage}%)
       </span>
     </div>
   );
+}
+
+/**
+ * Safely format a value, returning "N/A" for invalid values
+ */
+function safeFormat(
+  value: number | undefined | null,
+  format: (value: number) => string
+): string {
+  if (!isValidNumber(value)) {
+    return "N/A";
+  }
+  return format(value);
 }
 
 /**
@@ -117,8 +157,8 @@ function DiffBadge({
  */
 interface CompareRowProps {
   label: string;
-  baseline: number;
-  current: number;
+  baseline: number | undefined | null;
+  current: number | undefined | null;
   format?: (value: number) => string;
 }
 
@@ -128,7 +168,7 @@ function CompareRow({
   current,
   format = formatBytes,
 }: CompareRowProps) {
-  const { diff, percentage, direction } = calculateDiff(baseline, current);
+  const { diff, percentage, direction, isValid } = calculateDiff(baseline, current);
 
   return (
     <div className="grid grid-cols-4 gap-2 items-center py-2 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
@@ -136,10 +176,10 @@ function CompareRow({
         {label}
       </span>
       <span className="text-sm font-mono text-slate-600 dark:text-slate-400 text-center">
-        {format(baseline)}
+        {safeFormat(baseline, format)}
       </span>
       <span className="text-sm font-mono text-slate-900 dark:text-slate-100 text-center">
-        {format(current)}
+        {safeFormat(current, format)}
       </span>
       <div className="flex justify-end">
         <DiffBadge
@@ -147,6 +187,7 @@ function CompareRow({
           percentage={percentage}
           direction={direction}
           format={format}
+          isValid={isValid}
         />
       </div>
     </div>
@@ -192,6 +233,7 @@ export function SnapshotCompare({
             diff={heapDiff.diff}
             percentage={heapDiff.percentage}
             direction={heapDiff.direction}
+            isValid={heapDiff.isValid}
           />
         </div>
       </div>
@@ -242,7 +284,7 @@ export function SnapshotCompare({
       </div>
 
       {/* Analysis */}
-      {heapDiff.direction !== "same" && (
+      {heapDiff.isValid && heapDiff.direction !== "same" && (
         <div
           className={cn(
             "px-4 py-3 border-t",

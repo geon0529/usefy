@@ -19,4 +19,4 @@ export {
   type AutoGCEventData,
   type MemoryWarningData,
   type MemoryCriticalData,
-} from "@usefy/memory-monitor-panel";
+} from "@usefy/memory-monitor";

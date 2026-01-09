@@ -6,8 +6,10 @@ import type { PanelSnapshot } from "../../types";
 export interface SnapshotListProps {
   /** List of snapshots */
   snapshots: PanelSnapshot[];
-  /** Currently selected snapshot ID */
+  /** Currently selected snapshot ID (most recently selected = current) */
   selectedId?: string;
+  /** Compare snapshot ID (first selected = baseline) */
+  compareId?: string;
   /** Callback when a snapshot is selected */
   onSelect?: (snapshot: PanelSnapshot) => void;
   /** Callback when a snapshot is deleted */
@@ -47,6 +49,7 @@ function CameraIcon({ className }: { className?: string }) {
 export function SnapshotList({
   snapshots,
   selectedId,
+  compareId,
   onSelect,
   onDelete,
   maxSnapshots = 10,
@@ -66,6 +69,19 @@ export function SnapshotList({
     },
     [onDelete]
   );
+
+  /**
+   * Determine the role of a snapshot in comparison
+   * - baseline: the compare snapshot (first selected, older reference)
+   * - current: the selected snapshot (second selected, newer to compare against baseline)
+   */
+  const getSelectionRole = (snapshotId: string): "baseline" | "current" | null => {
+    if (selectedId && compareId) {
+      if (snapshotId === compareId) return "baseline";
+      if (snapshotId === selectedId) return "current";
+    }
+    return null;
+  };
 
   // Empty state
   if (snapshots.length === 0) {
@@ -110,7 +126,8 @@ export function SnapshotList({
           <SnapshotCard
             key={snapshot.id}
             snapshot={snapshot}
-            selected={selectedId === snapshot.id}
+            selected={selectedId === snapshot.id || compareId === snapshot.id}
+            selectionRole={getSelectionRole(snapshot.id)}
             onClick={() => handleSelect(snapshot)}
             onDelete={onDelete ? () => handleDelete(snapshot.id) : undefined}
             compact={compact}

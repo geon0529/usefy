@@ -808,6 +808,7 @@ function SnapshotsTab({
       <SnapshotList
         snapshots={snapshots}
         selectedId={selectedSnapshot?.id}
+        compareId={compareSnapshot?.id}
         onSelect={onSelect}
         onDelete={onDelete}
         maxSnapshots={maxSnapshots}
