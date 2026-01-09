@@ -9,17 +9,17 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@usefy/usefy" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/npm/v/@usefy/usefy.svg?style=flat-square&color=007acc" alt="npm version" />
+  <a href="https://www.npmjs.com/package/usefy" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/npm/v/usefy.svg?style=flat-square&color=007acc" alt="npm version" />
   </a>
-  <a href="https://www.npmjs.com/package/@usefy/usefy" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/npm/dm/@usefy/usefy.svg?style=flat-square&color=007acc" alt="npm downloads" />
+  <a href="https://www.npmjs.com/package/usefy" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/npm/dm/usefy.svg?style=flat-square&color=007acc" alt="npm downloads" />
   </a>
-  <a href="https://bundlephobia.com/package/@usefy/usefy" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/bundlephobia/minzip/@usefy/usefy?style=flat-square&color=007acc" alt="bundle size" />
+  <a href="https://bundlephobia.com/package/usefy" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/bundlephobia/minzip/usefy?style=flat-square&color=007acc" alt="bundle size" />
   </a>
   <a href="https://github.com/mirunamu00/usefy/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/npm/l/@usefy/usefy.svg?style=flat-square&color=007acc" alt="license" />
+    <img src="https://img.shields.io/npm/l/usefy.svg?style=flat-square&color=007acc" alt="license" />
   </a>
 </p>
 
@@ -68,13 +68,13 @@ Install all hooks at once:
 
 ```bash
 # npm
-npm install @usefy/usefy
+npm install usefy
 
 # yarn
-yarn add @usefy/usefy
+yarn add usefy
 
 # pnpm
-pnpm add @usefy/usefy
+pnpm add usefy
 ```
 
 ### Individual Packages
@@ -148,7 +148,7 @@ import {
   useSignal,
   useUnmount,
   useInit,
-} from "@usefy/usefy";
+} from "usefy";
 
 function App() {
   // Boolean state management
