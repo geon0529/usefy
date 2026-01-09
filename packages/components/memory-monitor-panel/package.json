@@ -1,0 +1,80 @@
+{
+  "name": "@usefy/memory-monitor-panel",
+  "version": "0.1.0",
+  "description": "Enterprise-grade React component for real-time browser memory monitoring with slide-in panel UI",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@usefy/use-memory-monitor": "workspace:*",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "recharts": "^2.15.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "jsdom": "^26.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.16"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "memory",
+    "monitor",
+    "performance",
+    "devtools",
+    "debugging",
+    "memory-leak",
+    "heap",
+    "gc"
+  ],
+  "author": "usefy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usefy/usefy.git",
+    "directory": "packages/components/memory-monitor-panel"
+  },
+  "bugs": {
+    "url": "https://github.com/usefy/usefy/issues"
+  },
+  "homepage": "https://github.com/usefy/usefy/tree/main/packages/components/memory-monitor-panel#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -5,9 +5,18 @@
  *
  * @example
  * ```tsx
- * import { Button } from "@usefy/components";
+ * import { MemoryMonitorPanel } from "@usefy/components";
  * ```
  */
 
-export { Button } from "@usefy/button";
-export type { ButtonProps, ButtonVariant, ButtonSize } from "@usefy/button";
+// Memory Monitor Panel
+export {
+  MemoryMonitorPanel,
+  useMemoryMonitorHeadless,
+  type MemoryMonitorPanelProps,
+  type PanelSettings,
+  type PanelSnapshot,
+  type AutoGCEventData,
+  type MemoryWarningData,
+  type MemoryCriticalData,
+} from "@usefy/memory-monitor-panel";
