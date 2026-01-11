@@ -37,7 +37,6 @@ storybook-static
 
 # Generated reports (copied during build)
 apps/storybook/public/reports
-packages/components/memory-monitor/mock-reports
 
 # Misc
 .DS_Store

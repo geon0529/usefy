@@ -1,0 +1,1752 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Diagnostic Report - Demo App - Critical Memory Pressure</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --color-success: #10b981;
+      --color-success-light: #ecfdf5;
+      --color-warning: #f59e0b;
+      --color-warning-light: #fffbeb;
+      --color-critical: #ef4444;
+      --color-critical-light: #fef2f2;
+      --color-primary: #6366f1;
+      --color-primary-light: #eef2ff;
+      --color-secondary: #8b5cf6;
+      --color-accent: #06b6d4;
+      --color-accent-light: #ecfeff;
+      --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+      --gradient-info: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-radius: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --bg-card: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #64748b;
+        --border-color: #334155;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .report-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Header Styles */
+    .report-header {
+      background: var(--gradient-primary);
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .report-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      transform: translate(30%, -30%);
+    }
+
+    .report-header h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .report-header h1 svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .header-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-meta-item svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Section Styles */
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 24px;
+      height: 24px;
+      color: var(--color-primary);
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
+
+    @media (max-width: 1200px) {
+      .col-8, .col-6 { grid-column: span 12; }
+      .col-4 { grid-column: span 6; }
+      .col-3 { grid-column: span 6; }
+    }
+
+    @media (max-width: 768px) {
+      .col-4, .col-3 { grid-column: span 12; }
+      .report-container { padding: 1rem; }
+      .report-header { padding: 2rem 1.5rem; }
+      .report-header h1 { font-size: 1.75rem; }
+    }
+
+    /* Card Styles */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
+    }
+
+    .card-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Health Score Card */
+    .health-card {
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .health-score-ring {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .health-score-ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .health-score-ring .ring-bg {
+      fill: none;
+      stroke: var(--bg-tertiary);
+      stroke-width: 10;
+    }
+
+    .health-score-ring .ring-progress {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+
+    .health-score-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .health-score-number {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    .health-score-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .health-grade {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .health-info {
+      flex: 1;
+    }
+
+    .health-info h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .health-info p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Metric Cards */
+    .metric-card {
+      text-align: center;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-icon svg {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+
+    .metric-icon.primary { background: var(--gradient-primary); }
+    .metric-icon.success { background: var(--gradient-success); }
+    .metric-icon.warning { background: var(--gradient-warning); }
+    .metric-icon.info { background: var(--gradient-info); }
+
+    .metric-value {
+      font-size: 1.875rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .metric-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .metric-change {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .metric-change.positive {
+      background: var(--color-success-light);
+      color: #059669;
+    }
+
+    .metric-change.negative {
+      background: var(--color-critical-light);
+      color: #dc2626;
+    }
+
+    /* Chart Container */
+    .chart-card {
+      padding: 1.5rem;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .chart-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .chart-wrapper.small {
+      height: 200px;
+    }
+
+    /* Gauge Chart */
+    .gauge-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 180px;
+      height: 100px;
+    }
+
+    .gauge-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .gauge-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      margin: 1rem 0;
+    }
+
+    .progress-bar-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .progress-bar-value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease-out;
+    }
+
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th, td {
+      padding: 0.875rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--bg-tertiary);
+    }
+
+    /* Badge Styles */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .badge-success {
+      background: var(--color-success-light);
+      color: #059669;
+    }
+
+    .badge-warning {
+      background: var(--color-warning-light);
+      color: #d97706;
+    }
+
+    .badge-critical {
+      background: var(--color-critical-light);
+      color: #dc2626;
+    }
+
+    .badge-info {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+
+    /* Leak Pattern Card */
+    .leak-pattern-card {
+      display: flex;
+      gap: 2.5rem;
+      align-items: stretch;
+      min-height: 400px;
+    }
+
+    .leak-chart-container {
+      flex: 0 0 45%;
+      min-width: 320px;
+      max-width: 500px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .leak-chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    @media (max-width: 992px) {
+      .leak-pattern-card {
+        flex-direction: column;
+        align-items: center;
+      }
+      .leak-chart-container {
+        flex: none;
+        width: 100%;
+        max-width: 400px;
+        min-width: unset;
+      }
+    }
+
+    .leak-details {
+      flex: 1;
+    }
+
+    .leak-pattern-badge {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .pattern-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--bg-tertiary);
+    }
+
+    .pattern-gradual { background: var(--color-critical); }
+    .pattern-sudden { background: var(--color-warning); }
+    .pattern-intermittent { background: var(--color-primary); }
+    .pattern-none { background: var(--color-success); }
+
+    /* Recommendations */
+    .recommendations-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .recommendation-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      border-left: 4px solid var(--color-primary);
+      transition: transform 0.2s;
+    }
+
+    .recommendation-item:hover {
+      transform: translateX(2px);
+      background: var(--bg-tertiary);
+    }
+
+    .recommendation-item.critical {
+      border-left-color: var(--color-critical);
+      background: #fef2f2;
+    }
+
+    .recommendation-item.critical .recommendation-text {
+      color: #991b1b;
+    }
+
+    .recommendation-item.warning {
+      border-left-color: var(--color-warning);
+      background: #fffbeb;
+    }
+
+    .recommendation-item.warning .recommendation-text {
+      color: #92400e;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .recommendation-item.critical {
+        background: rgba(239, 68, 68, 0.15);
+      }
+      .recommendation-item.critical .recommendation-text {
+        color: #fca5a5;
+      }
+      .recommendation-item.warning {
+        background: rgba(245, 158, 11, 0.15);
+      }
+      .recommendation-item.warning .recommendation-text {
+        color: #fcd34d;
+      }
+    }
+
+    .recommendation-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .recommendation-text {
+      flex: 1;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Guidance List */
+    .guidance-section {
+      margin-top: 1.5rem;
+    }
+
+    .guidance-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .guidance-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .guidance-list li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .guidance-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.9rem;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    /* Collapsible */
+    .collapsible-header {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+    }
+
+    .collapsible-header svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s;
+      color: var(--text-muted);
+    }
+
+    .collapsible-header.open svg {
+      transform: rotate(180deg);
+      color: var(--color-primary);
+    }
+
+    .collapsible-content {
+      display: none;
+      padding-top: 1rem;
+    }
+
+    .collapsible-content.show {
+      display: block;
+    }
+
+    /* Footer */
+    .report-footer {
+      margin-top: 3rem;
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .footer-brand {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-info {
+      font-size: 0.875rem;
+    }
+
+    /* Mini Charts Grid */
+    .mini-charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .mini-chart-item {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .mini-chart-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Stat Comparison */
+    .stat-comparison {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .stat-comparison:last-child {
+      border-bottom: none;
+    }
+
+    .stat-comparison-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .stat-comparison-value {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Print Styles */
+    @media print {
+      body { background: white; }
+      .report-container { padding: 0; }
+      .card:hover { transform: none; box-shadow: var(--shadow-md); }
+      .no-print { display: none !important; }
+      .chart-card { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="report-container">
+    <!-- Header -->
+    <header class="report-header">
+      <h1>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" x2="12" y1="19" y2="22"/>
+        </svg>
+        Memory Diagnostic Report
+      </h1>
+      <div class="header-meta">
+        
+        <div class="header-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          <span>Demo App - Critical Memory Pressure</span>
+        </div>
+        
+        <div class="header-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>2026. 1. 11. 오전 11:42:43 - 2026. 1. 11. 오전 11:56:43</span>
+        </div>
+        <div class="header-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>15 Snapshots (14m 0s)</span>
+        </div>
+        <div class="header-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Generated: 2026. 1. 11. 오전 11:57:43</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Executive Summary Section -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        Executive Summary
+      </h2>
+
+      <div class="dashboard-grid">
+        <!-- Health Score -->
+        <div class="col-8">
+          <div class="health-card">
+            <div class="health-score-ring">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle class="ring-bg" cx="80" cy="80" r="70"/>
+                <circle class="ring-progress" cx="80" cy="80" r="70"
+                  stroke="#ef4444"
+                  stroke-dasharray="439.822971502571"
+                  stroke-dashoffset="286.7645774196763"/>
+              </svg>
+              <div class="health-score-value">
+                <div class="health-score-number" style="color: #ef4444">35</div>
+                <div class="health-score-label">Health Score</div>
+              </div>
+            </div>
+            <div class="health-info">
+              <div class="health-grade" style="background: #ef4444">F</div>
+              <h3>Memory Health Assessment</h3>
+              <p>Critical memory health issues. Average usage at 77.6% (max 94.2%). Significant gradual leak pattern detected. Immediate attention required.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leak Probability Gauge -->
+        <div class="col-4">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">Leak Probability</span>
+            </div>
+            <div class="chart-wrapper small">
+              <canvas id="leakGauge"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="col-3">
+          <div class="card metric-card">
+            <div class="metric-icon primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="metric-value">77.6%</div>
+            <div class="metric-label">Average Usage</div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="card metric-card">
+            <div class="metric-icon warning">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="metric-value">94.2%</div>
+            <div class="metric-label">Peak Usage</div>
+            <div class="metric-change negative">High Risk</div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="card metric-card">
+            <div class="metric-icon success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="metric-value">1.6 GB</div>
+            <div class="metric-label">Average Heap</div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="card metric-card">
+            <div class="metric-icon info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="metric-value">73%</div>
+            <div class="metric-label">Stability Score</div>
+            <div class="metric-change " style="background: var(--color-warning-light); color: var(--color-warning);">Moderate</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memory Trends Section -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+        Memory Trends
+      </h2>
+
+      <div class="dashboard-grid">
+        <!-- Main Memory Chart -->
+        <div class="col-8">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">Heap Memory Over Time</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="memoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usage Distribution -->
+        <div class="col-4">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">Usage Distribution</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="usageDistribution"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Memory Usage % Chart -->
+        <div class="col-6">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">Memory Usage Percentage</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="usageChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trend Distribution -->
+        <div class="col-3">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">Trend Analysis</span>
+            </div>
+            <div class="chart-wrapper small">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Severity Distribution -->
+        <div class="col-3">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">Severity Distribution</span>
+            </div>
+            <div class="chart-wrapper small">
+              <canvas id="severityChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- DOM & Events Section -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        DOM & Event Listeners
+      </h2>
+
+      <div class="dashboard-grid">
+        <div class="col-12">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <span class="chart-title">DOM Nodes & Event Listeners Over Time</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="domChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+    <!-- Statistical Analysis Section -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        Statistical Analysis
+      </h2>
+
+      <div class="dashboard-grid">
+        <div class="col-12">
+          <div class="card">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Minimum</th>
+                    <th>Maximum</th>
+                    <th>Mean</th>
+                    <th>Median</th>
+                    <th>Std Dev</th>
+                    <th>Outliers</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Heap Used</strong></td>
+                    <td>1.2 GB</td>
+                    <td>1.9 GB</td>
+                    <td>1.6 GB</td>
+                    <td>1.5 GB</td>
+                    <td>214.4 MB</td>
+                    <td><span class="badge badge-success">0</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Heap Total</strong></td>
+                    <td>1.3 GB</td>
+                    <td>2.0 GB</td>
+                    <td>1.6 GB</td>
+                    <td>1.6 GB</td>
+                    <td>223.1 MB</td>
+                    <td><span class="badge badge-success">0</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Usage %</strong></td>
+                    <td>60.5%</td>
+                    <td>94.2%</td>
+                    <td>77.6%</td>
+                    <td>77.4%</td>
+                    <td>10.5%</td>
+                    <td><span class="badge badge-success">0</span></td>
+                  </tr>
+                  
+                  <tr>
+                    <td><strong>DOM Nodes</strong></td>
+                    <td>802</td>
+                    <td>1,500</td>
+                    <td>1163</td>
+                    <td>1168</td>
+                    <td>213</td>
+                    <td><span class="badge badge-success">0</span></td>
+                  </tr>
+                  
+                  
+                  <tr>
+                    <td><strong>Event Listeners</strong></td>
+                    <td>158</td>
+                    <td>363</td>
+                    <td>259</td>
+                    <td>258</td>
+                    <td>65</td>
+                    <td><span class="badge badge-success">0</span></td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        
+      </div>
+    </section>
+
+    
+    <!-- Leak Analysis Section -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Leak Pattern Analysis
+      </h2>
+
+      <div class="dashboard-grid">
+        <div class="col-12">
+          <div class="card">
+            <div class="leak-pattern-card">
+              <div class="leak-chart-container">
+                <canvas id="leakPatternChart"></canvas>
+              </div>
+              <div class="leak-details">
+                <div class="leak-pattern-badge">
+                  <span class="pattern-indicator pattern-gradual"></span>
+                  Gradual Increase
+                </div>
+
+                <div class="mini-charts-grid">
+                  <div class="mini-chart-item">
+                    <div class="mini-chart-label">Confidence</div>
+                    <div class="progress-bar-container">
+                      <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: 84%; background: var(--color-critical)"></div>
+                      </div>
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">84%</div>
+                  </div>
+                  <div class="mini-chart-item">
+                    <div class="mini-chart-label">Growth Rate</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">907 KB/s</div>
+                  </div>
+                </div>
+
+                
+                <div class="guidance-section">
+                  <div class="guidance-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Suspected Causes
+                  </div>
+                  <ul class="guidance-list">
+                    <li>Event listeners not being removed</li><li>Closures retaining references to large objects</li><li>Timers/intervals not being cleared</li><li>Accumulating cache without size limits</li>
+                  </ul>
+                </div>
+                
+              </div>
+            </div>
+
+            
+            <div class="guidance-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+              <div class="guidance-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Investigation Guide
+              </div>
+              <ul class="guidance-list">
+                <li>Use Chrome DevTools Memory tab to take heap snapshots</li><li>Compare heap snapshots before and after suspected operations</li><li>Use Performance Monitor to track JS heap size in real-time</li><li>Check useEffect cleanup functions in React components</li><li>Verify addEventListener has matching removeEventListener</li><li>Ensure setInterval/setTimeout are cleared on unmount</li><li>Look for growing arrays or objects in component state</li><li>Check for subscriptions (RxJS, event emitters) not being unsubscribed</li>
+              </ul>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+    <!-- Recommendations Section -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="m6.8 14-3.5 2"/><path d="m20.7 16-3.5-2"/><path d="M6.8 10 3.3 8"/><path d="m20.7 8-3.5 2"/><circle cx="12" cy="12" r="5"/></svg>
+        Recommendations
+      </h2>
+
+      <div class="dashboard-grid">
+        <div class="col-12">
+          <div class="card">
+            <div class="recommendations-grid">
+              
+                <div class="recommendation-item critical">
+                  <svg class="recommendation-icon" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  <span class="recommendation-text">CRITICAL: Maximum memory usage exceeds 90%. Implement immediate memory optimization.</span>
+                </div>
+                
+                <div class="recommendation-item ">
+                  <svg class="recommendation-icon" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/>
+                  </svg>
+                  <span class="recommendation-text">Investigate gradual memory leak pattern (84% confidence).</span>
+                </div>
+                
+                <div class="recommendation-item ">
+                  <svg class="recommendation-icon" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/>
+                  </svg>
+                  <span class="recommendation-text">Memory growing at approximately 907 KB/second.</span>
+                </div>
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Snapshot Details Section -->
+    <section class="section">
+      <div class="card">
+        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+          <h2 class="section-title" style="margin: 0; border: none; padding: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Snapshot Details
+          </h2>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="collapsible-content">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Label</th>
+                  <th>Timestamp</th>
+                  <th>Heap Used</th>
+                  <th>Usage %</th>
+                  <th>Trend</th>
+                  <th>Severity</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <tr>
+                  <td><strong>Auto 1</strong></td>
+                  <td>2026. 1. 11. 오전 11:42:43</td>
+                  <td>1.2 GB</td>
+                  <td>60.5%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-success">normal</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 2</strong></td>
+                  <td>2026. 1. 11. 오전 11:43:43</td>
+                  <td>1.3 GB</td>
+                  <td>63.2%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-success">normal</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 3</strong></td>
+                  <td>2026. 1. 11. 오전 11:44:43</td>
+                  <td>1.3 GB</td>
+                  <td>65.6%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-success">normal</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 4</strong></td>
+                  <td>2026. 1. 11. 오전 11:45:43</td>
+                  <td>1.4 GB</td>
+                  <td>68.1%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-success">normal</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 5</strong></td>
+                  <td>2026. 1. 11. 오전 11:46:43</td>
+                  <td>1.4 GB</td>
+                  <td>69.9%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-success">normal</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 6</strong></td>
+                  <td>2026. 1. 11. 오전 11:47:43</td>
+                  <td>1.4 GB</td>
+                  <td>72.3%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-warning">warning</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 7</strong></td>
+                  <td>2026. 1. 11. 오전 11:48:43</td>
+                  <td>1.5 GB</td>
+                  <td>75.4%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-warning">warning</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 8</strong></td>
+                  <td>2026. 1. 11. 오전 11:49:43</td>
+                  <td>1.5 GB</td>
+                  <td>77.4%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-warning">warning</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 9</strong></td>
+                  <td>2026. 1. 11. 오전 11:50:43</td>
+                  <td>1.6 GB</td>
+                  <td>80.4%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-warning">warning</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 10</strong></td>
+                  <td>2026. 1. 11. 오전 11:51:43</td>
+                  <td>1.6 GB</td>
+                  <td>82.3%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-warning">warning</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 11</strong></td>
+                  <td>2026. 1. 11. 오전 11:52:43</td>
+                  <td>1.7 GB</td>
+                  <td>84.6%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-warning">warning</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 12</strong></td>
+                  <td>2026. 1. 11. 오전 11:53:43</td>
+                  <td>1.8 GB</td>
+                  <td>87.7%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-critical">critical</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 13</strong></td>
+                  <td>2026. 1. 11. 오전 11:54:43</td>
+                  <td>1.8 GB</td>
+                  <td>89.5%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-critical">critical</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 14</strong></td>
+                  <td>2026. 1. 11. 오전 11:55:43</td>
+                  <td>1.8 GB</td>
+                  <td>92.3%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-critical">critical</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+                <tr>
+                  <td><strong>Auto 15</strong></td>
+                  <td>2026. 1. 11. 오전 11:56:43</td>
+                  <td>1.9 GB</td>
+                  <td>94.2%</td>
+                  <td><span class="badge badge-warning">increasing</span></td>
+                  <td><span class="badge badge-critical">critical</span></td>
+                  <td><span class="badge badge-info">Auto</span></td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="report-footer">
+      <div class="footer-brand">@usefy/memory-monitor-panel</div>
+      <div class="footer-info">
+        Memory Diagnostic Report | Generated on 2026. 1. 11. 오전 11:57:43
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Toggle collapsible sections
+    function toggleCollapsible(element) {
+      element.classList.toggle('open');
+      const content = element.nextElementSibling;
+      content.classList.toggle('show');
+    }
+
+    // Dark mode detection
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const textColor = isDarkMode ? '#f8fafc' : '#0f172a';
+    const gridColor = isDarkMode ? '#334155' : '#e2e8f0';
+    const mutedColor = isDarkMode ? '#64748b' : '#94a3b8';
+
+    // Chart.js global defaults
+    Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+    Chart.defaults.color = textColor;
+
+    // Main Memory Chart
+    new Chart(document.getElementById('memoryChart'), {
+      type: 'line',
+      data: {
+        labels: ["오전 11:42:43","오전 11:43:43","오전 11:44:43","오전 11:45:43","오전 11:46:43","오전 11:47:43","오전 11:48:43","오전 11:49:43","오전 11:50:43","오전 11:51:43","오전 11:52:43","오전 11:53:43","오전 11:54:43","오전 11:55:43","오전 11:56:43"],
+        datasets: [
+          {
+            label: 'Heap Used (MB)',
+            data: [1239.2713613510132,1294.2587461471558,1343.0122299194336,1394.5396852493286,1431.6960563659668,1480.7445812225342,1544.119743347168,1584.6316890716553,1646.999303817749,1684.7987051010132,1732.0049571990967,1796.0132217407227,1833.8859996795654,1891.0000495910645,1930.137043952942],
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+          {
+            label: 'Heap Total (MB)',
+            data: [1301.2349300384521,1358.9716835021973,1410.162841796875,1464.2666692733765,1503.2808589935303,1554.7818098068237,1621.3257303237915,1663.8632736206055,1729.349268913269,1769.0386409759521,1818.6052045822144,1885.8138828277588,1925.5803003311157,1985.550051689148,2007.039999961853],
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.05)',
+            fill: true,
+            borderDash: [5, 5],
+            tension: 0.4,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+            titleColor: textColor,
+            bodyColor: textColor,
+            borderColor: gridColor,
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 8,
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor, drawBorder: false },
+            ticks: { color: mutedColor }
+          },
+          y: {
+            grid: { color: gridColor, drawBorder: false },
+            ticks: { color: mutedColor, callback: v => v + ' MB' }
+          }
+        }
+      }
+    });
+
+    // Usage Chart
+    new Chart(document.getElementById('usageChart'), {
+      type: 'line',
+      data: {
+        labels: ["오전 11:42:43","오전 11:43:43","오전 11:44:43","오전 11:45:43","오전 11:46:43","오전 11:47:43","오전 11:48:43","오전 11:49:43","오전 11:50:43","오전 11:51:43","오전 11:52:43","오전 11:53:43","오전 11:54:43","오전 11:55:43","오전 11:56:43"],
+        datasets: [{
+          label: 'Usage %',
+          data: [60.51129694096744,63.19622783921659,65.57676903903484,68.09275806881487,69.90703400224447,72.30198150500655,75.39647184312344,77.37459419295192,80.41988788172603,82.26556177251041,84.57055455073714,87.69595809280872,89.54521482810378,92.3339867964387,94.24497284926474],
+          borderColor: '#06b6d4',
+          backgroundColor: (ctx) => {
+            const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(6, 182, 212, 0.3)');
+            gradient.addColorStop(1, 'rgba(6, 182, 212, 0)');
+            return gradient;
+          },
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+            titleColor: textColor,
+            bodyColor: textColor,
+            borderColor: gridColor,
+            borderWidth: 1,
+            callbacks: { label: (ctx) => ctx.parsed.y.toFixed(1) + '%' }
+          }
+        },
+        scales: {
+          x: { grid: { color: gridColor, drawBorder: false }, ticks: { color: mutedColor } },
+          y: {
+            min: 0,
+            max: 100,
+            grid: { color: gridColor, drawBorder: false },
+            ticks: { color: mutedColor, callback: v => v + '%' }
+          }
+        }
+      }
+    });
+
+    // Leak Gauge
+    new Chart(document.getElementById('leakGauge'), {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [84, 16],
+          backgroundColor: [
+            '#ef4444',
+            isDarkMode ? '#334155' : '#e2e8f0'
+          ],
+          borderWidth: 0,
+          circumference: 180,
+          rotation: 270,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '75%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        }
+      },
+      plugins: [{
+        id: 'gaugeText',
+        afterDraw: (chart) => {
+          const { ctx, chartArea } = chart;
+          const centerX = (chartArea.left + chartArea.right) / 2;
+          const centerY = chartArea.bottom - 20;
+          ctx.save();
+          ctx.font = 'bold 28px Inter, sans-serif';
+          ctx.fillStyle = textColor;
+          ctx.textAlign = 'center';
+          ctx.fillText('84%', centerX, centerY);
+          ctx.font = '12px Inter, sans-serif';
+          ctx.fillStyle = mutedColor;
+          ctx.fillText('Leak Risk', centerX, centerY + 20);
+          ctx.restore();
+        }
+      }]
+    });
+
+    // Usage Distribution (Box-like visualization)
+    new Chart(document.getElementById('usageDistribution'), {
+      type: 'bar',
+      data: {
+        labels: ['Min', 'Q1', 'Median', 'Q3', 'Max'],
+        datasets: [{
+          label: 'Usage %',
+          data: [
+            60.5,
+            67.1,
+            77.4,
+            88.0,
+            94.2
+          ],
+          backgroundColor: [
+            '#10b981',
+            '#06b6d4',
+            '#6366f1',
+            '#8b5cf6',
+            '#f59e0b'
+          ],
+          borderRadius: 8,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: (ctx) => ctx.parsed.y.toFixed(1) + '%' }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: mutedColor } },
+          y: {
+            min: 0,
+            grid: { color: gridColor, drawBorder: false },
+            ticks: { color: mutedColor, callback: v => v + '%' }
+          }
+        }
+      }
+    });
+
+    // Trend Distribution
+    new Chart(document.getElementById('trendChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Stable', 'Increasing', 'Decreasing', 'Unknown'],
+        datasets: [{
+          data: [0, 15, 0, 0],
+          backgroundColor: ['#10b981', '#f59e0b', '#06b6d4', '#94a3b8'],
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 8 } }
+        }
+      }
+    });
+
+    // Severity Distribution
+    new Chart(document.getElementById('severityChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Normal', 'Warning', 'Critical', 'Unknown'],
+        datasets: [{
+          data: [5, 6, 4, 0],
+          backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#94a3b8'],
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 8 } }
+        }
+      }
+    });
+
+    
+    // DOM & Event Listeners Chart
+    new Chart(document.getElementById('domChart'), {
+      type: 'line',
+      data: {
+        labels: ["오전 11:42:43","오전 11:43:43","오전 11:44:43","오전 11:45:43","오전 11:46:43","오전 11:47:43","오전 11:48:43","오전 11:49:43","오전 11:50:43","오전 11:51:43","오전 11:52:43","오전 11:53:43","오전 11:54:43","오전 11:55:43","오전 11:56:43"],
+        datasets: [
+          {
+            label: 'DOM Nodes',
+            data: [802,868,923,974,1019,1073,1107,1168,1210,1253,1318,1360,1416,1458,1500],
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y',
+          },
+          {
+            label: 'Event Listeners',
+            data: [158,170,183,195,218,225,247,258,274,288,301,323,335,348,363],
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y1',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: mutedColor } },
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            grid: { color: gridColor },
+            ticks: { color: mutedColor },
+            title: { display: true, text: 'DOM Nodes', color: mutedColor }
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            grid: { drawOnChartArea: false },
+            ticks: { color: mutedColor },
+            title: { display: true, text: 'Event Listeners', color: mutedColor }
+          }
+        }
+      }
+    });
+    
+
+    // Leak Pattern Chart
+    new Chart(document.getElementById('leakPatternChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Gradual', 'Sudden', 'Intermittent', 'Stability', 'GC Efficiency'],
+        datasets: [{
+          label: 'Pattern Analysis',
+          data: [
+            84,
+            10,
+            10,
+            73.00781851861063,
+            16
+          ],
+          backgroundColor: 'rgba(99, 102, 241, 0.2)',
+          borderColor: '#6366f1',
+          pointBackgroundColor: '#6366f1',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#6366f1'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          r: {
+            angleLines: { color: gridColor },
+            grid: { color: gridColor },
+            pointLabels: { color: textColor, font: { size: 10 } },
+            ticks: { display: false },
+            suggestedMin: 0,
+            suggestedMax: 100
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
