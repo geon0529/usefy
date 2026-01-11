@@ -1,5 +1,52 @@
 # @usefy/usefy
 
+## 0.1.1
+
+### Patch Changes
+
+- 1db7b09: feat(memory-monitor): Add dynamic historySize control in Settings tab
+
+  ### Changes
+
+  **@usefy/use-memory-monitor**
+
+  - Added `resize()` method to `CircularBuffer` for dynamic capacity changes
+  - When shrinking buffer, keeps most recent items and discards oldest
+  - Hook now detects `historySize` prop changes and resizes buffer accordingly via `useEffect`
+
+  **@usefy/memory-monitor**
+
+  - Added `historySize` to `PanelSettings` type with constraints (10-200 samples, default: 50)
+  - Added `HISTORY_SIZE_LIMITS` constant for min/max/default values
+  - Added "Memory Trend" section in Settings tab with History Size slider
+  - Settings are persisted to localStorage automatically
+
+  **ThresholdSlider component**
+
+  - Added `suffix` prop for customizable value display (e.g., "50 samples" instead of "50%")
+
+- Updated dependencies [1db7b09]
+- Updated dependencies [f691328]
+  - @usefy/use-memory-monitor@0.1.1
+  - @usefy/use-intersection-observer@0.1.1
+  - @usefy/use-click-any-where@0.1.1
+  - @usefy/use-copy-to-clipboard@0.1.1
+  - @usefy/use-counter@0.1.1
+  - @usefy/use-debounce@0.1.1
+  - @usefy/use-debounce-callback@0.1.1
+  - @usefy/use-event-listener@0.1.1
+  - @usefy/use-geolocation@0.1.1
+  - @usefy/use-init@0.1.1
+  - @usefy/use-local-storage@0.1.1
+  - @usefy/use-on-click-outside@0.1.1
+  - @usefy/use-session-storage@0.1.1
+  - @usefy/use-signal@0.1.1
+  - @usefy/use-throttle@0.1.1
+  - @usefy/use-throttle-callback@0.1.1
+  - @usefy/use-timer@0.1.1
+  - @usefy/use-toggle@0.1.1
+  - @usefy/use-unmount@0.1.1
+
 ## 0.0.38
 
 ### Patch Changes

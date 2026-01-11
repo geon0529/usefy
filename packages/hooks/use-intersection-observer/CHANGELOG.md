@@ -1,5 +1,11 @@
 # @usefy/use-intersection-observer
 
+## 0.1.1
+
+### Patch Changes
+
+- f691328: update README.md
+
 ## 0.0.38
 
 ## 0.0.37

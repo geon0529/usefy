@@ -1,4 +1,4 @@
-# @usefy/components
+# @usefy/memory-monitor
 
 ## 0.1.1
 
@@ -28,14 +28,4 @@
 - f691328: update README.md
 - 3df45f8: update README.md
 - Updated dependencies [1db7b09]
-- Updated dependencies [f691328]
-- Updated dependencies [3df45f8]
-  - @usefy/memory-monitor@0.1.1
-
-## 0.0.38
-
-### Patch Changes
-
-- a5586b3: init @usefy/components
-- Updated dependencies [a5586b3]
-  - @usefy/button@0.0.38
+  - @usefy/use-memory-monitor@0.1.1

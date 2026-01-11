@@ -1,5 +1,7 @@
 # @usefy/use-copy-to-clipboard
 
+## 0.1.1
+
 ## 0.0.38
 
 ## 0.0.37
