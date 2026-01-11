@@ -1,7 +1,7 @@
 {
   "name": "@usefy/use-intersection-observer",
   "version": "0.0.38",
-  "description": "A React hook for observing element visibility using Intersection Observer API with enterprise-grade features",
+  "description": "A React hook for observing element visibility using Intersection Observer API",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

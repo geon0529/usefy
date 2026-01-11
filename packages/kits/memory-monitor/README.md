@@ -5,7 +5,7 @@
 <h1 align="center">@usefy/memory-monitor</h1>
 
 <p align="center">
-  <strong>Enterprise-grade React component for real-time browser memory monitoring</strong>
+  <strong>React component for real-time browser memory monitoring</strong>
 </p>
 
 <p align="center">

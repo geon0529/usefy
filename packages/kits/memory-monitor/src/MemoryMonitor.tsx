@@ -46,7 +46,7 @@ import {
 import { SnapshotList, SnapshotCompare, ReportButton } from "./components/Snapshots";
 
 /**
- * Enterprise-grade React component for real-time browser memory monitoring.
+ * React component for real-time browser memory monitoring.
  *
  * Features:
  * - Real-time memory visualization with charts

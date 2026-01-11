@@ -1,7 +1,7 @@
 {
   "name": "@usefy/memory-monitor",
   "version": "0.1.0",
-  "description": "Enterprise-grade React component for real-time browser memory monitoring with slide-in panel UI",
+  "description": "React component for real-time browser memory monitoring with slide-in panel UI",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

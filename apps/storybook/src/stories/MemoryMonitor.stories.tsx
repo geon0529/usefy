@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { MemoryMonitor, useMemoryMonitorHeadless } from "@usefy/memory-monitor";
 
 /**
- * MemoryMonitor is an enterprise-grade React component for real-time
+ * MemoryMonitor is a React component for real-time
  * browser memory monitoring with a slide-in panel UI.
  *
  * ## Features
@@ -34,7 +34,7 @@ const meta: Meta<typeof MemoryMonitor> = {
     docs: {
       description: {
         component:
-          "Enterprise-grade React component for real-time browser memory monitoring with a slide-in panel UI.\n\n" +
+          "React component for real-time browser memory monitoring with a slide-in panel UI.\n\n" +
           "**Key Features:**\n" +
           "- Real-time memory gauges and time-series charts\n" +
           "- Keyboard shortcuts (Ctrl+Shift+M)\n" +

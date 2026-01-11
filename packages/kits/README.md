@@ -51,7 +51,7 @@
 ### Why @usefy/kits?
 
 - **Complete Solutions** — Ready-to-use components with UI, state management, and logic bundled together
-- **Enterprise-Grade** — Built for production use with comprehensive testing and documentation
+- **Production-Ready** — Thoroughly tested with comprehensive documentation
 - **Tree Shakeable** — Import only the kits you need to optimize bundle size
 - **TypeScript First** — Complete type safety with full autocomplete support
 - **SSR Compatible** — Works seamlessly with Next.js, Remix, and other SSR frameworks
@@ -110,7 +110,7 @@ Some kits may have additional peer dependencies (e.g., `recharts` for memory-mon
 
 | Kit                                                                                                                                   | Description                                                    | npm                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <a href="https://www.npmjs.com/package/@usefy/memory-monitor" target="_blank" rel="noopener noreferrer">@usefy/memory-monitor</a>     | Enterprise-grade real-time browser memory monitoring panel     | <a href="https://www.npmjs.com/package/@usefy/memory-monitor" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/memory-monitor.svg?style=flat-square&color=007acc" alt="npm version" /></a> |
+| <a href="https://www.npmjs.com/package/@usefy/memory-monitor" target="_blank" rel="noopener noreferrer">@usefy/memory-monitor</a>     | Real-time browser memory monitoring panel with leak detection     | <a href="https://www.npmjs.com/package/@usefy/memory-monitor" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/memory-monitor.svg?style=flat-square&color=007acc" alt="npm version" /></a> |
 
 ---
 

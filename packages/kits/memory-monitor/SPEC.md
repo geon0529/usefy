@@ -14,7 +14,7 @@
 
 ### 1.1 Purpose
 
-`MemoryMonitorPanel` is an enterprise-grade React component for real-time browser memory monitoring and visualization. It enables developers to intuitively understand application memory status, detect memory leaks early, and manage memory through automated GC triggers.
+`MemoryMonitorPanel` is a React component for real-time browser memory monitoring and visualization. It enables developers to intuitively understand application memory status, detect memory leaks early, and manage memory through automated GC triggers.
 
 ### 1.2 Target Users
 
