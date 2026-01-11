@@ -1,6 +1,6 @@
 packages:
   - "packages/hooks"
   - "packages/hooks/*"
-  - "packages/components"
-  - "packages/components/*"
+  - "packages/kits"
+  - "packages/kits/*"
   - "apps/*"

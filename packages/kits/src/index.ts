@@ -1,11 +1,11 @@
 /**
- * @usefy/components
+ * @usefy/kits
  *
- * A collection of production-ready React components
+ * A collection of production-ready React feature kits
  *
  * @example
  * ```tsx
- * import { MemoryMonitor } from "@usefy/components";
+ * import { MemoryMonitor } from "@usefy/kits";
  * ```
  */
 

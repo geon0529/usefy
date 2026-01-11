@@ -1,7 +1,7 @@
 {
-  "name": "@usefy/components",
+  "name": "@usefy/kits",
   "version": "0.0.38",
-  "description": "A collection of production-ready React components",
+  "description": "A collection of production-ready React feature kits",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -42,13 +42,13 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mirunamu00/usefy.git",
-    "directory": "packages/components"
+    "directory": "packages/kits"
   },
   "license": "MIT",
   "keywords": [
     "react",
-    "components",
-    "ui",
+    "kits",
+    "feature",
     "usefy"
   ]
 }

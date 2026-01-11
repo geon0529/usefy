@@ -1,5 +1,4 @@
 import { MemoryMonitor } from "@usefy/memory-monitor";
-// CSS가 자동으로 inject 됨 - 별도 import 불필요!
 
 function App() {
   return (
