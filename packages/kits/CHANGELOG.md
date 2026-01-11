@@ -1,5 +1,13 @@
 # @usefy/components
 
+## 0.1.2
+
+### Patch Changes
+
+- 2a91a40: update README.md
+- Updated dependencies [2a91a40]
+  - @usefy/memory-monitor@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

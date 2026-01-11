@@ -1,5 +1,29 @@
 # @usefy/usefy
 
+## 0.1.2
+
+### Patch Changes
+
+- @usefy/use-click-any-where@0.1.2
+- @usefy/use-copy-to-clipboard@0.1.2
+- @usefy/use-counter@0.1.2
+- @usefy/use-debounce@0.1.2
+- @usefy/use-debounce-callback@0.1.2
+- @usefy/use-event-listener@0.1.2
+- @usefy/use-geolocation@0.1.2
+- @usefy/use-init@0.1.2
+- @usefy/use-intersection-observer@0.1.2
+- @usefy/use-local-storage@0.1.2
+- @usefy/use-memory-monitor@0.1.2
+- @usefy/use-on-click-outside@0.1.2
+- @usefy/use-session-storage@0.1.2
+- @usefy/use-signal@0.1.2
+- @usefy/use-throttle@0.1.2
+- @usefy/use-throttle-callback@0.1.2
+- @usefy/use-timer@0.1.2
+- @usefy/use-toggle@0.1.2
+- @usefy/use-unmount@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
