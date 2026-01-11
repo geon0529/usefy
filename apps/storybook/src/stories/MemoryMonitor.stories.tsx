@@ -27,7 +27,7 @@ import { MemoryMonitor, useMemoryMonitorHeadless } from "@usefy/memory-monitor";
  * button that opens the panel when clicked.
  */
 const meta: Meta<typeof MemoryMonitor> = {
-  title: "Components/MemoryMonitor",
+  title: "Kits/MemoryMonitor",
   component: MemoryMonitor,
   parameters: {
     layout: "fullscreen",

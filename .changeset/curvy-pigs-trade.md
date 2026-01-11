@@ -5,4 +5,4 @@
 "@usefy/screen-recorder": patch
 ---
 
-녀ㅡ
+Fix unlimited duration recording, timer display, Re-record button, dark mode support, and update Storybook paths from Components to Kits

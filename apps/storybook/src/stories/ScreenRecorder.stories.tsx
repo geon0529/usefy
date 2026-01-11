@@ -28,7 +28,7 @@ import type { RecordingResult, ScreenRecorderError } from "@usefy/screen-recorde
  * button that starts the recording flow when clicked.
  */
 const meta: Meta<typeof ScreenRecorder> = {
-  title: "Components/ScreenRecorder",
+  title: "Kits/ScreenRecorder",
   component: ScreenRecorder,
   parameters: {
     layout: "fullscreen",
