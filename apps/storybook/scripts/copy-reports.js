@@ -12,7 +12,7 @@ const SOURCE_DIR = path.join(
   "..",
   "..",
   "packages",
-  "components",
+  "kits",
   "memory-monitor",
   "mock-reports"
 );
