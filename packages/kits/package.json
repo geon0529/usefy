@@ -1,6 +1,6 @@
 {
   "name": "@usefy/kits",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A collection of production-ready React feature kits",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

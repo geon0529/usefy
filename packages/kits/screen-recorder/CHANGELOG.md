@@ -1,5 +1,11 @@
 # @usefy/screen-recorder
 
+## 0.1.4
+
+### Patch Changes
+
+- fd66eb7: Fix unlimited duration recording, timer display, Re-record button, dark mode support, and update Storybook paths from Components to Kits
+
 ## 0.1.3
 
 ### Patch Changes
