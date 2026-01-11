@@ -176,6 +176,17 @@ export function useMemoryMonitor(
     historyBufferRef.current = new CircularBuffer<MemoryInfo>(historySize);
   }
 
+  // Track previous historySize for resize detection
+  const prevHistorySizeRef = useRef<number>(historySize);
+
+  // Resize history buffer when historySize changes
+  useEffect(() => {
+    if (enableHistory && historyBufferRef.current && historySize !== prevHistorySizeRef.current) {
+      historyBufferRef.current.resize(historySize);
+      prevHistorySizeRef.current = historySize;
+    }
+  }, [enableHistory, historySize]);
+
   // Snapshot storage
   const snapshotsRef = useRef<Map<string, MemorySnapshot>>(new Map());
 

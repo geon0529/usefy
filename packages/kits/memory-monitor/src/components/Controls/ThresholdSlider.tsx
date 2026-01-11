@@ -24,6 +24,8 @@ export interface ThresholdSliderProps {
   helperText?: string;
   /** Custom class name */
   className?: string;
+  /** Value suffix (e.g., '%', 'samples') */
+  suffix?: string;
 }
 
 /**
@@ -41,6 +43,7 @@ export function ThresholdSlider({
   disabled = false,
   helperText,
   className,
+  suffix = "%",
 }: ThresholdSliderProps) {
   const id = useId();
 
@@ -75,7 +78,7 @@ export function ThresholdSlider({
               disabled && "opacity-50"
             )}
           >
-            {value}%
+            {value}{suffix}
           </span>
         )}
       </div>

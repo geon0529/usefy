@@ -10,6 +10,7 @@ import {
   SEVERITY_COLORS,
   formatBytes,
   SNAPSHOT_SCHEDULE_OPTIONS,
+  HISTORY_SIZE_LIMITS,
 } from "./constants";
 import { cn, isSSR, getShouldRender, getShouldActivate } from "./utils";
 import {
@@ -156,6 +157,7 @@ export const MemoryMonitor = forwardRef<HTMLDivElement, MemoryMonitorProps>(
         interval,
         theme: themeProp,
         panelWidth: defaultWidth,
+        historySize,
       },
     });
 
@@ -189,7 +191,7 @@ export const MemoryMonitor = forwardRef<HTMLDivElement, MemoryMonitorProps>(
       autoStart: shouldActivate,
       enabled: shouldActivate,
       enableHistory,
-      historySize,
+      historySize: settings.historySize ?? historySize,
       trackDOMNodes,
       trackEventListeners,
       thresholds: {
@@ -852,6 +854,10 @@ function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps
     updateSettings({ interval });
   }, [updateSettings]);
 
+  const handleHistorySizeChange = useCallback((historySize: number) => {
+    updateSettings({ historySize });
+  }, [updateSettings]);
+
   const handleSnapshotSettingsChange = useCallback(
     (snapshotSettings: typeof settings.snapshot) => {
       updateSettings({ snapshot: snapshotSettings });
@@ -896,6 +902,24 @@ function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps
         value={settings.interval}
         onChange={handleIntervalChange}
       />
+
+      {/* History Size */}
+      <div className="space-y-2">
+        <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100">
+          Memory Trend
+        </h4>
+        <ThresholdSlider
+          label="History Size"
+          value={settings.historySize ?? DEFAULT_SETTINGS.historySize}
+          onChange={handleHistorySizeChange}
+          min={HISTORY_SIZE_LIMITS.min}
+          max={HISTORY_SIZE_LIMITS.max}
+          step={10}
+          color="#6366f1"
+          suffix=" samples"
+          helperText="Number of samples to keep in memory trend history"
+        />
+      </div>
 
       {/* Snapshot Settings */}
       <div className="border-t border-slate-200 dark:border-slate-700 pt-4">

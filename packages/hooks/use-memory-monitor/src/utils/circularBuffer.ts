@@ -10,7 +10,7 @@ export class CircularBuffer<T> {
   private head: number = 0;
   private tail: number = 0;
   private _size: number = 0;
-  private readonly _capacity: number;
+  private _capacity: number;
 
   /**
    * Create a new circular buffer with the specified capacity
@@ -158,6 +158,44 @@ export class CircularBuffer<T> {
     this.head = 0;
     this.tail = 0;
     this._size = 0;
+  }
+
+  /**
+   * Resize the buffer to a new capacity.
+   * If the new capacity is smaller, the oldest items will be discarded.
+   * If the new capacity is larger, all existing items are preserved.
+   *
+   * @param newCapacity - New maximum capacity
+   * @throws Error if newCapacity is less than 1
+   */
+  resize(newCapacity: number): void {
+    if (newCapacity < 1) {
+      throw new Error("CircularBuffer capacity must be at least 1");
+    }
+
+    if (newCapacity === this._capacity) {
+      return;
+    }
+
+    // Get current items in order
+    const items = this.toArray();
+
+    // If new capacity is smaller, keep only the most recent items
+    const itemsToKeep = newCapacity < items.length
+      ? items.slice(items.length - newCapacity)
+      : items;
+
+    // Reset buffer with new capacity
+    this._capacity = newCapacity;
+    this.buffer = new Array(newCapacity);
+    this.head = 0;
+    this.tail = 0;
+    this._size = 0;
+
+    // Re-add items
+    for (const item of itemsToKeep) {
+      this.push(item);
+    }
   }
 
   /**

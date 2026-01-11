@@ -35,7 +35,17 @@ export const DEFAULT_SETTINGS: PanelSettings = {
     scheduleInterval: "off",
     autoDeleteOldest: true,
   },
+  historySize: 50,
 };
+
+/**
+ * History size constraints
+ */
+export const HISTORY_SIZE_LIMITS = {
+  min: 10,
+  max: 200,
+  default: 50,
+} as const;
 
 /**
  * Default trigger button position

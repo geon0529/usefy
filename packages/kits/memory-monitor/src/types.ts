@@ -97,6 +97,8 @@ export interface PanelSettings {
   panelWidth: number;
   /** Snapshot configuration */
   snapshot: SnapshotSettings;
+  /** History buffer size for memory trend (10-200) */
+  historySize: number;
 }
 
 /**
