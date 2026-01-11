@@ -111,6 +111,7 @@ Some kits may have additional peer dependencies (e.g., `recharts` for memory-mon
 | Kit                                                                                                                                   | Description                                                    | npm                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <a href="https://www.npmjs.com/package/@usefy/memory-monitor" target="_blank" rel="noopener noreferrer">@usefy/memory-monitor</a>     | Real-time browser memory monitoring panel with leak detection     | <a href="https://www.npmjs.com/package/@usefy/memory-monitor" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/memory-monitor.svg?style=flat-square&color=007acc" alt="npm version" /></a> |
+| <a href="https://www.npmjs.com/package/@usefy/screen-recorder" target="_blank" rel="noopener noreferrer">@usefy/screen-recorder</a>   | Browser-based screen recording with preview and download          | <a href="https://www.npmjs.com/package/@usefy/screen-recorder" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/npm/v/@usefy/screen-recorder.svg?style=flat-square&color=007acc" alt="npm version" /></a> |
 
 ---
 
@@ -119,7 +120,7 @@ Some kits may have additional peer dependencies (e.g., `recharts` for memory-mon
 ### Using the All-in-One Package
 
 ```tsx
-import { MemoryMonitor } from "@usefy/kits";
+import { MemoryMonitor, ScreenRecorder } from "@usefy/kits";
 
 function App() {
   return (
@@ -133,6 +134,13 @@ function App() {
         onWarning={(data) => console.warn("Memory warning:", data)}
         onLeakDetected={(analysis) => console.warn("Leak detected:", analysis)}
       />
+
+      {/* Add screen recording capability */}
+      <ScreenRecorder
+        position="bottom-right"
+        countdown={3}
+        onStop={(result) => console.log("Recording saved:", result)}
+      />
     </div>
   );
 }
@@ -142,12 +150,14 @@ function App() {
 
 ```tsx
 import { MemoryMonitor } from "@usefy/memory-monitor";
+import { ScreenRecorder } from "@usefy/screen-recorder";
 
 function App() {
   return (
     <div>
       <h1>My Application</h1>
       <MemoryMonitor mode="development" />
+      <ScreenRecorder position="bottom-right" />
     </div>
   );
 }
@@ -215,6 +225,74 @@ const {
 - Settings persistence to localStorage
 
 Perfect for debugging memory leaks, monitoring production apps, and performance optimization.
+
+</details>
+
+### ScreenRecorder
+
+<details>
+<summary><strong>ScreenRecorder</strong> — Browser-based screen recording with preview and download</summary>
+
+```tsx
+import { ScreenRecorder, useScreenRecorder } from "@usefy/kits";
+
+// Full UI Component
+<ScreenRecorder
+  position="bottom-right"        // 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  countdown={3}                  // Countdown before recording starts (0 to disable)
+  maxDuration={300}              // Max duration in seconds (Infinity for unlimited)
+  quality="medium"               // 'low' | 'medium' | 'high'
+  audio={false}                  // Include system audio
+  theme="system"                 // 'light' | 'dark' | 'system'
+
+  // Callbacks
+  onStart={() => console.log("Recording started")}
+  onStop={(result) => console.log("Recording stopped", result)}
+  onPause={() => console.log("Recording paused")}
+  onResume={() => console.log("Recording resumed")}
+  onError={(error) => console.error("Recording error", error)}
+  onDownload={(result) => console.log("Downloaded", result)}
+/>
+
+// Headless Mode (custom UI)
+const {
+  state,           // 'idle' | 'requesting' | 'countdown' | 'recording' | 'paused' | 'stopped' | 'error'
+  result,          // RecordingResult | null
+  error,           // ScreenRecorderError | null
+  elapsed,         // number (seconds)
+  elapsedFormatted, // string (MM:SS)
+  remaining,       // number | null
+  countdownValue,  // number | null
+  isSupported,     // boolean
+  start,
+  stop,
+  pause,
+  resume,
+  reset,
+  download,
+} = useScreenRecorder({
+  maxDuration: 300,
+  countdown: 3,
+  quality: "medium",
+  onStop: (result) => uploadToServer(result.blob),
+});
+```
+
+**Key Features:**
+- Screen/window/tab capture with getDisplayMedia API
+- Start, stop, pause, resume controls
+- Countdown before recording (3-2-1)
+- Real-time elapsed time display
+- Maximum duration limit with auto-stop
+- Preview modal with video playback
+- One-click download (WebM format)
+- Re-record functionality
+- System audio capture option
+- Quality presets (low/medium/high)
+- Dark mode support
+- Keyboard accessible
+
+Perfect for screen capture tools, tutorial recording, bug reproduction, and feedback collection.
 
 </details>
 
