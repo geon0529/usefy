@@ -256,9 +256,9 @@ export interface LeakAnalysisData {
 }
 
 /**
- * Props for MemoryMonitorPanel component
+ * Props for MemoryMonitor component
  */
-export interface MemoryMonitorPanelProps {
+export interface MemoryMonitorProps {
   // === Core Configuration ===
   /**
    * Panel visibility mode

@@ -92,14 +92,14 @@ This package requires React 18+ and Recharts:
 ## Quick Start
 
 ```tsx
-import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+import { MemoryMonitor } from "@usefy/memory-monitor";
 
 function App() {
   return (
     <div>
       <YourApp />
       {/* Add at the root of your app */}
-      <MemoryMonitorPanel />
+      <MemoryMonitor />
     </div>
   );
 }
@@ -123,7 +123,7 @@ The panel provides comprehensive real-time memory visualization:
 - **Configurable Interval** — Set polling frequency from 500ms to 10 seconds
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   interval={1000}
   trackDOMNodes={true}
   trackEventListeners={true}
@@ -135,7 +135,7 @@ The panel provides comprehensive real-time memory visualization:
 Configure custom thresholds to receive alerts when memory usage exceeds limits:
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   warningThreshold={70}    // Yellow alert at 70%
   criticalThreshold={90}   // Red alert at 90%
   onWarning={(data) => {
@@ -224,7 +224,7 @@ The algorithm calculates leak probability using 5 weighted factors totaling 100 
 #### Usage
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   enableLeakDetection={true}
   leakSensitivity="medium"
   onLeakDetected={(analysis) => {
@@ -242,7 +242,7 @@ The algorithm calculates leak probability using 5 weighted factors totaling 100 
 Automatically request garbage collection when memory usage exceeds a threshold:
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   enableAutoGC={true}
   autoGCThreshold={85}  // Trigger at 85%
   onAutoGC={(event) => {
@@ -437,7 +437,7 @@ The panel provides a tabbed interface with four main sections:
 #### Panel Customization
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   position="right"        // "left" | "right"
   defaultWidth={420}      // Initial width (px)
   minWidth={320}          // Minimum width (px)
@@ -455,7 +455,7 @@ The panel provides a tabbed interface with four main sections:
 | `Escape` | Close panel |
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   shortcut="ctrl+shift+k"  // Custom shortcut
 />
 ```
@@ -477,7 +477,7 @@ The panel supports three theme modes:
 | `dark` | Force dark theme |
 
 ```tsx
-<MemoryMonitorPanel theme="dark" />
+<MemoryMonitor theme="dark" />
 ```
 
 The component uses Tailwind CSS dark mode classes and automatically detects OS preference changes.
@@ -496,7 +496,7 @@ All settings are automatically persisted to LocalStorage:
 - Snapshot settings (max, schedule, auto-delete)
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   persistSettings={true}                    // Enable persistence (default)
   storageKey="my-app-memory-monitor"        // Custom storage key
 />
@@ -644,13 +644,13 @@ interface AutoGCEventData {
 ### Basic Usage
 
 ```tsx
-import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+import { MemoryMonitor } from "@usefy/memory-monitor";
 
 function App() {
   return (
     <div>
       <YourApp />
-      <MemoryMonitorPanel />
+      <MemoryMonitor />
     </div>
   );
 }
@@ -659,7 +659,7 @@ function App() {
 ### Custom Thresholds
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   warningThreshold={60}
   criticalThreshold={85}
   onWarning={(data) => {
@@ -682,7 +682,7 @@ function App() {
 ### Auto-GC Configuration
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   enableAutoGC={true}
   autoGCThreshold={80}
   onAutoGC={(event) => {
@@ -696,7 +696,7 @@ function App() {
 ### Leak Detection with Callbacks
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   enableLeakDetection={true}
   leakSensitivity="high"
   onLeakDetected={(analysis) => {
@@ -715,11 +715,11 @@ function App() {
 ### Snapshot Management
 
 ```tsx
-import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+import { MemoryMonitor } from "@usefy/memory-monitor";
 
 function DebugPage() {
   return (
-    <MemoryMonitorPanel
+    <MemoryMonitor
       mode="always"
       defaultOpen={true}
       // Snapshot configuration via Settings tab:
@@ -744,7 +744,7 @@ After capturing 5+ snapshots, click "Generate Report" in the Snapshots tab to do
 ### Custom Theme and Styling
 
 ```tsx
-<MemoryMonitorPanel
+<MemoryMonitor
   theme="dark"
   position="left"
   defaultWidth={450}

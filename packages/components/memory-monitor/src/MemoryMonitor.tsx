@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useEffect, useCallback, useMemo } from "react";
 import { useMemoryMonitor } from "@usefy/use-memory-monitor";
-import type { MemoryMonitorPanelProps, PanelTab, Severity, PanelSnapshot, SnapshotAnalysisContext } from "./types";
+import type { MemoryMonitorProps, PanelTab, Severity, PanelSnapshot, SnapshotAnalysisContext } from "./types";
 import {
   DEFAULT_SETTINGS,
   DEFAULT_TRIGGER_POSITION,
@@ -64,7 +64,7 @@ import { SnapshotList, SnapshotCompare, ReportButton } from "./components/Snapsh
  *   return (
  *     <>
  *       <YourApp />
- *       <MemoryMonitorPanel />
+ *       <MemoryMonitor />
  *     </>
  *   );
  * }
@@ -73,7 +73,7 @@ import { SnapshotList, SnapshotCompare, ReportButton } from "./components/Snapsh
  * @example
  * ```tsx
  * // With custom configuration
- * <MemoryMonitorPanel
+ * <MemoryMonitor
  *   mode="development"
  *   warningThreshold={70}
  *   criticalThreshold={90}
@@ -83,7 +83,7 @@ import { SnapshotList, SnapshotCompare, ReportButton } from "./components/Snapsh
  * />
  * ```
  */
-export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelProps>(
+export const MemoryMonitor = forwardRef<HTMLDivElement, MemoryMonitorProps>(
   (props, ref) => {
     const {
       // Core Configuration
@@ -562,7 +562,7 @@ export const MemoryMonitorPanel = forwardRef<HTMLDivElement, MemoryMonitorPanelP
   }
 );
 
-MemoryMonitorPanel.displayName = "MemoryMonitorPanel";
+MemoryMonitor.displayName = "MemoryMonitor";
 
 // ============================================================================
 // Tab Components

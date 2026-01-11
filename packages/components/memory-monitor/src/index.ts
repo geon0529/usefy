@@ -1,5 +1,8 @@
 // Main Component
-export { MemoryMonitorPanel } from "./MemoryMonitorPanel";
+export { MemoryMonitor } from "./MemoryMonitor";
+
+// Backwards compatibility alias
+export { MemoryMonitor as MemoryMonitorPanel } from "./MemoryMonitor";
 
 // Headless Hook (for production use without UI)
 export { useMemoryMonitorHeadless } from "./MemoryMonitorHeadless";
@@ -7,9 +10,12 @@ export { useMemoryMonitorHeadless } from "./MemoryMonitorHeadless";
 // Types
 export type {
   // Main component props
-  MemoryMonitorPanelProps,
+  MemoryMonitorProps,
   MemoryMonitorHeadlessOptions,
   MemoryMonitorHeadlessReturn,
+
+  // Backwards compatibility alias
+  MemoryMonitorProps as MemoryMonitorPanelProps,
 
   // Panel types
   PanelMode,

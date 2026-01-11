@@ -1,9 +1,9 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+import { MemoryMonitor } from "@usefy/memory-monitor";
 
 /**
- * MemoryMonitorPanel is an enterprise-grade React component for real-time
+ * MemoryMonitor is an enterprise-grade React component for real-time
  * browser memory monitoring with a slide-in panel UI.
  *
  * ## Features
@@ -26,9 +26,9 @@ import { MemoryMonitorPanel } from "@usefy/memory-monitor";
  * Add the component at the root of your app. It renders a floating trigger
  * button that opens the panel when clicked.
  */
-const meta: Meta<typeof MemoryMonitorPanel> = {
-  title: "Components/MemoryMonitorPanel",
-  component: MemoryMonitorPanel,
+const meta: Meta<typeof MemoryMonitor> = {
+  title: "Components/MemoryMonitor",
+  component: MemoryMonitor,
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -118,10 +118,10 @@ const meta: Meta<typeof MemoryMonitorPanel> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof MemoryMonitorPanel>;
+type Story = StoryObj<typeof MemoryMonitor>;
 
 /**
- * Interactive overview of the MemoryMonitorPanel component.
+ * Interactive overview of the MemoryMonitor component.
  *
  * **How to use:**
  * 1. Click the floating trigger button (bottom-right) or press `Ctrl+Shift+M` to open the panel
@@ -148,10 +148,10 @@ export const Overview: Story = {
       {/* Demo content */}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-          MemoryMonitorPanel Demo
+          MemoryMonitor Demo
         </h1>
         <p className="text-slate-600 dark:text-slate-300 mb-8">
-          This is a demo page showing the MemoryMonitorPanel component. The
+          This is a demo page showing the MemoryMonitor component. The
           panel is open by default for demonstration purposes.
         </p>
 
@@ -160,14 +160,14 @@ export const Overview: Story = {
             Quick Start
           </h2>
           <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto">
-            {`import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+            {`import { MemoryMonitor } from "@usefy/memory-monitor";
 
 function App() {
   return (
     <div>
       <YourApp />
       {/* Add at the root of your app */}
-      <MemoryMonitorPanel />
+      <MemoryMonitor />
     </div>
   );
 }`}
@@ -218,19 +218,19 @@ function App() {
       </div>
 
       {/* The panel component */}
-      <MemoryMonitorPanel {...args} />
+      <MemoryMonitor {...args} />
     </div>
   ),
   parameters: {
     docs: {
       source: {
-        code: `import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+        code: `import { MemoryMonitor } from "@usefy/memory-monitor";
 
 // Basic usage - renders in development mode only
-<MemoryMonitorPanel />
+<MemoryMonitor />
 
 // With custom options
-<MemoryMonitorPanel
+<MemoryMonitor
   mode="always"           // 'development' | 'production' | 'always' | 'never'
   position="right"        // 'left' | 'right'
   defaultOpen={false}     // Initial open state
@@ -323,7 +323,7 @@ export const SnapshotSettings: Story = {
         </div>
       </div>
 
-      <MemoryMonitorPanel {...args} />
+      <MemoryMonitor {...args} />
     </div>
   ),
 };
@@ -348,7 +348,7 @@ export const LeftPosition: Story = {
           The panel slides in from the left side of the screen.
         </p>
       </div>
-      <MemoryMonitorPanel {...args} />
+      <MemoryMonitor {...args} />
     </div>
   ),
 };

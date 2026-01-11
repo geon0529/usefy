@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryMonitorPanel } from "./MemoryMonitorPanel";
+import { MemoryMonitor } from "./MemoryMonitor";
 import {
   mockSupportedBrowser,
   mockUnsupportedBrowser,
 } from "../vitest.setup";
 
-describe("MemoryMonitorPanel", () => {
+describe("MemoryMonitor", () => {
   beforeEach(() => {
     // Mock supported browser by default
     mockSupportedBrowser();
@@ -20,7 +20,7 @@ describe("MemoryMonitorPanel", () => {
 
   describe("Rendering", () => {
     it("renders trigger button by default", () => {
-      render(<MemoryMonitorPanel />);
+      render(<MemoryMonitor />);
 
       // Should render trigger button when closed
       const trigger = screen.getByRole("button");
@@ -30,7 +30,7 @@ describe("MemoryMonitorPanel", () => {
     it("does not render in production mode by default", () => {
       vi.stubEnv("NODE_ENV", "production");
 
-      const { container } = render(<MemoryMonitorPanel />);
+      const { container } = render(<MemoryMonitor />);
 
       expect(container.firstChild).toBeNull();
     });
@@ -38,26 +38,26 @@ describe("MemoryMonitorPanel", () => {
     it("renders in production when mode is 'always'", () => {
       vi.stubEnv("NODE_ENV", "production");
 
-      render(<MemoryMonitorPanel mode="always" />);
+      render(<MemoryMonitor mode="always" />);
 
       const trigger = screen.getByRole("button");
       expect(trigger).toBeInTheDocument();
     });
 
     it("renders panel when defaultOpen is true", () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       expect(screen.getByText("Memory Monitor")).toBeInTheDocument();
     });
 
     it("does not render when mode is 'never'", () => {
-      const { container } = render(<MemoryMonitorPanel mode="never" />);
+      const { container } = render(<MemoryMonitor mode="never" />);
 
       expect(container.firstChild).toBeNull();
     });
 
     it("hides trigger when showTrigger is false", () => {
-      render(<MemoryMonitorPanel showTrigger={false} />);
+      render(<MemoryMonitor showTrigger={false} />);
 
       expect(screen.queryByRole("button")).not.toBeInTheDocument();
     });
@@ -65,7 +65,7 @@ describe("MemoryMonitorPanel", () => {
 
   describe("Panel Interactions", () => {
     it("opens panel when trigger is clicked", async () => {
-      render(<MemoryMonitorPanel />);
+      render(<MemoryMonitor />);
 
       const trigger = screen.getByRole("button");
       fireEvent.click(trigger);
@@ -76,7 +76,7 @@ describe("MemoryMonitorPanel", () => {
     });
 
     it("closes panel when close button is clicked", async () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       expect(screen.getByText("Memory Monitor")).toBeInTheDocument();
 
@@ -92,7 +92,7 @@ describe("MemoryMonitorPanel", () => {
 
     it("calls onOpenChange when panel opens", async () => {
       const onOpenChange = vi.fn();
-      render(<MemoryMonitorPanel onOpenChange={onOpenChange} />);
+      render(<MemoryMonitor onOpenChange={onOpenChange} />);
 
       const trigger = screen.getByRole("button");
       fireEvent.click(trigger);
@@ -104,7 +104,7 @@ describe("MemoryMonitorPanel", () => {
 
     it("calls onOpenChange when panel closes", async () => {
       const onOpenChange = vi.fn();
-      render(<MemoryMonitorPanel defaultOpen onOpenChange={onOpenChange} />);
+      render(<MemoryMonitor defaultOpen onOpenChange={onOpenChange} />);
 
       const closeButton = screen.getByLabelText("Close panel");
       fireEvent.click(closeButton);
@@ -117,14 +117,14 @@ describe("MemoryMonitorPanel", () => {
 
   describe("Tab Navigation", () => {
     it("shows overview tab by default", () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       const overviewTab = screen.getByRole("tab", { name: /overview/i });
       expect(overviewTab).toHaveAttribute("aria-selected", "true");
     });
 
     it("switches to history tab when clicked", async () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       const historyTab = screen.getByRole("tab", { name: /history/i });
       fireEvent.click(historyTab);
@@ -135,7 +135,7 @@ describe("MemoryMonitorPanel", () => {
     });
 
     it("switches to snapshots tab when clicked", async () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       const snapshotsTab = screen.getByRole("tab", { name: /snapshots/i });
       fireEvent.click(snapshotsTab);
@@ -146,7 +146,7 @@ describe("MemoryMonitorPanel", () => {
     });
 
     it("switches to settings tab when clicked", async () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       const settingsTab = screen.getByRole("tab", { name: /settings/i });
       fireEvent.click(settingsTab);
@@ -159,7 +159,7 @@ describe("MemoryMonitorPanel", () => {
 
   describe("Keyboard Shortcuts", () => {
     it("toggles panel with Ctrl+Shift+M", async () => {
-      render(<MemoryMonitorPanel />);
+      render(<MemoryMonitor />);
 
       // Initially closed - panel exists but is hidden (aria-hidden="true")
       const hiddenPanel = screen.getByRole("dialog", { hidden: true });
@@ -179,7 +179,7 @@ describe("MemoryMonitorPanel", () => {
     });
 
     it("closes panel with Escape key", async () => {
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       const panel = screen.getByRole("dialog");
       expect(panel).toHaveAttribute("aria-hidden", "false");
@@ -193,7 +193,7 @@ describe("MemoryMonitorPanel", () => {
     });
 
     it("respects custom shortcut", async () => {
-      render(<MemoryMonitorPanel shortcut="ctrl+shift+k" />);
+      render(<MemoryMonitor shortcut="ctrl+shift+k" />);
 
       // Initially closed
       const hiddenPanel = screen.getByRole("dialog", { hidden: true });
@@ -226,7 +226,7 @@ describe("MemoryMonitorPanel", () => {
     it("still renders panel in unsupported browser", () => {
       mockUnsupportedBrowser();
 
-      render(<MemoryMonitorPanel defaultOpen />);
+      render(<MemoryMonitor defaultOpen />);
 
       expect(screen.getByText("Memory Monitor")).toBeInTheDocument();
     });
@@ -234,21 +234,21 @@ describe("MemoryMonitorPanel", () => {
 
   describe("Props Customization", () => {
     it("applies custom zIndex", () => {
-      render(<MemoryMonitorPanel defaultOpen zIndex={5000} />);
+      render(<MemoryMonitor defaultOpen zIndex={5000} />);
 
       const panel = screen.getByRole("dialog");
       expect(panel).toHaveStyle({ zIndex: "5000" });
     });
 
     it("applies custom className", () => {
-      render(<MemoryMonitorPanel defaultOpen className="custom-class" />);
+      render(<MemoryMonitor defaultOpen className="custom-class" />);
 
       const panel = screen.getByRole("dialog");
       expect(panel).toHaveClass("custom-class");
     });
 
     it("renders on left position", () => {
-      render(<MemoryMonitorPanel defaultOpen position="left" />);
+      render(<MemoryMonitor defaultOpen position="left" />);
 
       const panel = screen.getByRole("dialog");
       expect(panel).toHaveClass("left-0");
@@ -258,7 +258,7 @@ describe("MemoryMonitorPanel", () => {
   describe("Custom Trigger", () => {
     it("renders custom trigger content", () => {
       render(
-        <MemoryMonitorPanel
+        <MemoryMonitor
           triggerContent={<span data-testid="custom-trigger">Custom</span>}
         />
       );

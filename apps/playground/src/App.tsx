@@ -1,4 +1,4 @@
-import { MemoryMonitorPanel } from "@usefy/memory-monitor";
+import { MemoryMonitor } from "@usefy/memory-monitor";
 // CSS가 자동으로 inject 됨 - 별도 import 불필요!
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
         Press <code>Ctrl+Shift+M</code> to toggle the Memory Monitor panel.
       </p>
 
-      <MemoryMonitorPanel mode="always" />
+      <MemoryMonitor mode="always" />
     </div>
   );
 }

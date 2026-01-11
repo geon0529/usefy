@@ -5,15 +5,17 @@
  *
  * @example
  * ```tsx
- * import { MemoryMonitorPanel } from "@usefy/components";
+ * import { MemoryMonitor } from "@usefy/components";
  * ```
  */
 
-// Memory Monitor Panel
+// Memory Monitor
 export {
-  MemoryMonitorPanel,
+  MemoryMonitor,
+  MemoryMonitorPanel, // Backwards compatibility alias
   useMemoryMonitorHeadless,
-  type MemoryMonitorPanelProps,
+  type MemoryMonitorProps,
+  type MemoryMonitorPanelProps, // Backwards compatibility alias
   type PanelSettings,
   type PanelSnapshot,
   type AutoGCEventData,
