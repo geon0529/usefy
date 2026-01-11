@@ -160,7 +160,7 @@ function App() {
 ### MemoryMonitor
 
 <details>
-<summary><strong>MemoryMonitor</strong> — Real-time browser memory monitoring with slide-in panel UI</summary>
+<summary><strong>MemoryMonitor</strong> — Real-time browser memory monitoring with slide-in panel UI (built on <a href="https://www.npmjs.com/package/@usefy/use-memory-monitor">@usefy/use-memory-monitor</a>)</summary>
 
 ```tsx
 import { MemoryMonitor, useMemoryMonitorHeadless } from "@usefy/kits";

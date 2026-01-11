@@ -43,9 +43,11 @@
 
 ## Overview
 
-`@usefy/memory-monitor` is a comprehensive React component for real-time browser memory monitoring with a professional slide-in panel UI. It provides memory visualization, leak detection, automatic GC triggers, snapshot management, and professional HTML report generation.
+`@usefy/memory-monitor` is a React component for real-time browser memory monitoring with a slide-in panel UI. It provides memory visualization, leak detection, automatic GC triggers, snapshot management, and HTML report generation.
 
-**Part of the [@usefy](https://www.npmjs.com/org/usefy) ecosystem** — a collection of production-ready React hooks and components designed for modern applications.
+**Built on [`@usefy/use-memory-monitor`](https://www.npmjs.com/package/@usefy/use-memory-monitor)** — the core hook that provides all memory monitoring logic. This component wraps the hook with a complete UI solution.
+
+**Part of the [@usefy](https://www.npmjs.com/org/usefy) ecosystem.**
 
 ### Why memory-monitor?
 

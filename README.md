@@ -132,7 +132,7 @@ function App() {
 ```
 
 **Available Kits:**
-- `MemoryMonitor` — Real-time browser memory monitoring panel with leak detection, snapshots, and HTML report generation
+- `MemoryMonitor` — Real-time memory monitoring panel (built on `@usefy/use-memory-monitor`)
 
 <a href="./packages/kits/README.md"><strong>View full documentation →</strong></a>
 
