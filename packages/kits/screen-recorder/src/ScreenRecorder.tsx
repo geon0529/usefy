@@ -226,8 +226,10 @@ export const ScreenRecorder = forwardRef<HTMLDivElement, ScreenRecorderProps>(
     }, [recorder, filename, onDownload]);
 
     // Handle re-record
-    const handleReRecord = useCallback(() => {
+    const handleReRecord = useCallback(async () => {
       recorder.reset();
+      // Start new recording immediately
+      await recorder.start();
     }, [recorder]);
 
     // Handle preview close
