@@ -139,7 +139,7 @@ export function HistoryChart({
               fontSize: "12px",
             }}
             formatter={(value: number, name: string) => {
-              const label = name === "heapUsedMB" ? "Used" : "Total";
+              const label = name === "heapUsedMB" ? "Used" : "Allocated";
               return [`${value} MB`, label];
             }}
             labelFormatter={(label: string) => `Time: ${label}`}
