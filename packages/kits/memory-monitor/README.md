@@ -482,7 +482,7 @@ The panel supports three theme modes:
 <MemoryMonitor theme="dark" />
 ```
 
-The component uses Tailwind CSS dark mode classes and automatically detects OS preference changes.
+The component uses CSS Modules with a `.dark` class selector for dark mode and automatically detects OS preference changes.
 
 ### Settings Persistence
 
