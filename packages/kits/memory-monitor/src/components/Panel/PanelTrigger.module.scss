@@ -13,7 +13,7 @@
   box-shadow: $shadow-lg, 0 0 20px rgba($indigo-500, 0.2);
   transition: all $transition-slow $ease-out;
   transform-origin: center center;
-  will-change: transform;
+  will-change: transform, box-shadow;
 
   &:hover {
     background: linear-gradient(135deg, $indigo-400, $blue-500);
@@ -30,8 +30,32 @@
     box-shadow: 0 0 0 2px white, 0 0 0 4px $indigo-500, $shadow-lg;
   }
 
+  // Warning state - amber color with pulse glow
   &.warning {
-    @include animate-pulse;
+    background: linear-gradient(135deg, $amber-500, $orange-600);
+    animation: warningPulse 1.5s ease-in-out infinite;
+
+    &:hover {
+      background: linear-gradient(135deg, $amber-400, $orange-500);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px white, 0 0 0 4px $amber-500, $shadow-lg;
+    }
+  }
+
+  // Critical state - red color with intense shake and glow
+  &.critical {
+    background: linear-gradient(135deg, $red-500, $red-700);
+    animation: criticalShake 0.5s ease-in-out infinite, criticalGlow 1s ease-in-out infinite;
+
+    &:hover {
+      background: linear-gradient(135deg, $red-400, $red-600);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px white, 0 0 0 4px $red-500, $shadow-lg;
+    }
   }
 }
 
@@ -42,4 +66,53 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+// Warning pulse animation - amber glow that pulses
+@keyframes warningPulse {
+  0%, 100% {
+    box-shadow:
+      $shadow-lg,
+      0 0 20px rgba($amber-500, 0.4),
+      0 0 40px rgba($amber-500, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      $shadow-xl,
+      0 0 30px rgba($amber-500, 0.6),
+      0 0 60px rgba($amber-500, 0.3);
+    transform: scale(1.05);
+  }
+}
+
+// Critical shake animation - subtle but noticeable shake
+@keyframes criticalShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+// Critical glow animation - intense red glow that pulses
+@keyframes criticalGlow {
+  0%, 100% {
+    box-shadow:
+      $shadow-lg,
+      0 0 25px rgba($red-500, 0.5),
+      0 0 50px rgba($red-500, 0.3),
+      0 0 75px rgba($red-500, 0.1);
+  }
+  50% {
+    box-shadow:
+      $shadow-xl,
+      0 0 35px rgba($red-500, 0.7),
+      0 0 70px rgba($red-500, 0.4),
+      0 0 100px rgba($red-500, 0.2);
+  }
 }

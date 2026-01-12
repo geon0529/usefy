@@ -4,7 +4,6 @@ import type { TriggerPosition, Severity } from "../../types";
 import {
   DEFAULT_TRIGGER_POSITION,
   Z_INDEX,
-  SEVERITY_COLORS,
 } from "../../constants";
 import styles from "./PanelTrigger.module.scss";
 
@@ -80,8 +79,6 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
     },
     ref
   ) => {
-    const severityColor = SEVERITY_COLORS[severity];
-
     // Build position style
     const positionStyle: React.CSSProperties = {
       zIndex,
@@ -91,11 +88,6 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
     if (position.left !== undefined) positionStyle.left = position.left;
     if (position.right !== undefined) positionStyle.right = position.right;
 
-    // Add severity-based glow
-    if (severity !== "normal") {
-      positionStyle.boxShadow = `0 0 20px rgba(${severityColor.accentRgb}, 0.5), 0 10px 15px -3px rgba(0, 0, 0, 0.1)`;
-    }
-
     return (
       <button
         ref={ref}
@@ -104,7 +96,8 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
         aria-label={ariaLabel}
         className={clsx(
           styles.trigger,
-          severity !== "normal" && styles.warning,
+          severity === "warning" && styles.warning,
+          severity === "critical" && styles.critical,
           isDark && "dark",
           className
         )}
