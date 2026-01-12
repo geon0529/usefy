@@ -1,5 +1,16 @@
 # @usefy/components
 
+## 0.2.2
+
+### Patch Changes
+
+- 33b5de7: summary
+- 7168031: summary
+- Updated dependencies [14def35]
+- Updated dependencies [33b5de7]
+- Updated dependencies [7168031]
+  - @usefy/memory-monitor@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes
