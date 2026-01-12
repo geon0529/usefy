@@ -1,6 +1,6 @@
 {
   "name": "@usefy/screen-recorder",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "React component for screen recording with preview and download functionality",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
