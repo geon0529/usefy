@@ -1,5 +1,13 @@
 # @usefy/playground
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [779427c]
+  - @usefy/memory-monitor@0.2.3
+  - @usefy/use-memory-monitor@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
