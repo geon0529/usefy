@@ -1,7 +1,8 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import { clsx } from "clsx";
 import { SEVERITY_COLORS } from "../../constants";
 import type { Severity } from "../../types";
+import styles from "./StatusBadge.module.scss";
 
 export interface StatusBadgeProps {
   /** Current severity level */
@@ -24,21 +25,30 @@ const severityLabels: Record<Severity, string> = {
 };
 
 /**
- * Size classes
+ * Severity style mapping
  */
-const sizeClasses = {
-  sm: "px-2 py-0.5 text-xs",
-  md: "px-2.5 py-1 text-sm",
-  lg: "px-3 py-1.5 text-base",
+const severityStyles: Record<Severity, string> = {
+  normal: styles.severityNormal,
+  warning: styles.severityWarning,
+  critical: styles.severityCritical,
 };
 
 /**
- * Dot size classes
+ * Size style mapping
  */
-const dotSizeClasses = {
-  sm: "w-1.5 h-1.5",
-  md: "w-2 h-2",
-  lg: "w-2.5 h-2.5",
+const sizeStyles: Record<"sm" | "md" | "lg", string> = {
+  sm: styles.sizeSm,
+  md: styles.sizeMd,
+  lg: styles.sizeLg,
+};
+
+/**
+ * Dot size style mapping
+ */
+const dotSizeStyles: Record<"sm" | "md" | "lg", string> = {
+  sm: styles.dotSizeSm,
+  md: styles.dotSizeMd,
+  lg: styles.dotSizeLg,
 };
 
 /**
@@ -56,31 +66,22 @@ export function StatusBadge({
 
   return (
     <div
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full font-medium",
-        sizeClasses[size],
-        colors.bg,
-        colors.bgDark,
-        colors.text,
-        colors.textDark,
+      className={clsx(
+        styles.badge,
+        sizeStyles[size],
+        severityStyles[severity],
         className
       )}
     >
       {/* Status dot */}
-      <span className="relative flex">
+      <span className={styles.dotWrapper}>
         <span
-          className={cn(
-            "rounded-full",
-            dotSizeClasses[size]
-          )}
+          className={clsx(styles.dot, dotSizeStyles[size])}
           style={{ backgroundColor: colors.accent }}
         />
         {shouldPulse && (
           <span
-            className={cn(
-              "absolute inset-0 rounded-full animate-ping opacity-75",
-              dotSizeClasses[size]
-            )}
+            className={clsx(styles.dotPing, dotSizeStyles[size])}
             style={{ backgroundColor: colors.accent }}
           />
         )}

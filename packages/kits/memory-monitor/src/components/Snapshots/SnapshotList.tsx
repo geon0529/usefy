@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { SnapshotCard } from "./SnapshotCard";
 import type { PanelSnapshot } from "../../types";
+import styles from "./SnapshotList.module.scss";
 
 export interface SnapshotListProps {
   /** List of snapshots */
@@ -86,20 +87,14 @@ export function SnapshotList({
   // Empty state
   if (snapshots.length === 0) {
     return (
-      <div
-        className={cn(
-          "flex flex-col items-center justify-center py-8 px-4",
-          "text-center",
-          className
-        )}
-      >
-        <div className="p-3 rounded-full bg-slate-100 dark:bg-slate-800 mb-3">
-          <CameraIcon className="w-6 h-6 text-slate-400" />
+      <div className={clsx(styles.emptyState, className)}>
+        <div className={styles.emptyIconWrapper}>
+          <CameraIcon className={styles.emptyIcon} />
         </div>
-        <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+        <h4 className={styles.emptyTitle}>
           No Snapshots Yet
         </h4>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-48">
+        <p className={styles.emptyDescription}>
           Take a snapshot to capture the current memory state for comparison
         </p>
       </div>
@@ -107,21 +102,21 @@ export function SnapshotList({
   }
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={clsx(styles.container, className)}>
       {/* Header with count */}
-      <div className="flex items-center justify-between px-1">
-        <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+      <div className={styles.header}>
+        <span className={styles.count}>
           Snapshots ({snapshots.length}/{maxSnapshots})
         </span>
         {snapshots.length >= maxSnapshots && (
-          <span className="text-xs text-amber-600 dark:text-amber-400">
+          <span className={styles.maxReached}>
             Max reached
           </span>
         )}
       </div>
 
       {/* Snapshot list */}
-      <div className={cn("space-y-2", compact && "space-y-1")}>
+      <div className={clsx(styles.list, compact && styles.listCompact)}>
         {snapshots.map((snapshot) => (
           <SnapshotCard
             key={snapshot.id}

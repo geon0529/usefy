@@ -251,7 +251,8 @@ describe("MemoryMonitor", () => {
       render(<MemoryMonitor defaultOpen position="left" />);
 
       const panel = screen.getByRole("dialog");
-      expect(panel).toHaveClass("left-0");
+      // CSS Modules uses hashed class names, so we check data-position attribute
+      expect(panel).toHaveAttribute("data-position", "left");
     });
   });
 

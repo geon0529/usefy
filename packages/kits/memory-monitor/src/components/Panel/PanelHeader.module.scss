@@ -1,0 +1,109 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  @include flex-between;
+  padding: $spacing-4 $spacing-5;
+  border-bottom: 1px solid $slate-100;
+  background-color: rgba(white, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  :global(.dark) & {
+    border-bottom-color: $slate-800;
+    background-color: rgba($slate-900, 0.5);
+  }
+}
+
+.titleSection {
+  @include flex-start;
+  gap: $spacing-3;
+}
+
+.title {
+  @include text-lg;
+  font-weight: $font-weight-bold;
+  color: $slate-800;
+  letter-spacing: $letter-spacing-tight;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.statusIndicator {
+  @include flex-center;
+  gap: $spacing-1-5;
+  padding: $spacing-0-5 $spacing-2;
+  border-radius: $radius-full;
+  background-color: $slate-100;
+  border: 1px solid $slate-200;
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.8);
+    border-color: $slate-700;
+  }
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-full;
+  box-shadow: $shadow-sm;
+
+  &.paused {
+    background-color: $slate-300;
+
+    :global(.dark) & {
+      background-color: $slate-600;
+    }
+  }
+
+  &.active {
+    @include animate-pulse;
+  }
+}
+
+.statusText {
+  font-size: 10px;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wider;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.controls {
+  @include flex-center;
+  gap: $spacing-1;
+}
+
+.controlButton {
+  @include reset-button;
+  padding: $spacing-2;
+  border-radius: $radius-lg;
+  color: $slate-400;
+  @include transition-all;
+
+  &:hover {
+    color: $slate-600;
+    background-color: $slate-100;
+  }
+
+  :global(.dark) & {
+    color: $slate-500;
+
+    &:hover {
+      color: $slate-300;
+      background-color: $slate-800;
+    }
+  }
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}

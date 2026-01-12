@@ -1,6 +1,7 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { formatNumber } from "../../constants";
+import styles from "./DOMMetrics.module.scss";
 
 export interface DOMMetricsProps {
   /** Number of DOM nodes */
@@ -67,50 +68,26 @@ export function DOMMetrics({
   className,
 }: DOMMetricsProps) {
   return (
-    <div className={cn("grid grid-cols-2 gap-3", className)}>
+    <div className={clsx(styles.container, className)}>
       {/* DOM Nodes */}
-      <div
-        className={cn(
-          "flex items-center gap-3 p-4",
-          "bg-white dark:bg-slate-800/50",
-          "border border-slate-100 dark:border-slate-700",
-          "rounded-xl shadow-sm",
-          "transition-colors hover:border-slate-200 dark:hover:border-slate-600"
-        )}
-      >
-        <div className="p-2.5 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
-          <DOMIcon className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+      <div className={styles.metricCard}>
+        <div className={clsx(styles.iconWrapper, styles.dom)}>
+          <DOMIcon className={clsx(styles.icon, styles.dom)} />
         </div>
-        <div>
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-0.5">
-            DOM Nodes
-          </div>
-          <div className="text-lg font-bold text-slate-800 dark:text-slate-100">
-            {formatNumber(domNodes)}
-          </div>
+        <div className={styles.metricContent}>
+          <div className={styles.metricLabel}>DOM Nodes</div>
+          <div className={styles.metricValue}>{formatNumber(domNodes)}</div>
         </div>
       </div>
 
       {/* Event Listeners */}
-      <div
-        className={cn(
-          "flex items-center gap-3 p-4",
-          "bg-white dark:bg-slate-800/50",
-          "border border-slate-100 dark:border-slate-700",
-          "rounded-xl shadow-sm",
-          "transition-colors hover:border-slate-200 dark:hover:border-slate-600"
-        )}
-      >
-        <div className="p-2.5 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-          <ListenerIcon className="w-5 h-5 text-purple-500 dark:text-purple-400" />
+      <div className={styles.metricCard}>
+        <div className={clsx(styles.iconWrapper, styles.listener)}>
+          <ListenerIcon className={clsx(styles.icon, styles.listener)} />
         </div>
-        <div>
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-0.5">
-            Listeners
-          </div>
-          <div className="text-lg font-bold text-slate-800 dark:text-slate-100">
-            {formatNumber(eventListeners)}
-          </div>
+        <div className={styles.metricContent}>
+          <div className={styles.metricLabel}>Listeners</div>
+          <div className={styles.metricValue}>{formatNumber(eventListeners)}</div>
         </div>
       </div>
     </div>

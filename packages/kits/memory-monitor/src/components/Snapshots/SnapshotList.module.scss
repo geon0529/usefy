@@ -1,0 +1,114 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// SnapshotList Component Styles
+// ============================================================================
+
+// Icon size
+.icon {
+  width: 1.5rem; // 24px (w-6)
+  height: 1.5rem;
+}
+
+// ============================================================================
+// Container
+// ============================================================================
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+// ============================================================================
+// Empty State
+// ============================================================================
+
+.emptyState {
+  @include flex-col;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-8 $spacing-4;
+  text-align: center;
+}
+
+.emptyIconWrapper {
+  padding: $spacing-3;
+  border-radius: $radius-full;
+  background-color: $slate-100;
+  margin-bottom: $spacing-3;
+
+  :global(.dark) & {
+    background-color: $slate-800;
+  }
+}
+
+.emptyIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: $slate-400;
+}
+
+.emptyTitle {
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  color: $slate-900;
+  margin-bottom: $spacing-1;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.emptyDescription {
+  @include text-xs;
+  color: $slate-500;
+  max-width: 12rem; // max-w-48
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Header
+// ============================================================================
+
+.header {
+  @include flex-between;
+  padding: 0 $spacing-1;
+}
+
+.count {
+  @include text-xs;
+  font-weight: $font-weight-medium;
+  color: $slate-600;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.maxReached {
+  @include text-xs;
+  color: $amber-600;
+
+  :global(.dark) & {
+    color: $amber-400;
+  }
+}
+
+// ============================================================================
+// List
+// ============================================================================
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.listCompact {
+  gap: $spacing-1;
+}

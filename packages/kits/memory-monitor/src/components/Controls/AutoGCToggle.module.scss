@@ -1,0 +1,233 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// AutoGCToggle Component Styles
+// ============================================================================
+
+.container {
+  padding: $spacing-4;
+  border-radius: $radius-lg;
+  background-color: $slate-50;
+  border: 1px solid $slate-200;
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    border-color: $slate-700;
+  }
+}
+
+// ============================================================================
+// Header Section
+// ============================================================================
+
+.header {
+  @include flex-between;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.iconWrapper {
+  padding: $spacing-2;
+  border-radius: $radius-lg;
+  background-color: $slate-200;
+
+  :global(.dark) & {
+    background-color: $slate-700;
+  }
+}
+
+.iconWrapperEnabled {
+  background-color: $green-100;
+
+  :global(.dark) & {
+    background-color: rgba($green-900, 0.3);
+  }
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.iconEnabled {
+  color: $green-600;
+
+  :global(.dark) & {
+    color: $green-400;
+  }
+}
+
+.labelWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: $font-weight-medium;
+  color: $slate-900;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
+
+.description {
+  @include text-xs;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Toggle Switch
+// ============================================================================
+
+.toggle {
+  @include reset-button;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 2.75rem; // 44px (w-11)
+  height: 1.5rem; // 24px (h-6)
+  border-radius: $radius-full;
+  flex-shrink: 0;
+  @include transition-colors;
+
+  background-color: $slate-300;
+
+  :global(.dark) & {
+    background-color: $slate-600;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $green-500;
+  }
+
+  :global(.dark) &:focus {
+    box-shadow: 0 0 0 2px $slate-900, 0 0 0 4px $green-500;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.toggleEnabled {
+  background-color: $green-500;
+
+  :global(.dark) & {
+    background-color: $green-600;
+  }
+}
+
+.toggleThumb {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: $radius-full;
+  background-color: white;
+  box-shadow: $shadow-sm;
+  transform: translateX(0.25rem);
+  transition: transform $transition-normal $ease-default;
+}
+
+.toggleThumbEnabled {
+  transform: translateX(1.375rem); // 22px
+}
+
+// ============================================================================
+// Threshold Configuration Section
+// ============================================================================
+
+.thresholdSection {
+  margin-top: $spacing-4;
+  padding-top: $spacing-4;
+  border-top: 1px solid $slate-200;
+
+  :global(.dark) & {
+    border-color: $slate-700;
+  }
+}
+
+.thresholdLabel {
+  display: block;
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  color: $slate-700;
+  margin-bottom: $spacing-2;
+
+  :global(.dark) & {
+    color: $slate-300;
+  }
+}
+
+.thresholdInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.thresholdInput {
+  width: 6rem; // 96px (w-24)
+  padding: $spacing-2 $spacing-3;
+  border-radius: $radius-lg;
+  background-color: white;
+  border: 1px solid $slate-300;
+  color: $slate-900;
+  @include text-sm;
+  @include font-mono;
+  @include transition-colors;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px $green-500;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  :global(.dark) & {
+    background-color: $slate-900;
+    border-color: $slate-600;
+    color: $slate-100;
+  }
+}
+
+.thresholdSuffix {
+  @include text-sm;
+  color: $slate-600;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.thresholdHelp {
+  margin-top: $spacing-2;
+  @include text-xs;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}

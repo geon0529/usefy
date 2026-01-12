@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
+import styles from "./ActionButtons.module.scss";
 
 export interface ActionButtonsProps {
   /** Request garbage collection callback */
@@ -160,22 +161,10 @@ function ActionButton({
     }
   }, [onClick, showSuccessState]);
 
-  const variantClasses = {
-    default: cn(
-      "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700",
-      "hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600",
-      "text-slate-700 dark:text-slate-300"
-    ),
-    primary: cn(
-      "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800",
-      "hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:border-blue-300 dark:hover:border-blue-700",
-      "text-blue-700 dark:text-blue-300"
-    ),
-    danger: cn(
-      "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800",
-      "hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-300 dark:hover:border-red-700",
-      "text-red-700 dark:text-red-300"
-    ),
+  const variantClassMap = {
+    default: styles.variantDefault,
+    primary: styles.variantPrimary,
+    danger: styles.variantDanger,
   };
 
   return (
@@ -183,22 +172,15 @@ function ActionButton({
       type="button"
       onClick={handleClick}
       disabled={disabled || showSuccess}
-      className={cn(
-        "flex items-center gap-2 px-3 py-1.5 rounded-md",
-        "text-xs font-medium",
-        "transition-all duration-200",
-        "focus:outline-none focus:ring-2 focus:ring-offset-1",
-        "focus:ring-blue-500 dark:focus:ring-offset-slate-900",
-        showSuccess
-          ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300"
-          : variantClasses[variant],
-        disabled && "opacity-50 cursor-not-allowed"
+      className={clsx(
+        styles.button,
+        showSuccess ? styles.variantSuccess : variantClassMap[variant]
       )}
     >
       {showSuccess ? (
-        <CheckIcon className="w-3.5 h-3.5" />
+        <CheckIcon className={styles.icon} />
       ) : (
-        <Icon className="w-3.5 h-3.5" />
+        <Icon className={styles.icon} />
       )}
       <span>{showSuccess ? "Done" : label}</span>
     </button>
@@ -219,7 +201,7 @@ export function ActionButtons({
   className,
 }: ActionButtonsProps) {
   return (
-    <div className={cn("flex flex-wrap gap-2", className)}>
+    <div className={clsx(styles.container, className)}>
       {/* Request GC */}
       <ActionButton
         icon={TrashIcon}

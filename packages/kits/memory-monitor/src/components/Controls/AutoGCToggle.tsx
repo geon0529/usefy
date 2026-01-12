@@ -1,5 +1,6 @@
 import React, { useCallback, useId } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
+import styles from "./AutoGCToggle.module.scss";
 
 export interface AutoGCToggleProps {
   /** Whether auto-GC is enabled */
@@ -73,45 +74,28 @@ export function AutoGCToggle({
   const isDisabled = disabled || !isSupported;
 
   return (
-    <div
-      className={cn(
-        "p-4 rounded-lg",
-        "bg-slate-50 dark:bg-slate-800",
-        "border border-slate-200 dark:border-slate-700",
-        className
-      )}
-    >
+    <div className={clsx(styles.container, className)}>
       {/* Header with toggle */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
           <div
-            className={cn(
-              "p-2 rounded-lg",
-              enabled
-                ? "bg-green-100 dark:bg-green-900/30"
-                : "bg-slate-200 dark:bg-slate-700"
+            className={clsx(
+              styles.iconWrapper,
+              enabled && styles.iconWrapperEnabled
             )}
           >
             <RecycleIcon
-              className={cn(
-                "w-5 h-5",
-                enabled
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-slate-500 dark:text-slate-400"
-              )}
+              className={clsx(styles.icon, enabled && styles.iconEnabled)}
             />
           </div>
-          <div>
+          <div className={styles.labelWrapper}>
             <label
               htmlFor={toggleId}
-              className={cn(
-                "font-medium text-slate-900 dark:text-slate-100",
-                isDisabled && "opacity-50"
-              )}
+              className={clsx(styles.label, isDisabled && styles.disabled)}
             >
               Auto Garbage Collection
             </label>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className={styles.description}>
               {isSupported
                 ? "Automatically request GC when threshold is exceeded"
                 : "GC hints not supported in this browser"}
@@ -127,21 +111,12 @@ export function AutoGCToggle({
           aria-checked={enabled}
           onClick={handleToggle}
           disabled={isDisabled}
-          className={cn(
-            "relative inline-flex h-6 w-11 items-center rounded-full shrink-0",
-            "transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
-            "focus:ring-green-500 dark:focus:ring-offset-slate-900",
-            enabled
-              ? "bg-green-500 dark:bg-green-600"
-              : "bg-slate-300 dark:bg-slate-600",
-            isDisabled && "opacity-50 cursor-not-allowed"
-          )}
+          className={clsx(styles.toggle, enabled && styles.toggleEnabled)}
         >
           <span
-            className={cn(
-              "inline-block h-4 w-4 rounded-full bg-white shadow-sm",
-              "transform transition-transform",
-              enabled ? "translate-x-[22px]" : "translate-x-1"
+            className={clsx(
+              styles.toggleThumb,
+              enabled && styles.toggleThumbEnabled
             )}
           />
         </button>
@@ -149,14 +124,11 @@ export function AutoGCToggle({
 
       {/* Threshold configuration (shown when enabled) */}
       {enabled && (
-        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <label
-            htmlFor={thresholdId}
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
-          >
+        <div className={styles.thresholdSection}>
+          <label htmlFor={thresholdId} className={styles.thresholdLabel}>
             Trigger Threshold
           </label>
-          <div className="flex items-center gap-3">
+          <div className={styles.thresholdInputWrapper}>
             <input
               id={thresholdId}
               type="number"
@@ -167,23 +139,13 @@ export function AutoGCToggle({
               onChange={handleThresholdChange}
               placeholder="85"
               disabled={isDisabled}
-              className={cn(
-                "w-24 px-3 py-2 rounded-lg",
-                "bg-white dark:bg-slate-900",
-                "border border-slate-300 dark:border-slate-600",
-                "text-slate-900 dark:text-slate-100",
-                "text-sm font-mono",
-                "focus:outline-none focus:ring-2 focus:ring-green-500",
-                isDisabled && "opacity-50 cursor-not-allowed"
-              )}
+              className={styles.thresholdInput}
             />
-            <span className="text-sm text-slate-600 dark:text-slate-400">
-              % memory usage
-            </span>
+            <span className={styles.thresholdSuffix}>% memory usage</span>
           </div>
-          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            GC will be requested when memory usage exceeds this threshold
-            (with 10s cooldown)
+          <p className={styles.thresholdHelp}>
+            GC will be requested when memory usage exceeds this threshold (with
+            10s cooldown)
           </p>
         </div>
       )}

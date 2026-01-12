@@ -1,0 +1,448 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// SnapshotCard Component Styles
+// ============================================================================
+
+// Icon size utilities
+.iconSmall {
+  width: 0.875rem; // 14px (w-3.5)
+  height: 0.875rem;
+}
+
+.iconMedium {
+  width: 1rem; // 16px (w-4)
+  height: 1rem;
+}
+
+// ============================================================================
+// Compact Card Styles
+// ============================================================================
+
+.compactCard {
+  @include flex-between;
+  padding: $spacing-2-5;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  border: 1px solid transparent;
+  @include transition-all;
+}
+
+.compactCardDefault {
+  background-color: white;
+  border-color: $slate-200;
+
+  &:hover {
+    border-color: $slate-300;
+    box-shadow: $shadow-sm;
+  }
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.5);
+    border-color: $slate-700;
+
+    &:hover {
+      border-color: $slate-600;
+    }
+  }
+}
+
+.compactCardSelected {
+  background-color: rgba($blue-50, 0.8);
+  border-color: $blue-200;
+  box-shadow: 0 0 0 1px $blue-200;
+
+  :global(.dark) & {
+    background-color: rgba($blue-900, 0.2);
+    border-color: $blue-800;
+    box-shadow: 0 0 0 1px $blue-800;
+  }
+}
+
+.compactCardBaseline {
+  background-color: $amber-100;
+  border-color: $amber-300;
+  box-shadow: 0 0 0 1px $amber-200;
+
+  :global(.dark) & {
+    background-color: rgba($amber-900, 0.3);
+    border-color: $amber-700;
+    box-shadow: 0 0 0 1px $amber-800;
+  }
+}
+
+.compactCardCurrent {
+  background-color: $emerald-100;
+  border-color: $emerald-300;
+  box-shadow: 0 0 0 1px rgba($emerald-300, 0.5);
+
+  :global(.dark) & {
+    background-color: rgba($emerald-900, 0.3);
+    border-color: $emerald-700;
+    box-shadow: 0 0 0 1px $emerald-900;
+  }
+}
+
+.compactContent {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  min-width: 0;
+}
+
+.compactActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.compactLabel {
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  color: $slate-900;
+  @include truncate;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.compactTime {
+  @include text-xs;
+  color: $slate-500;
+}
+
+.compactHeap {
+  @include text-xs;
+  @include font-mono;
+  color: $slate-600;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Full Card Styles
+// ============================================================================
+
+.card {
+  border-radius: $radius-xl;
+  border: 1px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  @include transition-all;
+}
+
+.cardDefault {
+  background-color: white;
+  border-color: $slate-200;
+
+  &:hover {
+    border-color: $slate-300;
+    box-shadow: $shadow-md;
+  }
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.5);
+    border-color: $slate-700;
+
+    &:hover {
+      border-color: $slate-600;
+    }
+  }
+}
+
+.cardSelected {
+  background-color: rgba($blue-50, 0.5);
+  border-color: $blue-200;
+  box-shadow: 0 0 0 1px $blue-200, $shadow-sm;
+
+  :global(.dark) & {
+    background-color: rgba($blue-900, 0.1);
+    border-color: $blue-800;
+    box-shadow: 0 0 0 1px $blue-800, $shadow-sm;
+  }
+}
+
+.cardBaseline {
+  background-color: $amber-100;
+  border-color: $amber-300;
+  box-shadow: 0 0 0 1px $amber-200, $shadow-sm;
+
+  :global(.dark) & {
+    background-color: rgba($amber-900, 0.3);
+    border-color: $amber-700;
+    box-shadow: 0 0 0 1px $amber-800, $shadow-sm;
+  }
+}
+
+.cardCurrent {
+  background-color: $emerald-100;
+  border-color: $emerald-300;
+  box-shadow: 0 0 0 1px rgba($emerald-300, 0.5), $shadow-sm;
+
+  :global(.dark) & {
+    background-color: rgba($emerald-900, 0.3);
+    border-color: $emerald-700;
+    box-shadow: 0 0 0 1px $emerald-900, $shadow-sm;
+  }
+}
+
+// ============================================================================
+// Card Header
+// ============================================================================
+
+.header {
+  @include flex-between;
+  padding: $spacing-3;
+  border-bottom: 1px solid $slate-100;
+
+  :global(.dark) & {
+    border-bottom-color: rgba($slate-700, 0.5);
+  }
+}
+
+.headerContent {
+  min-width: 0;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.title {
+  font-weight: $font-weight-semibold;
+  color: $slate-800;
+  @include truncate;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.timestamp {
+  @include text-xs;
+  color: $slate-500;
+  margin-top: $spacing-0-5;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Role Badges
+// ============================================================================
+
+.roleBadge {
+  padding: $spacing-0-5 $spacing-2;
+  font-size: 10px;
+  font-weight: $font-weight-bold;
+  border-radius: $radius-default;
+}
+
+.roleBadgeCompact {
+  padding: $spacing-0-5 $spacing-1-5;
+  font-size: 10px;
+  font-weight: $font-weight-bold;
+  border-radius: $radius-default;
+}
+
+.baselineBadge {
+  background-color: $amber-100;
+  color: $amber-700;
+
+  :global(.dark) & {
+    background-color: rgba($amber-900, 0.3);
+    color: $amber-300;
+  }
+}
+
+.currentBadge {
+  background-color: $emerald-100;
+  color: $emerald-700;
+
+  :global(.dark) & {
+    background-color: rgba($emerald-900, 0.3);
+    color: $emerald-300;
+  }
+}
+
+.autoBadge {
+  padding: $spacing-0-5 $spacing-1-5;
+  font-size: 10px;
+  font-weight: $font-weight-medium;
+  border-radius: $radius-default;
+  background-color: $purple-100;
+  color: $purple-600;
+
+  :global(.dark) & {
+    background-color: rgba($purple-900, 0.3);
+    color: $purple-400;
+  }
+}
+
+// ============================================================================
+// Delete Button
+// ============================================================================
+
+.deleteButton {
+  @include reset-button;
+  padding: $spacing-1;
+  border-radius: $radius-default;
+  color: $slate-400;
+  @include transition-colors;
+
+  &:hover {
+    background-color: $red-100;
+    color: $red-500;
+  }
+
+  :global(.dark) &:hover {
+    background-color: rgba($red-900, 0.3);
+  }
+}
+
+.deleteButtonLarge {
+  @include reset-button;
+  padding: $spacing-1-5;
+  border-radius: $radius-lg;
+  color: $slate-400;
+  @include transition-colors;
+
+  &:hover {
+    background-color: $red-100;
+    color: $red-500;
+  }
+
+  :global(.dark) &:hover {
+    background-color: rgba($red-900, 0.3);
+  }
+}
+
+// ============================================================================
+// Card Body
+// ============================================================================
+
+.body {
+  padding: $spacing-3;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+// Usage bar section
+.usageSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1-5;
+}
+
+.usageHeader {
+  @include flex-between;
+  @include text-xs;
+}
+
+.usageLabel {
+  color: $slate-500;
+  font-weight: $font-weight-medium;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.usageValue {
+  font-weight: $font-weight-semibold;
+  color: $slate-700;
+
+  :global(.dark) & {
+    color: $slate-200;
+  }
+}
+
+.usageBarTrack {
+  height: 0.5rem;
+  background-color: $slate-100;
+  border-radius: $radius-full;
+  overflow: hidden;
+
+  :global(.dark) & {
+    background-color: $slate-700;
+  }
+}
+
+.usageBarFill {
+  height: 100%;
+  border-radius: $radius-full;
+  transition: all 500ms $ease-default;
+}
+
+.usageBarNormal {
+  background-color: $green-500;
+}
+
+.usageBarWarning {
+  background-color: $amber-500;
+}
+
+.usageBarCritical {
+  background-color: $red-500;
+}
+
+// Stats grid
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-3;
+  @include text-xs;
+}
+
+.statItem {
+  background-color: $slate-50;
+  padding: $spacing-2;
+  border-radius: $radius-lg;
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.5);
+  }
+}
+
+.statLabel {
+  display: block;
+  color: $slate-500;
+  margin-bottom: $spacing-0-5;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.statValue {
+  @include font-mono;
+  font-weight: $font-weight-semibold;
+  color: $slate-700;
+
+  :global(.dark) & {
+    color: $slate-200;
+  }
+}
+
+// Notes
+.notes {
+  @include text-xs;
+  color: $slate-600;
+  font-style: italic;
+  border-top: 1px solid $slate-100;
+  padding-top: $spacing-2;
+  margin-top: $spacing-1;
+
+  :global(.dark) & {
+    color: $slate-400;
+    border-top-color: rgba($slate-700, 0.5);
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import {
   generateMemoryReport,
   downloadReport,
@@ -7,6 +7,7 @@ import {
   MIN_SNAPSHOTS_FOR_REPORT,
 } from "../../utils/reportGenerator";
 import type { PanelSnapshot } from "../../types";
+import styles from "./ReportButton.module.scss";
 
 export interface ReportButtonProps {
   /** Array of snapshots to generate report from */
@@ -58,7 +59,7 @@ function SpinnerIcon({ className }: { className?: string }) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn("animate-spin", className)}
+      className={className}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>
@@ -121,21 +122,16 @@ export function ReportButton({
       onClick={handleGenerateReport}
       disabled={isDisabled}
       title={getTooltip()}
-      className={cn(
-        "w-full flex items-center justify-center gap-2",
-        "px-4 py-2.5 text-sm font-medium rounded-lg",
-        "transition-all duration-200",
-        canGenerate
-          ? "bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white shadow-sm hover:shadow-md"
-          : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed",
-        "disabled:opacity-60 disabled:cursor-not-allowed",
+      className={clsx(
+        styles.button,
+        canGenerate ? styles.buttonEnabled : styles.buttonDisabled,
         className
       )}
     >
       {isGenerating ? (
-        <SpinnerIcon className="w-4 h-4" />
+        <SpinnerIcon className={clsx(styles.icon, styles.spinner)} />
       ) : (
-        <DocumentIcon className="w-4 h-4" />
+        <DocumentIcon className={styles.icon} />
       )}
       <span>
         {isGenerating

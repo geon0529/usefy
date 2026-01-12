@@ -1,7 +1,8 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import { clsx } from "clsx";
 import type { PanelTab } from "../../types";
 import { PANEL_TABS } from "../../constants";
+import styles from "./PanelTabs.module.scss";
 
 export interface PanelTabsProps {
   /** Currently active tab */
@@ -92,15 +93,7 @@ export function PanelTabs({
   className,
 }: PanelTabsProps) {
   return (
-    <div
-      className={cn(
-        "flex items-center",
-        "border-b border-slate-200 dark:border-slate-700",
-        "bg-white dark:bg-slate-900",
-        className
-      )}
-      role="tablist"
-    >
+    <div className={clsx(styles.tabs, className)} role="tablist">
       {PANEL_TABS.map((tab) => {
         const Icon = TabIcons[tab.icon];
         const isActive = activeTab === tab.id;
@@ -114,25 +107,16 @@ export function PanelTabs({
             aria-selected={isActive}
             aria-controls={`panel-${tab.id}`}
             onClick={() => onTabChange(tab.id as PanelTab)}
-            className={cn(
-              "relative flex-1 flex items-center justify-center gap-1.5",
-              "px-3 py-2.5",
-              "text-sm font-medium",
-              "border-b-2 -mb-px",
-              "transition-colors",
-              isActive
-                ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
-                : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
-            )}
+            className={clsx(styles.tab, isActive && styles.active)}
           >
-            {Icon && <Icon className="w-4 h-4" />}
-            <span className="hidden sm:inline">{tab.label}</span>
+            {Icon && <Icon className={styles.tabIcon} />}
+            <span className={styles.tabLabel}>{tab.label}</span>
 
             {/* Pulse dot for active auto-snapshot */}
             {showPulseDot && (
-              <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              <span className={styles.pulseDot}>
+                <span className={styles.pingAnimation} />
+                <span className={styles.dotInner} />
               </span>
             )}
           </button>

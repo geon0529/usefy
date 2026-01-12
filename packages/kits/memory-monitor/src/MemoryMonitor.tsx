@@ -1,4 +1,5 @@
 import React, { forwardRef, useState, useEffect, useCallback, useMemo } from "react";
+import clsx from "clsx";
 import { useMemoryMonitor } from "@usefy/use-memory-monitor";
 import type { MemoryMonitorProps, PanelTab, Severity, PanelSnapshot, SnapshotAnalysisContext } from "./types";
 import {
@@ -12,7 +13,8 @@ import {
   SNAPSHOT_SCHEDULE_OPTIONS,
   HISTORY_SIZE_LIMITS,
 } from "./constants";
-import { cn, isSSR, getShouldRender, getShouldActivate } from "./utils";
+import { isSSR, getShouldRender, getShouldActivate } from "./utils";
+import styles from "./MemoryMonitor.module.scss";
 import {
   useKeyboardShortcut,
   useEscapeKey,
@@ -549,13 +551,7 @@ export const MemoryMonitor = forwardRef<HTMLDivElement, MemoryMonitorProps>(
           />
 
           {/* Tab content */}
-          <div
-            className="flex-1 p-4 thin-scrollbar"
-            style={{
-              scrollbarWidth: "thin",
-              scrollbarColor: "rgba(148, 163, 184, 0.4) transparent",
-            }}
-          >
+          <div className={styles.tabContent}>
             {tabContent}
           </div>
         </Panel>
@@ -579,7 +575,7 @@ interface OverviewTabProps {
 
 function OverviewTab({ monitor, settings, isDark, onTakeSnapshot }: OverviewTabProps) {
   return (
-    <div className="space-y-4">
+    <div className={styles.section}>
       {/* Memory Gauge */}
       <MemoryGauge
         usagePercentage={monitor.usagePercentage ?? 0}
@@ -591,7 +587,7 @@ function OverviewTab({ monitor, settings, isDark, onTakeSnapshot }: OverviewTabP
       />
 
       {/* Status and Trend */}
-      <div className="flex items-center justify-between">
+      <div className={styles.statusRow}>
         <StatusBadge severity={monitor.severity} />
         <TrendIndicator
           trend={monitor.trend}
@@ -663,7 +659,7 @@ function HistoryTab({
   criticalThreshold,
 }: HistoryTabProps) {
   return (
-    <div className="space-y-4">
+    <div className={styles.section}>
       {/* History Chart */}
       <HistoryChart
         history={history}
@@ -682,36 +678,32 @@ function HistoryTab({
 
       {/* Stats */}
       {history.length > 0 && (
-        <div className={cn(
-          "p-3 rounded-lg",
-          "bg-slate-50 dark:bg-slate-800",
-          "border border-slate-200 dark:border-slate-700"
-        )}>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+        <div className={styles.statsContainer}>
+          <div className={styles.statsTitle}>
             Statistics
           </div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className={styles.statsGrid}>
             <div>
-              <span className="text-slate-500">Min:</span>{" "}
-              <span className="font-mono text-slate-900 dark:text-slate-100">
+              <span className={styles.statLabel}>Min:</span>{" "}
+              <span className={styles.statValue}>
                 {formatBytes(Math.min(...history.map(h => h.heapUsed)))}
               </span>
             </div>
             <div>
-              <span className="text-slate-500">Max:</span>{" "}
-              <span className="font-mono text-slate-900 dark:text-slate-100">
+              <span className={styles.statLabel}>Max:</span>{" "}
+              <span className={styles.statValue}>
                 {formatBytes(Math.max(...history.map(h => h.heapUsed)))}
               </span>
             </div>
             <div>
-              <span className="text-slate-500">Avg:</span>{" "}
-              <span className="font-mono text-slate-900 dark:text-slate-100">
+              <span className={styles.statLabel}>Avg:</span>{" "}
+              <span className={styles.statValue}>
                 {formatBytes(history.reduce((sum, h) => sum + h.heapUsed, 0) / history.length)}
               </span>
             </div>
             <div>
-              <span className="text-slate-500">Samples:</span>{" "}
-              <span className="font-mono text-slate-900 dark:text-slate-100">
+              <span className={styles.statLabel}>Samples:</span>{" "}
+              <span className={styles.statValue}>
                 {history.length}
               </span>
             </div>
@@ -750,20 +742,15 @@ function SnapshotsTab({
   const canTakeSnapshot = !isAtCapacity || autoDeleteOldest;
 
   return (
-    <div className="space-y-4">
+    <div className={styles.section}>
       {/* Action Buttons */}
-      <div className="flex gap-2">
+      <div className={styles.snapshotActions}>
         {/* Take Snapshot Button */}
         <button
           type="button"
           onClick={onTakeSnapshot}
           disabled={!canTakeSnapshot}
-          className={cn(
-            "flex-1 px-4 py-2 text-sm font-medium rounded-lg",
-            "bg-blue-500 hover:bg-blue-600 text-white",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "transition-colors"
-          )}
+          className={styles.takeSnapshotButton}
         >
           {isAtCapacity && autoDeleteOldest
             ? "Take Snapshot (replace oldest)"
@@ -775,12 +762,7 @@ function SnapshotsTab({
           type="button"
           onClick={onDeleteAll}
           disabled={snapshots.length === 0}
-          className={cn(
-            "px-4 py-2 text-sm font-medium rounded-lg",
-            "bg-red-500 hover:bg-red-600 text-white",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "transition-colors"
-          )}
+          className={styles.deleteAllButton}
           title="Delete all snapshots"
         >
           Delete All
@@ -791,10 +773,10 @@ function SnapshotsTab({
       <ReportButton snapshots={snapshots} />
 
       {/* Capacity indicator */}
-      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+      <div className={styles.capacityIndicator}>
         <span>{snapshots.length} / {maxSnapshots} snapshots</span>
         {autoDeleteOldest && isAtCapacity && (
-          <span className="text-amber-500">Auto-delete enabled</span>
+          <span className={styles.autoDeleteWarning}>Auto-delete enabled</span>
         )}
       </div>
 
@@ -818,7 +800,7 @@ function SnapshotsTab({
 
       {/* Help text */}
       {snapshots.length >= 2 && (
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className={styles.helpText}>
           Select two snapshots to compare them
         </p>
       )}
@@ -866,10 +848,10 @@ function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps
   );
 
   return (
-    <div className="space-y-6">
+    <div className={styles.sectionLarge}>
       {/* Threshold Settings */}
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100">
+      <div className={styles.section}>
+        <h4 className={styles.settingsTitle}>
           Thresholds
         </h4>
         <ThresholdSlider
@@ -904,8 +886,8 @@ function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps
       />
 
       {/* History Size */}
-      <div className="space-y-2">
-        <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100">
+      <div className={styles.sectionSmall}>
+        <h4 className={styles.settingsTitle}>
           Memory Trend
         </h4>
         <ThresholdSlider
@@ -922,7 +904,7 @@ function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps
       </div>
 
       {/* Snapshot Settings */}
-      <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+      <div className={styles.settingsDivider}>
         <SnapshotSettings
           value={settings.snapshot ?? DEFAULT_SETTINGS.snapshot}
           onChange={handleSnapshotSettingsChange}
@@ -930,22 +912,21 @@ function SettingsTab({ settings, updateSettings, isSupported }: SettingsTabProps
       </div>
 
       {/* Theme Settings */}
-      <div className="space-y-2">
-        <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100">
+      <div className={styles.sectionSmall}>
+        <h4 className={styles.settingsTitle}>
           Theme
         </h4>
-        <div className="flex gap-2">
+        <div className={styles.themeButtons}>
           {(["system", "light", "dark"] as const).map((theme) => (
             <button
               key={theme}
               type="button"
               onClick={() => updateSettings({ theme })}
-              className={cn(
-                "flex-1 px-3 py-2 text-sm font-medium rounded-lg capitalize",
-                "transition-colors",
+              className={clsx(
+                styles.themeButton,
                 settings.theme === theme
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  ? styles.themeButtonActive
+                  : styles.themeButtonInactive
               )}
             >
               {theme}

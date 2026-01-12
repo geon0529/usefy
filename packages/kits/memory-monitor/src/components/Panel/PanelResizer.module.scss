@@ -1,0 +1,50 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: col-resize;
+  @include transition-colors;
+
+  &:hover {
+    background-color: rgba($indigo-500, 0.5);
+  }
+
+  &.positionRight {
+    left: 0;
+  }
+
+  &.positionLeft {
+    right: 0;
+  }
+}
+
+.indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 32px;
+  border-radius: $radius-full;
+  background-color: $slate-300;
+  @include transition-colors;
+
+  :global(.dark) & {
+    background-color: $slate-600;
+  }
+
+  .resizer:hover & {
+    background-color: $indigo-500;
+  }
+
+  .positionRight & {
+    left: -2px;
+  }
+
+  .positionLeft & {
+    right: -2px;
+  }
+}

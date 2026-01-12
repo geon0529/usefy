@@ -1,0 +1,82 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.backdrop {
+  @include fixed-fill;
+  background-color: rgba(black, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  @include transition-all;
+
+  &.open {
+    opacity: 1;
+  }
+
+  &.closed {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  @include flex-col;
+  transition: transform $animation-panel-slide $ease-out;
+
+  &.positionRight {
+    right: 0;
+  }
+
+  &.positionLeft {
+    left: 0;
+  }
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  &.closedRight {
+    transform: translateX(100%);
+  }
+
+  &.closedLeft {
+    transform: translateX(-100%);
+  }
+}
+
+.panelInner {
+  @include flex-col;
+  height: 100%;
+  @include glass-light;
+  box-shadow: $shadow-2xl, 0 0 40px rgba($slate-200, 0.5);
+  border-color: $slate-200;
+
+  :global(.dark) & {
+    @include glass-dark;
+    box-shadow: $shadow-2xl, 0 0 40px rgba(black, 0.5);
+    border-color: $slate-800;
+  }
+
+  .positionRight & {
+    border-left: 1px solid $slate-200;
+
+    :global(.dark) & {
+      border-left-color: $slate-800;
+    }
+  }
+
+  .positionLeft & {
+    border-right: 1px solid $slate-200;
+
+    :global(.dark) & {
+      border-right-color: $slate-800;
+    }
+  }
+}
+
+// Thin scrollbar utility class (not scoped, for child elements)
+:global(.thin-scrollbar) {
+  @include thin-scrollbar;
+}

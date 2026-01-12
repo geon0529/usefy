@@ -1,12 +1,16 @@
 import React, { useCallback, useId } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import {
   SNAPSHOT_SCHEDULE_OPTIONS,
   DEFAULT_MAX_SNAPSHOTS,
   MIN_SNAPSHOTS_LIMIT,
   MAX_SNAPSHOTS_LIMIT,
 } from "../../constants";
-import type { SnapshotSettings as SnapshotSettingsType, SnapshotScheduleInterval } from "../../types";
+import type {
+  SnapshotSettings as SnapshotSettingsType,
+  SnapshotScheduleInterval,
+} from "../../types";
+import styles from "./SnapshotSettings.module.scss";
 
 export interface SnapshotSettingsProps {
   /** Current snapshot settings */
@@ -103,7 +107,10 @@ export function SnapshotSettings({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = Math.min(
         MAX_SNAPSHOTS_LIMIT,
-        Math.max(MIN_SNAPSHOTS_LIMIT, Number(e.target.value) || DEFAULT_MAX_SNAPSHOTS)
+        Math.max(
+          MIN_SNAPSHOTS_LIMIT,
+          Number(e.target.value) || DEFAULT_MAX_SNAPSHOTS
+        )
       );
       onChange({ ...value, maxSnapshots: newValue });
     },
@@ -112,41 +119,38 @@ export function SnapshotSettings({
 
   const handleScheduleChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      onChange({ ...value, scheduleInterval: e.target.value as SnapshotScheduleInterval });
+      onChange({
+        ...value,
+        scheduleInterval: e.target.value as SnapshotScheduleInterval,
+      });
     },
     [onChange, value]
   );
 
-  const handleAutoDeleteChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange({ ...value, autoDeleteOldest: e.target.checked });
-    },
-    [onChange, value]
-  );
+  const handleAutoDeleteChange = useCallback(() => {
+    onChange({ ...value, autoDeleteOldest: !value.autoDeleteOldest });
+  }, [onChange, value]);
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={clsx(styles.container, className)}>
       {/* Section header */}
-      <div className="flex items-center gap-2">
-        <CameraIcon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          Snapshot Settings
-        </h4>
+      <div className={styles.sectionHeader}>
+        <CameraIcon className={styles.sectionIcon} />
+        <h4 className={styles.sectionTitle}>Snapshot Settings</h4>
       </div>
 
       {/* Max snapshots input */}
-      <div className="space-y-2">
+      <div className={styles.field}>
         <label
           htmlFor={maxSnapshotsId}
-          className={cn(
-            "block text-sm font-medium",
-            "text-slate-700 dark:text-slate-300",
-            (disabled || isAutoSnapshotActive) && "opacity-50"
+          className={clsx(
+            styles.fieldLabel,
+            (disabled || isAutoSnapshotActive) && styles.disabled
           )}
         >
           Maximum Snapshots
         </label>
-        <div className="flex items-center gap-2">
+        <div className={styles.inputWrapper}>
           <input
             id={maxSnapshotsId}
             type="number"
@@ -155,68 +159,43 @@ export function SnapshotSettings({
             value={value.maxSnapshots}
             onChange={handleMaxSnapshotsChange}
             disabled={disabled || isAutoSnapshotActive}
-            className={cn(
-              "w-20 px-3 py-2 rounded-lg",
-              "bg-white dark:bg-slate-800",
-              "border border-slate-300 dark:border-slate-600",
-              "text-slate-900 dark:text-slate-100",
-              "text-sm text-center",
-              "focus:outline-none focus:ring-2 focus:ring-blue-500",
-              (disabled || isAutoSnapshotActive) && "opacity-50 cursor-not-allowed"
-            )}
+            className={styles.numberInput}
           />
-          <span className="text-sm text-slate-500 dark:text-slate-400">
-            (1-50)
-          </span>
+          <span className={styles.inputSuffix}>(1-50)</span>
         </div>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Maximum number of snapshots to store
-        </p>
+        <p className={styles.fieldHelp}>Maximum number of snapshots to store</p>
 
         {/* Warning when auto-snapshot is active */}
         {isAutoSnapshotActive && (
-          <div className={cn(
-            "flex items-start gap-2 p-2 mt-2 rounded-lg",
-            "bg-amber-50 dark:bg-amber-900/20",
-            "border border-amber-200 dark:border-amber-800"
-          )}>
-            <WarningIcon className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-700 dark:text-amber-300">
-              Cannot modify while auto-snapshot is active. Turn off the schedule first.
+          <div className={styles.warningAlert}>
+            <WarningIcon className={styles.warningIcon} />
+            <p className={styles.warningText}>
+              Cannot modify while auto-snapshot is active. Turn off the schedule
+              first.
             </p>
           </div>
         )}
       </div>
 
       {/* Schedule selector */}
-      <div className="space-y-2">
+      <div className={styles.field}>
         <label
           htmlFor={scheduleId}
-          className={cn(
-            "flex items-center gap-2 text-sm font-medium",
-            "text-slate-700 dark:text-slate-300",
-            disabled && "opacity-50"
+          className={clsx(
+            styles.fieldLabelWithIcon,
+            disabled && styles.disabled
           )}
         >
-          <ScheduleIcon className="w-4 h-4" />
+          <ScheduleIcon className={styles.fieldIcon} />
           <span>Auto Snapshot Schedule</span>
         </label>
-        <div className="relative">
+        <div className={styles.selectWrapper}>
           <select
             id={scheduleId}
             value={value.scheduleInterval}
             onChange={handleScheduleChange}
             disabled={disabled}
-            className={cn(
-              "w-full px-3 py-2 rounded-lg appearance-none",
-              "bg-white dark:bg-slate-800",
-              "border border-slate-300 dark:border-slate-600",
-              "text-slate-900 dark:text-slate-100",
-              "text-sm",
-              "focus:outline-none focus:ring-2 focus:ring-blue-500",
-              "pr-10",
-              disabled && "opacity-50 cursor-not-allowed"
-            )}
+            className={clsx(styles.select, disabled && styles.disabled)}
           >
             {SNAPSHOT_SCHEDULE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -226,9 +205,9 @@ export function SnapshotSettings({
           </select>
 
           {/* Dropdown arrow */}
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <div className={styles.dropdownArrow}>
             <svg
-              className="w-4 h-4 text-slate-500"
+              className={styles.arrowIcon}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
@@ -241,25 +220,21 @@ export function SnapshotSettings({
             </svg>
           </div>
         </div>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className={styles.fieldHelp}>
           Automatically capture snapshots at regular intervals
         </p>
       </div>
 
       {/* Auto-delete toggle */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
+      <div className={styles.toggleRow}>
+        <div className={styles.toggleContent}>
           <label
             htmlFor={autoDeleteId}
-            className={cn(
-              "text-sm font-medium",
-              "text-slate-700 dark:text-slate-300",
-              disabled && "opacity-50"
-            )}
+            className={clsx(styles.toggleLabel, disabled && styles.disabled)}
           >
             Auto-delete oldest
           </label>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className={styles.toggleDescription}>
             Delete oldest snapshot when max is reached
           </p>
         </div>
@@ -268,25 +243,17 @@ export function SnapshotSettings({
           type="button"
           role="switch"
           aria-checked={value.autoDeleteOldest}
-          onClick={() => onChange({ ...value, autoDeleteOldest: !value.autoDeleteOldest })}
+          onClick={handleAutoDeleteChange}
           disabled={disabled}
-          className={cn(
-            "relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full",
-            "p-0.5",
-            "transition-colors duration-200 ease-in-out",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-            value.autoDeleteOldest
-              ? "bg-blue-600"
-              : "bg-slate-200 dark:bg-slate-700",
-            disabled && "opacity-50 cursor-not-allowed"
+          className={clsx(
+            styles.toggle,
+            value.autoDeleteOldest && styles.toggleEnabled
           )}
         >
           <span
-            className={cn(
-              "pointer-events-none inline-block h-4 w-4 transform rounded-full",
-              "bg-white shadow-sm",
-              "transition duration-200 ease-in-out",
-              value.autoDeleteOldest ? "translate-x-4" : "translate-x-0"
+            className={clsx(
+              styles.toggleThumb,
+              value.autoDeleteOldest && styles.toggleThumbEnabled
             )}
           />
         </button>

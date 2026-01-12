@@ -1,6 +1,7 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import { clsx } from "clsx";
 import type { Trend } from "../../types";
+import styles from "./LeakWarning.module.scss";
 
 export interface LeakWarningProps {
   /** Whether a memory leak is detected */
@@ -74,30 +75,12 @@ function getSeverityLevel(probability: number): "low" | "medium" | "high" {
 }
 
 /**
- * Severity color classes
+ * Severity style mapping
  */
-const severityColors = {
-  low: {
-    bg: "bg-amber-50 dark:bg-amber-900/20",
-    border: "border-amber-200 dark:border-amber-800",
-    icon: "text-amber-500 dark:text-amber-400",
-    title: "text-amber-800 dark:text-amber-200",
-    text: "text-amber-700 dark:text-amber-300",
-  },
-  medium: {
-    bg: "bg-orange-50 dark:bg-orange-900/20",
-    border: "border-orange-200 dark:border-orange-800",
-    icon: "text-orange-500 dark:text-orange-400",
-    title: "text-orange-800 dark:text-orange-200",
-    text: "text-orange-700 dark:text-orange-300",
-  },
-  high: {
-    bg: "bg-red-50 dark:bg-red-900/20",
-    border: "border-red-200 dark:border-red-800",
-    icon: "text-red-500 dark:text-red-400",
-    title: "text-red-800 dark:text-red-200",
-    text: "text-red-700 dark:text-red-300",
-  },
+const severityStyles = {
+  low: styles.severityLow,
+  medium: styles.severityMedium,
+  high: styles.severityHigh,
 };
 
 /**
@@ -117,32 +100,22 @@ export function LeakWarning({
   if (!isLeaking) return null;
 
   const severityLevel = getSeverityLevel(probability);
-  const colors = severityColors[severityLevel];
+  const severityClass = severityStyles[severityLevel];
 
   if (compact) {
     return (
-      <div
-        className={cn(
-          "flex items-center gap-2 px-3 py-2 rounded-lg border shadow-sm",
-          colors.bg,
-          colors.border,
-          className
-        )}
-      >
-        <WarningIcon className={cn("w-4 h-4 flex-shrink-0", colors.icon)} />
-        <span className={cn("text-sm font-medium", colors.title)}>
+      <div className={clsx(styles.compact, severityClass, className)}>
+        <WarningIcon className={styles.compactIcon} />
+        <span className={styles.compactText}>
           Memory leak detected ({probability.toFixed(0)}% probability)
         </span>
         {dismissible && onDismiss && (
           <button
             onClick={onDismiss}
-            className={cn(
-              "ml-auto p-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10",
-              colors.icon
-            )}
+            className={styles.compactDismiss}
             aria-label="Dismiss warning"
           >
-            <CloseIcon className="w-3.5 h-3.5" />
+            <CloseIcon className={styles.compactDismissIcon} />
           </button>
         )}
       </div>
@@ -151,49 +124,30 @@ export function LeakWarning({
 
   return (
     <div
-      className={cn(
-        "rounded-xl border overflow-hidden shadow-sm",
-        colors.bg,
-        colors.border,
-        className
-      )}
+      className={clsx(styles.container, severityClass, className)}
       role="alert"
     >
       {/* Header */}
-      <div className="flex items-start gap-3 p-4">
-        <div
-          className={cn(
-            "p-2 rounded-lg flex-shrink-0",
-            severityLevel === "high"
-              ? "bg-red-100 dark:bg-red-900/40"
-              : severityLevel === "medium"
-              ? "bg-orange-100 dark:bg-orange-900/40"
-              : "bg-amber-100 dark:bg-amber-900/40"
-          )}
-        >
-          <WarningIcon className={cn("w-5 h-5", colors.icon)} />
+      <div className={styles.header}>
+        <div className={styles.iconWrapper}>
+          <WarningIcon className={styles.headerIcon} />
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className={cn("font-semibold", colors.title)}>
-              Potential Memory Leak Detected
-            </h4>
+        <div className={styles.content}>
+          <div className={styles.titleRow}>
+            <h4 className={styles.title}>Potential Memory Leak Detected</h4>
             {dismissible && onDismiss && (
               <button
                 onClick={onDismiss}
-                className={cn(
-                  "p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors",
-                  colors.icon
-                )}
+                className={styles.dismissButton}
                 aria-label="Dismiss warning"
               >
-                <CloseIcon className="w-4 h-4" />
+                <CloseIcon className={styles.dismissIcon} />
               </button>
             )}
           </div>
 
-          <p className={cn("text-sm mt-1", colors.text)}>
+          <p className={styles.description}>
             Memory usage is consistently {trend} with a{" "}
             <strong>{probability.toFixed(0)}%</strong> probability of a memory
             leak.
@@ -203,55 +157,21 @@ export function LeakWarning({
 
       {/* Recommendation */}
       {recommendation && (
-        <div
-          className={cn(
-            "px-4 py-3 border-t",
-            colors.border,
-            "bg-white/50 dark:bg-black/20"
-          )}
-        >
-          <p className={cn("text-sm", colors.text)}>
+        <div className={styles.recommendation}>
+          <p className={styles.recommendationText}>
             <strong>Recommendation:</strong> {recommendation}
           </p>
         </div>
       )}
 
       {/* Action hints */}
-      <div
-        className={cn(
-          "px-4 py-3 border-t",
-          colors.border,
-          "bg-white/30 dark:bg-black/10"
-        )}
-      >
-        <div className="flex flex-wrap gap-2">
-          <span
-            className={cn(
-              "inline-flex items-center px-2 py-1 rounded text-xs font-medium",
-              "bg-white dark:bg-slate-800",
-              colors.text
-            )}
-          >
+      <div className={styles.hints}>
+        <div className={styles.hintsList}>
+          <span className={styles.hint}>
             Check for unsubscribed subscriptions
           </span>
-          <span
-            className={cn(
-              "inline-flex items-center px-2 py-1 rounded text-xs font-medium",
-              "bg-white dark:bg-slate-800",
-              colors.text
-            )}
-          >
-            Review event listeners
-          </span>
-          <span
-            className={cn(
-              "inline-flex items-center px-2 py-1 rounded text-xs font-medium",
-              "bg-white dark:bg-slate-800",
-              colors.text
-            )}
-          >
-            Check for stale closures
-          </span>
+          <span className={styles.hint}>Review event listeners</span>
+          <span className={styles.hint}>Check for stale closures</span>
         </div>
       </div>
     </div>

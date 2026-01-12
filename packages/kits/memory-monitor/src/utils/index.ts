@@ -1,4 +1,3 @@
-export { cn } from "./cn";
 export {
   isBrowser,
   safeGetItem,

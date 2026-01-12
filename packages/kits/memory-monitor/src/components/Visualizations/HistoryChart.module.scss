@@ -1,0 +1,20 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// HistoryChart Component Styles
+// ============================================================================
+
+.container {
+  width: 100%;
+}
+
+.emptyState {
+  @include flex-center;
+  @include text-sm;
+  color: $slate-400;
+
+  :global(.dark) & {
+    color: $slate-500;
+  }
+}

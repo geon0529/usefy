@@ -1,7 +1,8 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { formatBytes, formatTime } from "../../constants";
 import type { PanelSnapshot } from "../../types";
+import styles from "./SnapshotCard.module.scss";
 
 export interface SnapshotCardProps {
   /** Snapshot data */
@@ -43,23 +44,11 @@ function TrashIcon({ className }: { className?: string }) {
 }
 
 /**
- * Role badge styles
+ * Role badge label mapping
  */
-const ROLE_STYLES = {
-  baseline: {
-    bg: "bg-amber-100 dark:bg-amber-900/30",
-    text: "text-amber-700 dark:text-amber-300",
-    border: "border-amber-300 dark:border-amber-700",
-    ring: "ring-amber-200 dark:ring-amber-800",
-    label: "Baseline",
-  },
-  current: {
-    bg: "bg-emerald-100 dark:bg-emerald-900/30",
-    text: "text-emerald-700 dark:text-emerald-300",
-    border: "border-emerald-300 dark:border-emerald-700",
-    ring: "ring-emerald-200 dark:ring-emerald-800",
-    label: "Current",
-  },
+const ROLE_LABELS = {
+  baseline: "Baseline",
+  current: "Current",
 } as const;
 
 /**
@@ -75,19 +64,56 @@ export function SnapshotCard({
   className,
 }: SnapshotCardProps) {
   const usagePercentage = (snapshot.heapUsed / snapshot.heapLimit) * 100;
-  const roleStyle = selectionRole ? ROLE_STYLES[selectionRole] : null;
+
+  /**
+   * Get card style class based on selection role or selected state
+   */
+  const getCardStyleClass = (isCompact: boolean) => {
+    if (selectionRole === "baseline") {
+      return isCompact ? styles.compactCardBaseline : styles.cardBaseline;
+    }
+    if (selectionRole === "current") {
+      return isCompact ? styles.compactCardCurrent : styles.cardCurrent;
+    }
+    if (selected) {
+      return isCompact ? styles.compactCardSelected : styles.cardSelected;
+    }
+    return isCompact ? styles.compactCardDefault : styles.cardDefault;
+  };
+
+  /**
+   * Get role badge style class
+   */
+  const getRoleBadgeClass = (isCompact: boolean) => {
+    const baseClass = isCompact ? styles.roleBadgeCompact : styles.roleBadge;
+    if (selectionRole === "baseline") {
+      return clsx(baseClass, styles.baselineBadge);
+    }
+    if (selectionRole === "current") {
+      return clsx(baseClass, styles.currentBadge);
+    }
+    return baseClass;
+  };
+
+  /**
+   * Get usage bar fill class based on percentage
+   */
+  const getUsageBarClass = () => {
+    if (usagePercentage >= 90) {
+      return styles.usageBarCritical;
+    }
+    if (usagePercentage >= 70) {
+      return styles.usageBarWarning;
+    }
+    return styles.usageBarNormal;
+  };
 
   if (compact) {
     return (
       <div
-        className={cn(
-          "flex items-center justify-between p-2.5 rounded-lg cursor-pointer",
-          "border transition-all duration-200",
-          roleStyle
-            ? cn(roleStyle.bg, roleStyle.border, "ring-1", roleStyle.ring)
-            : selected
-            ? "bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 ring-1 ring-blue-200 dark:ring-blue-800"
-            : "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm",
+        className={clsx(
+          styles.compactCard,
+          getCardStyleClass(true),
           className
         )}
         onClick={onClick}
@@ -95,30 +121,26 @@ export function SnapshotCard({
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && onClick?.()}
       >
-        <div className="flex items-center gap-2 min-w-0">
-          {roleStyle && (
-            <span className={cn(
-              "px-1.5 py-0.5 text-[10px] font-bold rounded",
-              roleStyle.bg,
-              roleStyle.text
-            )}>
-              {roleStyle.label}
+        <div className={styles.compactContent}>
+          {selectionRole && (
+            <span className={getRoleBadgeClass(true)}>
+              {ROLE_LABELS[selectionRole]}
             </span>
           )}
-          <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+          <span className={styles.compactLabel}>
             {snapshot.label}
           </span>
           {snapshot.isAuto && (
-            <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+            <span className={styles.autoBadge}>
               Auto
             </span>
           )}
-          <span className="text-xs text-slate-500">
+          <span className={styles.compactTime}>
             {formatTime(snapshot.timestamp)}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-600 dark:text-slate-400">
+        <div className={styles.compactActions}>
+          <span className={styles.compactHeap}>
             {formatBytes(snapshot.heapUsed)}
           </span>
           {onDelete && (
@@ -127,10 +149,10 @@ export function SnapshotCard({
                 e.stopPropagation();
                 onDelete();
               }}
-              className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-slate-400 hover:text-red-500 transition-colors"
+              className={styles.deleteButton}
               aria-label="Delete snapshot"
             >
-              <TrashIcon className="w-3.5 h-3.5" />
+              <TrashIcon className={styles.iconSmall} />
             </button>
           )}
         </div>
@@ -140,13 +162,9 @@ export function SnapshotCard({
 
   return (
     <div
-      className={cn(
-        "rounded-xl border overflow-hidden cursor-pointer transition-all duration-200",
-        roleStyle
-          ? cn(roleStyle.bg, roleStyle.border, "ring-1", roleStyle.ring, "shadow-sm")
-          : selected
-          ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800 ring-1 ring-blue-200 dark:ring-blue-800 shadow-sm"
-          : "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md",
+      className={clsx(
+        styles.card,
+        getCardStyleClass(false),
         className
       )}
       onClick={onClick}
@@ -155,28 +173,24 @@ export function SnapshotCard({
       onKeyDown={(e) => e.key === "Enter" && onClick?.()}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-700/50">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            {roleStyle && (
-              <span className={cn(
-                "px-2 py-0.5 text-[10px] font-bold rounded",
-                roleStyle.bg,
-                roleStyle.text
-              )}>
-                {roleStyle.label}
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <div className={styles.headerTitle}>
+            {selectionRole && (
+              <span className={getRoleBadgeClass(false)}>
+                {ROLE_LABELS[selectionRole]}
               </span>
             )}
-            <h4 className="font-semibold text-slate-800 dark:text-slate-100 truncate">
+            <h4 className={styles.title}>
               {snapshot.label}
             </h4>
             {snapshot.isAuto && (
-              <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+              <span className={styles.autoBadge}>
                 Auto
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className={styles.timestamp}>
             {formatTime(snapshot.timestamp)}
           </p>
         </div>
@@ -186,56 +200,49 @@ export function SnapshotCard({
               e.stopPropagation();
               onDelete();
             }}
-            className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-slate-400 hover:text-red-500 transition-colors"
+            className={styles.deleteButtonLarge}
             aria-label="Delete snapshot"
           >
-            <TrashIcon className="w-4 h-4" />
+            <TrashIcon className={styles.iconMedium} />
           </button>
         )}
       </div>
 
       {/* Memory stats */}
-      <div className="p-3 space-y-3">
+      <div className={styles.body}>
         {/* Usage bar */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">
+        <div className={styles.usageSection}>
+          <div className={styles.usageHeader}>
+            <span className={styles.usageLabel}>
               Heap Usage
             </span>
-            <span className="font-semibold text-slate-700 dark:text-slate-200">
+            <span className={styles.usageValue}>
               {usagePercentage.toFixed(1)}%
             </span>
           </div>
-          <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div className={styles.usageBarTrack}>
             <div
-              className={cn(
-                "h-full rounded-full transition-all duration-500",
-                usagePercentage >= 90
-                  ? "bg-red-500"
-                  : usagePercentage >= 70
-                  ? "bg-amber-500"
-                  : "bg-green-500"
-              )}
+              className={clsx(styles.usageBarFill, getUsageBarClass())}
               style={{ width: `${Math.min(usagePercentage, 100)}%` }}
             />
           </div>
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg">
-            <span className="text-slate-500 dark:text-slate-400 block mb-0.5">
+        <div className={styles.statsGrid}>
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>
               Used
             </span>
-            <p className="font-mono font-semibold text-slate-700 dark:text-slate-200">
+            <p className={styles.statValue}>
               {formatBytes(snapshot.heapUsed)}
             </p>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg">
-            <span className="text-slate-500 dark:text-slate-400 block mb-0.5">
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>
               Total
             </span>
-            <p className="font-mono font-semibold text-slate-700 dark:text-slate-200">
+            <p className={styles.statValue}>
               {formatBytes(snapshot.heapTotal)}
             </p>
           </div>
@@ -243,7 +250,7 @@ export function SnapshotCard({
 
         {/* Notes */}
         {snapshot.notes && (
-          <p className="text-xs text-slate-600 dark:text-slate-400 italic border-t border-slate-100 dark:border-slate-700/50 pt-2 mt-1">
+          <p className={styles.notes}>
             {snapshot.notes}
           </p>
         )}

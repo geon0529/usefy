@@ -1,0 +1,246 @@
+@use "./styles/variables" as *;
+@use "./styles/mixins" as *;
+
+// ============================================================================
+// Tab Content Container
+// ============================================================================
+
+.tabContent {
+  flex: 1;
+  padding: $spacing-4;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.4);
+    border-radius: 3px;
+
+    &:hover {
+      background-color: rgba(148, 163, 184, 0.6);
+    }
+  }
+}
+
+// ============================================================================
+// Common Section Styles
+// ============================================================================
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.sectionSmall {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.sectionLarge {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+// ============================================================================
+// Overview Tab
+// ============================================================================
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ============================================================================
+// History Tab
+// ============================================================================
+
+.statsContainer {
+  padding: $spacing-3;
+  border-radius: $radius-lg;
+  background-color: $slate-50;
+  border: 1px solid $slate-200;
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    border-color: $slate-700;
+  }
+}
+
+.statsTitle {
+  font-size: $text-xs;
+  color: $slate-500;
+  margin-bottom: $spacing-2;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-2;
+  font-size: $text-sm;
+}
+
+.statLabel {
+  color: $slate-500;
+}
+
+.statValue {
+  font-family: $font-mono;
+  color: $slate-900;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+// ============================================================================
+// Snapshots Tab
+// ============================================================================
+
+.snapshotActions {
+  display: flex;
+  gap: $spacing-2;
+}
+
+.takeSnapshotButton {
+  @include reset-button;
+  flex: 1;
+  padding: $spacing-2 $spacing-4;
+  font-size: $text-sm;
+  font-weight: 500;
+  border-radius: $radius-lg;
+  background-color: $blue-500;
+  color: white;
+  @include transition-colors;
+
+  &:hover:not(:disabled) {
+    background-color: $blue-600;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.deleteAllButton {
+  @include reset-button;
+  padding: $spacing-2 $spacing-4;
+  font-size: $text-sm;
+  font-weight: 500;
+  border-radius: $radius-lg;
+  background-color: $red-500;
+  color: white;
+  @include transition-colors;
+
+  &:hover:not(:disabled) {
+    background-color: $red-600;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.capacityIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: $text-xs;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.autoDeleteWarning {
+  color: $amber-500;
+}
+
+.helpText {
+  font-size: $text-xs;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Settings Tab
+// ============================================================================
+
+.settingsTitle {
+  font-size: $text-sm;
+  font-weight: 500;
+  color: $slate-900;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.settingsDivider {
+  border-top: 1px solid $slate-200;
+  padding-top: $spacing-4;
+
+  :global(.dark) & {
+    border-color: $slate-700;
+  }
+}
+
+.themeButtons {
+  display: flex;
+  gap: $spacing-2;
+}
+
+.themeButton {
+  @include reset-button;
+  flex: 1;
+  padding: $spacing-2 $spacing-3;
+  font-size: $text-sm;
+  font-weight: 500;
+  border-radius: $radius-lg;
+  text-transform: capitalize;
+  @include transition-colors;
+}
+
+.themeButtonActive {
+  background-color: $blue-500;
+  color: white;
+}
+
+.themeButtonInactive {
+  background-color: $slate-100;
+  color: $slate-700;
+
+  &:hover {
+    background-color: $slate-200;
+  }
+
+  :global(.dark) & {
+    background-color: $slate-700;
+    color: $slate-300;
+
+    &:hover {
+      background-color: $slate-600;
+    }
+  }
+}

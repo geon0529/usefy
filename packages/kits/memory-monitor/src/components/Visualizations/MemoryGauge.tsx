@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { SEVERITY_COLORS, formatPercentage } from "../../constants";
 import type { Severity } from "../../types";
+import styles from "./MemoryGauge.module.scss";
 
 export interface MemoryGaugeProps {
   /** Usage percentage (0-100) */
@@ -97,14 +98,14 @@ export function MemoryGauge({
   );
 
   return (
-    <div className={cn("flex flex-col items-center", className)}>
+    <div className={clsx(styles.container, className)}>
       {/* SVG Gauge */}
-      <div className="relative">
+      <div className={styles.svgWrapper}>
         <svg
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          className="overflow-visible"
+          className={styles.svg}
         >
           {/* Background arc */}
           <path
@@ -113,7 +114,7 @@ export function MemoryGauge({
             stroke="currentColor"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
-            className="text-slate-200 dark:text-slate-700"
+            className={styles.backgroundArc}
           />
 
           {/* Progress arc */}
@@ -132,23 +133,18 @@ export function MemoryGauge({
         </svg>
 
         {/* Center content - positioned over the SVG */}
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-end pb-2"
-        >
+        <div className={styles.centerContent}>
           <div
-            className={cn(
-              "text-4xl font-extrabold tracking-tight",
-              severity === "critical"
-                ? "text-red-500"
-                : severity === "warning"
-                ? "text-amber-500"
-                : "text-slate-700 dark:text-slate-200"
+            className={clsx(
+              styles.percentageValue,
+              severity === "critical" && styles.critical,
+              severity === "warning" && styles.warning
             )}
           >
             {formatPercentage(usagePercentage)}
           </div>
           {heapUsed && heapLimit && (
-            <div className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">
+            <div className={styles.heapInfo}>
               {heapUsed} / {heapLimit}
             </div>
           )}
@@ -157,12 +153,12 @@ export function MemoryGauge({
 
       {/* Threshold markers */}
       <div
-        className="flex justify-between text-[10px] font-medium text-slate-400 mt-2"
+        className={styles.thresholdMarkers}
         style={{ width: width - 20 }}
       >
         <span>0%</span>
-        <span className="text-amber-500">{warningThreshold}%</span>
-        <span className="text-red-500">{criticalThreshold}%</span>
+        <span className={styles.warningMarker}>{warningThreshold}%</span>
+        <span className={styles.criticalMarker}>{criticalThreshold}%</span>
         <span>100%</span>
       </div>
     </div>

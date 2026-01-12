@@ -1,0 +1,286 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// SnapshotCompare Component Styles
+// ============================================================================
+
+// Icon size
+.icon {
+  width: 0.75rem; // 12px (w-3)
+  height: 0.75rem;
+  flex-shrink: 0;
+}
+
+// ============================================================================
+// Container
+// ============================================================================
+
+.container {
+  border-radius: $radius-lg;
+  border: 1px solid $slate-200;
+  overflow: hidden;
+
+  :global(.dark) & {
+    border-color: $slate-700;
+  }
+}
+
+// ============================================================================
+// Header
+// ============================================================================
+
+.header {
+  background-color: $slate-50;
+  padding: $spacing-3 $spacing-4;
+  border-bottom: 1px solid $slate-200;
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    border-bottom-color: $slate-700;
+  }
+}
+
+.headerTitle {
+  font-weight: $font-weight-medium;
+  color: $slate-900;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.headerSubtitle {
+  @include text-xs;
+  color: $slate-500;
+  margin-top: $spacing-1;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Summary Section
+// ============================================================================
+
+.summary {
+  padding: $spacing-3 $spacing-4;
+  background-color: white;
+  border-bottom: 1px solid $slate-200;
+
+  :global(.dark) & {
+    background-color: $slate-900;
+    border-bottom-color: $slate-700;
+  }
+}
+
+.summaryContent {
+  @include flex-between;
+}
+
+.summaryLabel {
+  @include text-sm;
+  color: $slate-600;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+// ============================================================================
+// Comparison Table
+// ============================================================================
+
+.table {
+  padding: $spacing-2 $spacing-4;
+  background-color: white;
+
+  :global(.dark) & {
+    background-color: $slate-900;
+  }
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-2;
+  @include text-xs;
+  color: $slate-500;
+  padding-bottom: $spacing-2;
+  border-bottom: 1px solid $slate-200;
+  margin-bottom: $spacing-2;
+
+  :global(.dark) & {
+    color: $slate-400;
+    border-bottom-color: $slate-700;
+  }
+}
+
+.tableHeaderCenter {
+  text-align: center;
+}
+
+.tableHeaderRight {
+  text-align: right;
+}
+
+// ============================================================================
+// Compare Row
+// ============================================================================
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-2;
+  align-items: center;
+  padding: $spacing-2 0;
+  border-bottom: 1px solid $slate-100;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  :global(.dark) & {
+    border-bottom-color: $slate-700;
+  }
+}
+
+.rowLabel {
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  color: $slate-700;
+
+  :global(.dark) & {
+    color: $slate-300;
+  }
+}
+
+.rowBaseline {
+  @include text-sm;
+  @include font-mono;
+  color: $slate-600;
+  text-align: center;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.rowCurrent {
+  @include text-sm;
+  @include font-mono;
+  color: $slate-900;
+  text-align: center;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}
+
+.rowChange {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ============================================================================
+// Diff Badge
+// ============================================================================
+
+.diffBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-0-5 $spacing-2;
+  border-radius: $radius-full;
+  @include text-xs;
+  font-weight: $font-weight-medium;
+}
+
+.diffBadgeIncrease {
+  background-color: $red-100;
+  color: $red-700;
+
+  :global(.dark) & {
+    background-color: rgba($red-900, 0.3);
+    color: $red-300;
+  }
+}
+
+.diffBadgeDecrease {
+  background-color: $green-100;
+  color: $green-700;
+
+  :global(.dark) & {
+    background-color: rgba($green-900, 0.3);
+    color: $green-300;
+  }
+}
+
+.diffNoChange {
+  @include text-xs;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.diffNA {
+  @include text-xs;
+  color: $slate-400;
+  font-style: italic;
+
+  :global(.dark) & {
+    color: $slate-500;
+  }
+}
+
+// ============================================================================
+// Analysis Section
+// ============================================================================
+
+.analysis {
+  padding: $spacing-3 $spacing-4;
+  border-top: 1px solid;
+}
+
+.analysisIncrease {
+  background-color: $red-50;
+  border-top-color: $red-200;
+
+  :global(.dark) & {
+    background-color: rgba($red-900, 0.1);
+    border-top-color: $red-900;
+  }
+}
+
+.analysisDecrease {
+  background-color: $green-50;
+  border-top-color: $green-200;
+
+  :global(.dark) & {
+    background-color: rgba($green-900, 0.1);
+    border-top-color: $green-900;
+  }
+}
+
+.analysisText {
+  @include text-xs;
+}
+
+.analysisTextIncrease {
+  color: $red-700;
+
+  :global(.dark) & {
+    color: $red-300;
+  }
+}
+
+.analysisTextDecrease {
+  color: $green-700;
+
+  :global(.dark) & {
+    color: $green-300;
+  }
+}

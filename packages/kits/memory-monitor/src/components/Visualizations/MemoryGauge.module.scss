@@ -1,0 +1,82 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// MemoryGauge Component Styles
+// ============================================================================
+
+.container {
+  @include flex-col;
+  align-items: center;
+}
+
+.svgWrapper {
+  position: relative;
+}
+
+.svg {
+  overflow: visible;
+}
+
+.backgroundArc {
+  color: $slate-200;
+
+  :global(.dark) & {
+    color: $slate-700;
+  }
+}
+
+.centerContent {
+  @include absolute-fill;
+  @include flex-col;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: $spacing-2;
+}
+
+.percentageValue {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-extrabold;
+  letter-spacing: $letter-spacing-tight;
+  color: $slate-700;
+
+  :global(.dark) & {
+    color: $slate-200;
+  }
+
+  &.warning {
+    color: $amber-500;
+  }
+
+  &.critical {
+    color: $red-500;
+  }
+}
+
+.heapInfo {
+  @include text-xs;
+  font-weight: $font-weight-medium;
+  color: $slate-400;
+  margin-top: $spacing-0-5;
+
+  :global(.dark) & {
+    color: $slate-500;
+  }
+}
+
+.thresholdMarkers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: $font-weight-medium;
+  color: $slate-400;
+  margin-top: $spacing-2;
+}
+
+.warningMarker {
+  color: $amber-500;
+}
+
+.criticalMarker {
+  color: $red-500;
+}

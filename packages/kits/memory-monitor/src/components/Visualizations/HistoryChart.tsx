@@ -9,9 +9,10 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { CHART_COLORS, SEVERITY_COLORS, formatTime } from "../../constants";
 import type { MemoryInfo } from "../../types";
+import styles from "./HistoryChart.module.scss";
 
 export interface HistoryChartProps {
   /** Memory history data */
@@ -84,11 +85,7 @@ export function HistoryChart({
   if (chartData.length === 0) {
     return (
       <div
-        className={cn(
-          "flex items-center justify-center",
-          "text-sm text-slate-400 dark:text-slate-500",
-          className
-        )}
+        className={clsx(styles.emptyState, className)}
         style={{ height }}
       >
         Collecting data...
@@ -97,7 +94,7 @@ export function HistoryChart({
   }
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={clsx(styles.container, className)}>
       <ResponsiveContainer width="100%" height={height}>
         <AreaChart
           data={chartData}

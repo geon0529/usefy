@@ -1,11 +1,12 @@
 import React, { forwardRef } from "react";
-import { cn } from "../../utils/cn";
+import { clsx } from "clsx";
 import type { TriggerPosition, Severity } from "../../types";
 import {
   DEFAULT_TRIGGER_POSITION,
   Z_INDEX,
   SEVERITY_COLORS,
 } from "../../constants";
+import styles from "./PanelTrigger.module.scss";
 
 export interface PanelTriggerProps {
   /** Click handler */
@@ -90,47 +91,26 @@ export const PanelTrigger = forwardRef<HTMLButtonElement, PanelTriggerProps>(
     if (position.left !== undefined) positionStyle.left = position.left;
     if (position.right !== undefined) positionStyle.right = position.right;
 
+    // Add severity-based glow
+    if (severity !== "normal") {
+      positionStyle.boxShadow = `0 0 20px rgba(${severityColor.accentRgb}, 0.5), 0 10px 15px -3px rgba(0, 0, 0, 0.1)`;
+    }
+
     return (
       <button
         ref={ref}
         type="button"
         onClick={onClick}
         aria-label={ariaLabel}
-        className={cn(
-          "fixed",
-          "w-12 h-12 rounded-2xl",
-          "p-0 border-0",
-          "shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30",
-          "transition-all duration-300 ease-out transform-gpu will-change-transform",
-          "hover:scale-110 active:scale-95",
-          "focus:outline-none focus:ring-2 focus:ring-offset-2",
-          // Default colors
-          "bg-gradient-to-br from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 text-white",
-          "focus:ring-indigo-500",
-          // Severity-based pulse animation for warning/critical
-          severity !== "normal" && "animate-pulse",
+        className={clsx(
+          styles.trigger,
+          severity !== "normal" && styles.warning,
           isDark && "dark",
           className
         )}
-        style={{
-          ...positionStyle,
-          // Ensure transform origin is center for proper scaling
-          transformOrigin: "center center",
-          // Add severity-based glow
-          boxShadow:
-            severity !== "normal"
-              ? `0 0 20px rgba(${severityColor.accentRgb}, 0.5), 0 10px 15px -3px rgba(0, 0, 0, 0.1)`
-              : undefined,
-        }}
+        style={positionStyle}
       >
-        {children || (
-          <MemoryIcon
-            className="w-6 h-6 absolute inset-0 m-auto"
-            style={{
-              display: "block",
-            }}
-          />
-        )}
+        {children || <MemoryIcon className={styles.icon} />}
       </button>
     );
   }

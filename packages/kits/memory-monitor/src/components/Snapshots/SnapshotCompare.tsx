@@ -1,7 +1,8 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { formatBytes } from "../../constants";
 import type { PanelSnapshot } from "../../types";
+import styles from "./SnapshotCompare.module.scss";
 
 export interface SnapshotCompareProps {
   /** First snapshot (baseline) */
@@ -100,7 +101,7 @@ function DiffBadge({
   // Handle invalid/unavailable data
   if (!isValid) {
     return (
-      <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+      <span className={styles.diffNA}>
         N/A
       </span>
     );
@@ -108,7 +109,7 @@ function DiffBadge({
 
   if (direction === "same") {
     return (
-      <span className="text-xs text-slate-500 dark:text-slate-400">
+      <span className={styles.diffNoChange}>
         No change
       </span>
     );
@@ -123,14 +124,12 @@ function DiffBadge({
 
   return (
     <div
-      className={cn(
-        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium",
-        isIncrease
-          ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
-          : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+      className={clsx(
+        styles.diffBadge,
+        isIncrease ? styles.diffBadgeIncrease : styles.diffBadgeDecrease
       )}
     >
-      <Icon className="w-3 h-3 flex-shrink-0" />
+      <Icon className={styles.icon} />
       <span>
         {isIncrease ? "+" : "-"}
         {formattedValue} ({formattedPercentage}%)
@@ -171,17 +170,17 @@ function CompareRow({
   const { diff, percentage, direction, isValid } = calculateDiff(baseline, current);
 
   return (
-    <div className="grid grid-cols-4 gap-2 items-center py-2 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
-      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+    <div className={styles.row}>
+      <span className={styles.rowLabel}>
         {label}
       </span>
-      <span className="text-sm font-mono text-slate-600 dark:text-slate-400 text-center">
+      <span className={styles.rowBaseline}>
         {safeFormat(baseline, format)}
       </span>
-      <span className="text-sm font-mono text-slate-900 dark:text-slate-100 text-center">
+      <span className={styles.rowCurrent}>
         {safeFormat(current, format)}
       </span>
-      <div className="flex justify-end">
+      <div className={styles.rowChange}>
         <DiffBadge
           diff={diff}
           percentage={percentage}
@@ -207,26 +206,21 @@ export function SnapshotCompare({
   const timeDiffSeconds = Math.round(timeDiff / 1000);
 
   return (
-    <div
-      className={cn(
-        "rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden",
-        className
-      )}
-    >
+    <div className={clsx(styles.container, className)}>
       {/* Header */}
-      <div className="bg-slate-50 dark:bg-slate-800 px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-        <h4 className="font-medium text-slate-900 dark:text-slate-100">
+      <div className={styles.header}>
+        <h4 className={styles.headerTitle}>
           Snapshot Comparison
         </h4>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        <p className={styles.headerSubtitle}>
           {baseline.label} → {current.label} ({timeDiffSeconds}s apart)
         </p>
       </div>
 
       {/* Summary */}
-      <div className="px-4 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-600 dark:text-slate-400">
+      <div className={styles.summary}>
+        <div className={styles.summaryContent}>
+          <span className={styles.summaryLabel}>
             Overall Memory Change
           </span>
           <DiffBadge
@@ -239,13 +233,13 @@ export function SnapshotCompare({
       </div>
 
       {/* Comparison table */}
-      <div className="px-4 py-2 bg-white dark:bg-slate-900">
+      <div className={styles.table}>
         {/* Column headers */}
-        <div className="grid grid-cols-4 gap-2 text-xs text-slate-500 dark:text-slate-400 pb-2 border-b border-slate-200 dark:border-slate-700 mb-2">
+        <div className={styles.tableHeader}>
           <span>Metric</span>
-          <span className="text-center">Baseline</span>
-          <span className="text-center">Current</span>
-          <span className="text-right">Change</span>
+          <span className={styles.tableHeaderCenter}>Baseline</span>
+          <span className={styles.tableHeaderCenter}>Current</span>
+          <span className={styles.tableHeaderRight}>Change</span>
         </div>
 
         {/* Rows */}
@@ -286,19 +280,19 @@ export function SnapshotCompare({
       {/* Analysis */}
       {heapDiff.isValid && heapDiff.direction !== "same" && (
         <div
-          className={cn(
-            "px-4 py-3 border-t",
+          className={clsx(
+            styles.analysis,
             heapDiff.direction === "up"
-              ? "bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900"
-              : "bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900"
+              ? styles.analysisIncrease
+              : styles.analysisDecrease
           )}
         >
           <p
-            className={cn(
-              "text-xs",
+            className={clsx(
+              styles.analysisText,
               heapDiff.direction === "up"
-                ? "text-red-700 dark:text-red-300"
-                : "text-green-700 dark:text-green-300"
+                ? styles.analysisTextIncrease
+                : styles.analysisTextDecrease
             )}
           >
             {heapDiff.direction === "up" ? (

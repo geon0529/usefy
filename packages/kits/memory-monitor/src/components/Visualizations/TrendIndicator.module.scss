@@ -1,0 +1,152 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// TrendIndicator Component Styles
+// ============================================================================
+
+// Compact mode
+.compactContainer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+}
+
+.compactIcon {
+  width: $spacing-4;
+  height: $spacing-4;
+}
+
+.compactLabel {
+  @include text-sm;
+  font-weight: $font-weight-medium;
+
+  &.increasing {
+    color: $red-500;
+  }
+
+  &.decreasing {
+    color: $green-500;
+  }
+
+  &.stable {
+    color: $slate-500;
+
+    :global(.dark) & {
+      color: $slate-400;
+    }
+  }
+}
+
+// Full mode container
+.container {
+  padding: $spacing-3;
+  border-radius: $radius-lg;
+  background-color: $slate-50;
+  border: 1px solid $slate-200;
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    border-color: $slate-700;
+  }
+}
+
+.header {
+  @include flex-between;
+}
+
+.trendInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.iconWrapper {
+  padding: $spacing-1-5;
+  border-radius: $radius-lg;
+}
+
+.icon {
+  width: $spacing-5;
+  height: $spacing-5;
+}
+
+.trendTextContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.trendLabel {
+  @include text-xs;
+  color: $slate-500;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.trendValue {
+  @include text-sm;
+  font-weight: $font-weight-semibold;
+
+  &.increasing {
+    color: $red-500;
+  }
+
+  &.decreasing {
+    color: $green-500;
+  }
+
+  &.stable {
+    color: $slate-500;
+
+    :global(.dark) & {
+      color: $slate-400;
+    }
+  }
+}
+
+// Leak probability badge
+.leakBadge {
+  padding: $spacing-1 $spacing-2;
+  border-radius: $radius-full;
+  @include text-xs;
+  font-weight: $font-weight-medium;
+
+  &.high {
+    background-color: $red-100;
+    color: $red-600;
+
+    :global(.dark) & {
+      background-color: rgba($red-900, 0.3);
+      color: $red-400;
+    }
+  }
+
+  &.medium {
+    background-color: $amber-100;
+    color: $amber-600;
+
+    :global(.dark) & {
+      background-color: rgba($amber-900, 0.3);
+      color: $amber-400;
+    }
+  }
+
+  &.low {
+    background-color: $slate-100;
+    color: $slate-600;
+
+    :global(.dark) & {
+      background-color: $slate-700;
+      color: $slate-400;
+    }
+  }
+}
+
+// Sample count footer
+.sampleCount {
+  @include text-xs;
+  color: $slate-400;
+  margin-top: $spacing-2;
+}

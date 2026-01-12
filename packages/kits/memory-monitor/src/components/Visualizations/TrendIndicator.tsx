@@ -1,7 +1,8 @@
 import React from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { TREND_COLORS } from "../../constants";
 import type { Trend } from "../../types";
+import styles from "./TrendIndicator.module.scss";
 
 export interface TrendIndicatorProps {
   /** Current trend direction */
@@ -88,13 +89,13 @@ const trendLabels: Record<Trend, string> = {
 };
 
 /**
- * Trend text colors
+ * Get leak probability badge level
  */
-const trendTextColors: Record<Trend, string> = {
-  increasing: "text-red-500",
-  decreasing: "text-green-500",
-  stable: "text-slate-500 dark:text-slate-400",
-};
+function getLeakLevel(probability: number): 'high' | 'medium' | 'low' {
+  if (probability >= 70) return 'high';
+  if (probability >= 40) return 'medium';
+  return 'low';
+}
 
 /**
  * Trend indicator badge component
@@ -109,16 +110,12 @@ export function TrendIndicator({
   const Icon = TrendIcons[trend];
   const label = trendLabels[trend];
   const color = TREND_COLORS[trend];
-  const textColor = trendTextColors[trend];
 
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-1", className)}>
-        <Icon
-          className="w-4 h-4"
-          style={{ color }}
-        />
-        <span className={cn("text-sm font-medium", textColor)}>
+      <div className={clsx(styles.compactContainer, className)}>
+        <Icon className={styles.compactIcon} style={{ color }} />
+        <span className={clsx(styles.compactLabel, styles[trend])}>
           {label}
         </span>
       </div>
@@ -126,30 +123,18 @@ export function TrendIndicator({
   }
 
   return (
-    <div
-      className={cn(
-        "p-3 rounded-lg",
-        "bg-slate-50 dark:bg-slate-800",
-        "border border-slate-200 dark:border-slate-700",
-        className
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+    <div className={clsx(styles.container, className)}>
+      <div className={styles.header}>
+        <div className={styles.trendInfo}>
           <div
-            className="p-1.5 rounded-lg"
+            className={styles.iconWrapper}
             style={{ backgroundColor: `${color}20` }}
           >
-            <Icon
-              className="w-5 h-5"
-              style={{ color }}
-            />
+            <Icon className={styles.icon} style={{ color }} />
           </div>
-          <div>
-            <div className="text-xs text-slate-500 dark:text-slate-400">
-              Memory Trend
-            </div>
-            <div className={cn("text-sm font-semibold", textColor)}>
+          <div className={styles.trendTextContainer}>
+            <div className={styles.trendLabel}>Memory Trend</div>
+            <div className={clsx(styles.trendValue, styles[trend])}>
               {label}
             </div>
           </div>
@@ -157,16 +142,7 @@ export function TrendIndicator({
 
         {/* Leak probability badge - only show if probability is meaningful (>= 30%) */}
         {leakProbability !== undefined && leakProbability >= 30 && (
-          <div
-            className={cn(
-              "px-2 py-1 rounded-full text-xs font-medium",
-              leakProbability >= 70
-                ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
-                : leakProbability >= 40
-                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
-            )}
-          >
+          <div className={clsx(styles.leakBadge, styles[getLeakLevel(leakProbability)])}>
             {leakProbability.toFixed(0)}% risk
           </div>
         )}
@@ -174,7 +150,7 @@ export function TrendIndicator({
 
       {/* Sample count */}
       {sampleCount !== undefined && (
-        <div className="text-xs text-slate-400 mt-2">
+        <div className={styles.sampleCount}>
           Based on {sampleCount} samples
         </div>
       )}

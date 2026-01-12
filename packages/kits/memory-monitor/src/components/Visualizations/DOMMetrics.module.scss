@@ -1,0 +1,105 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// DOMMetrics Component Styles
+// ============================================================================
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-3;
+}
+
+.metricCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background-color: white;
+  border: 1px solid $slate-100;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-sm;
+  @include transition-colors;
+
+  &:hover {
+    border-color: $slate-200;
+  }
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.5);
+    border-color: $slate-700;
+
+    &:hover {
+      border-color: $slate-600;
+    }
+  }
+}
+
+.iconWrapper {
+  padding: $spacing-2-5;
+  border-radius: $radius-xl;
+
+  &.dom {
+    background-color: $indigo-50;
+
+    :global(.dark) & {
+      background-color: rgba($indigo-900, 0.2);
+    }
+  }
+
+  &.listener {
+    background-color: $purple-50;
+
+    :global(.dark) & {
+      background-color: rgba($purple-900, 0.2);
+    }
+  }
+}
+
+.icon {
+  width: $spacing-5;
+  height: $spacing-5;
+
+  &.dom {
+    color: $indigo-500;
+
+    :global(.dark) & {
+      color: $indigo-400;
+    }
+  }
+
+  &.listener {
+    color: $purple-500;
+
+    :global(.dark) & {
+      color: $purple-400;
+    }
+  }
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricLabel {
+  @include text-xs;
+  font-weight: $font-weight-medium;
+  color: $slate-500;
+  margin-bottom: $spacing-0-5;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.metricValue {
+  @include text-lg;
+  font-weight: $font-weight-bold;
+  color: $slate-800;
+
+  :global(.dark) & {
+    color: $slate-100;
+  }
+}

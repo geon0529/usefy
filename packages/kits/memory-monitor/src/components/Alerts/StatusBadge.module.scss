@@ -1,0 +1,104 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// Base Badge
+// ============================================================================
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: $radius-full;
+  font-weight: $font-weight-medium;
+}
+
+// ============================================================================
+// Size Variants
+// ============================================================================
+
+.sizeSm {
+  padding: $spacing-0-5 $spacing-2;
+  gap: $spacing-1-5;
+  @include text-xs;
+}
+
+.sizeMd {
+  padding: $spacing-1 $spacing-2-5;
+  gap: $spacing-1-5;
+  @include text-sm;
+}
+
+.sizeLg {
+  padding: $spacing-1-5 $spacing-3;
+  gap: $spacing-2;
+  @include text-base;
+}
+
+// ============================================================================
+// Severity Variants
+// ============================================================================
+
+.severityNormal {
+  background-color: $green-50;
+  color: $green-700;
+
+  :global(.dark) & {
+    background-color: rgba($green-950, 0.3);
+    color: $green-300;
+  }
+}
+
+.severityWarning {
+  background-color: $amber-50;
+  color: $amber-700;
+
+  :global(.dark) & {
+    background-color: rgba($amber-950, 0.3);
+    color: $amber-300;
+  }
+}
+
+.severityCritical {
+  background-color: $red-50;
+  color: $red-700;
+
+  :global(.dark) & {
+    background-color: rgba($red-950, 0.3);
+    color: $red-300;
+  }
+}
+
+// ============================================================================
+// Status Dot
+// ============================================================================
+
+.dotWrapper {
+  position: relative;
+  display: flex;
+}
+
+.dot {
+  border-radius: $radius-full;
+}
+
+.dotSizeSm {
+  width: 6px;
+  height: 6px;
+}
+
+.dotSizeMd {
+  width: 8px;
+  height: 8px;
+}
+
+.dotSizeLg {
+  width: 10px;
+  height: 10px;
+}
+
+.dotPing {
+  @include absolute-fill;
+  border-radius: $radius-full;
+  @include animate-ping;
+  opacity: 0.75;
+}

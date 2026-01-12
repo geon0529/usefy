@@ -1,7 +1,7 @@
 import type { PanelSettings, TriggerPosition, Severity, SnapshotSettings, SnapshotScheduleInterval } from "./types";
 
 /**
- * Severity color scheme type
+ * Severity color scheme type (CSS values, not Tailwind classes)
  */
 export interface SeverityColorScheme {
   bg: string;
@@ -141,37 +141,37 @@ export const INTERVAL_OPTIONS = [
 ] as const;
 
 /**
- * Color scheme for severity levels
+ * Color scheme for severity levels (CSS hex values)
  */
 export const SEVERITY_COLORS: Record<Severity, SeverityColorScheme> = {
   normal: {
-    bg: "bg-green-50",
-    bgDark: "dark:bg-green-950",
-    border: "border-green-200",
-    borderDark: "dark:border-green-800",
-    text: "text-green-700",
-    textDark: "dark:text-green-300",
-    accent: "#22c55e",
+    bg: "#f0fdf4",           // green-50
+    bgDark: "#052e16",       // green-950
+    border: "#bbf7d0",       // green-200
+    borderDark: "#166534",   // green-800
+    text: "#15803d",         // green-700
+    textDark: "#86efac",     // green-300
+    accent: "#22c55e",       // green-500
     accentRgb: "34, 197, 94",
   },
   warning: {
-    bg: "bg-amber-50",
-    bgDark: "dark:bg-amber-950",
-    border: "border-amber-200",
-    borderDark: "dark:border-amber-800",
-    text: "text-amber-700",
-    textDark: "dark:text-amber-300",
-    accent: "#f59e0b",
+    bg: "#fffbeb",           // amber-50
+    bgDark: "#451a03",       // amber-950
+    border: "#fde68a",       // amber-200
+    borderDark: "#92400e",   // amber-800
+    text: "#b45309",         // amber-700
+    textDark: "#fcd34d",     // amber-300
+    accent: "#f59e0b",       // amber-500
     accentRgb: "245, 158, 11",
   },
   critical: {
-    bg: "bg-red-50",
-    bgDark: "dark:bg-red-950",
-    border: "border-red-200",
-    borderDark: "dark:border-red-800",
-    text: "text-red-700",
-    textDark: "dark:text-red-300",
-    accent: "#ef4444",
+    bg: "#fef2f2",           // red-50
+    bgDark: "#450a0a",       // red-950
+    border: "#fecaca",       // red-200
+    borderDark: "#991b1b",   // red-800
+    text: "#b91c1c",         // red-700
+    textDark: "#fca5a5",     // red-300
+    accent: "#ef4444",       // red-500
     accentRgb: "239, 68, 68",
   },
 };

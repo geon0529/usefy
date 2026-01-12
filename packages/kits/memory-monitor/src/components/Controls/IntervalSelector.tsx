@@ -1,6 +1,7 @@
 import React, { useCallback, useId } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { INTERVAL_OPTIONS } from "../../constants";
+import styles from "./IntervalSelector.module.scss";
 
 export interface IntervalSelectorProps {
   /** Current interval in milliseconds */
@@ -59,37 +60,24 @@ export function IntervalSelector({
   );
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={clsx(styles.container, className)}>
       {showLabel && (
         <label
           htmlFor={id}
-          className={cn(
-            "flex items-center gap-2 text-sm font-medium",
-            "text-slate-700 dark:text-slate-300",
-            disabled && "opacity-50"
-          )}
+          className={clsx(styles.label, disabled && styles.disabled)}
         >
-          <ClockIcon className="w-4 h-4" />
+          <ClockIcon className={styles.labelIcon} />
           <span>Polling Interval</span>
         </label>
       )}
 
-      <div className="relative">
+      <div className={styles.selectWrapper}>
         <select
           id={id}
           value={value}
           onChange={handleChange}
           disabled={disabled}
-          className={cn(
-            "w-full px-3 py-2 rounded-lg appearance-none",
-            "bg-white dark:bg-slate-800",
-            "border border-slate-300 dark:border-slate-600",
-            "text-slate-900 dark:text-slate-100",
-            "text-sm",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500",
-            "pr-10",
-            disabled && "opacity-50 cursor-not-allowed"
-          )}
+          className={clsx(styles.select, disabled && styles.disabled)}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -99,9 +87,9 @@ export function IntervalSelector({
         </select>
 
         {/* Dropdown arrow */}
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+        <div className={styles.dropdownArrow}>
           <svg
-            className="w-4 h-4 text-slate-500"
+            className={styles.arrowIcon}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
@@ -115,9 +103,7 @@ export function IntervalSelector({
         </div>
       </div>
 
-      <p className="text-xs text-slate-500 dark:text-slate-400">
-        How often to poll for memory updates
-      </p>
+      <p className={styles.helperText}>How often to poll for memory updates</p>
     </div>
   );
 }

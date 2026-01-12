@@ -1,0 +1,45 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.trigger {
+  @include reset-button;
+  position: fixed;
+  @include flex-center;
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-2xl;
+  background: linear-gradient(135deg, $indigo-500, $blue-600);
+  color: white;
+  box-shadow: $shadow-lg, 0 0 20px rgba($indigo-500, 0.2);
+  transition: all $transition-slow $ease-out;
+  transform-origin: center center;
+  will-change: transform;
+
+  &:hover {
+    background: linear-gradient(135deg, $indigo-400, $blue-500);
+    box-shadow: $shadow-xl, 0 0 30px rgba($indigo-500, 0.3);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $indigo-500, $shadow-lg;
+  }
+
+  &.warning {
+    @include animate-pulse;
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

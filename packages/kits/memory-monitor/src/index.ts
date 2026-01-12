@@ -84,7 +84,6 @@ export { useTheme } from "./hooks/useTheme";
 export type { UseThemeOptions, UseThemeReturn, ResolvedTheme } from "./hooks/useTheme";
 
 // Utilities (for advanced usage)
-export { cn } from "./utils/cn";
 export {
   isBrowser,
   safeGetItem,

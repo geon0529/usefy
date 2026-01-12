@@ -1,7 +1,8 @@
 import React, { useCallback, useRef, useEffect } from "react";
-import { cn } from "../../utils/cn";
+import { clsx } from "clsx";
 import { PANEL_DIMENSIONS } from "../../constants";
 import type { PanelPosition } from "../../types";
+import styles from "./PanelResizer.module.scss";
 
 export interface PanelResizerProps {
   /** Current panel width */
@@ -79,17 +80,11 @@ export function PanelResizer({
     };
   }, [position, minWidth, maxWidth, onWidthChange]);
 
+  const positionClass = position === "right" ? styles.positionRight : styles.positionLeft;
+
   return (
     <div
-      className={cn(
-        "absolute top-0 bottom-0 w-1",
-        "cursor-col-resize",
-        "hover:bg-indigo-500/50",
-        "transition-colors",
-        "group",
-        position === "right" ? "left-0" : "right-0",
-        className
-      )}
+      className={clsx(styles.resizer, positionClass, className)}
       onMouseDown={handleMouseDown}
       role="separator"
       aria-orientation="vertical"
@@ -99,16 +94,7 @@ export function PanelResizer({
       tabIndex={0}
     >
       {/* Visual indicator on hover */}
-      <div
-        className={cn(
-          "absolute top-1/2 -translate-y-1/2",
-          "w-1 h-8 rounded-full",
-          "bg-slate-300 dark:bg-slate-600",
-          "group-hover:bg-indigo-500",
-          "transition-colors",
-          position === "right" ? "-left-0.5" : "-right-0.5"
-        )}
-      />
+      <div className={styles.indicator} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useCallback, useId } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
+import styles from "./ThresholdSlider.module.scss";
 
 export interface ThresholdSliderProps {
   /** Slider label */
@@ -57,34 +58,27 @@ export function ThresholdSlider({
   const percentage = ((value - min) / (max - min)) * 100;
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={clsx(styles.container, className)}>
       {/* Label and value */}
-      <div className="flex items-center justify-between">
+      <div className={styles.header}>
         <label
           htmlFor={id}
-          className={cn(
-            "text-sm font-medium text-slate-700 dark:text-slate-300",
-            disabled && "opacity-50"
-          )}
+          className={clsx(styles.label, disabled && styles.disabled)}
         >
           {label}
         </label>
         {showValue && (
           <span
-            className={cn(
-              "px-2 py-0.5 rounded text-xs font-semibold",
-              "bg-slate-100 dark:bg-slate-700",
-              "text-slate-700 dark:text-slate-300",
-              disabled && "opacity-50"
-            )}
+            className={clsx(styles.valueBadge, disabled && styles.disabled)}
           >
-            {value}{suffix}
+            {value}
+            {suffix}
           </span>
         )}
       </div>
 
       {/* Slider */}
-      <div className="relative">
+      <div className={styles.sliderWrapper}>
         <input
           id={id}
           type="range"
@@ -94,29 +88,7 @@ export function ThresholdSlider({
           value={value}
           onChange={handleChange}
           disabled={disabled}
-          className={cn(
-            "w-full h-2 rounded-full appearance-none cursor-pointer",
-            "bg-slate-200 dark:bg-slate-700",
-            disabled && "cursor-not-allowed opacity-50",
-            // Webkit browsers
-            "[&::-webkit-slider-thumb]:appearance-none",
-            "[&::-webkit-slider-thumb]:w-4",
-            "[&::-webkit-slider-thumb]:h-4",
-            "[&::-webkit-slider-thumb]:rounded-full",
-            "[&::-webkit-slider-thumb]:shadow-md",
-            "[&::-webkit-slider-thumb]:cursor-pointer",
-            "[&::-webkit-slider-thumb]:transition-transform",
-            "[&::-webkit-slider-thumb]:hover:scale-110",
-            disabled && "[&::-webkit-slider-thumb]:cursor-not-allowed",
-            // Firefox
-            "[&::-moz-range-thumb]:w-4",
-            "[&::-moz-range-thumb]:h-4",
-            "[&::-moz-range-thumb]:rounded-full",
-            "[&::-moz-range-thumb]:border-0",
-            "[&::-moz-range-thumb]:shadow-md",
-            "[&::-moz-range-thumb]:cursor-pointer",
-            disabled && "[&::-moz-range-thumb]:cursor-not-allowed"
-          )}
+          className={clsx(styles.slider, disabled && styles.disabled)}
           style={{
             background: disabled
               ? undefined
@@ -125,24 +97,11 @@ export function ThresholdSlider({
             "--thumb-color": color,
           }}
         />
-        <style>{`
-          input[type="range"]::-webkit-slider-thumb {
-            background-color: var(--thumb-color, #3b82f6);
-          }
-          input[type="range"]::-moz-range-thumb {
-            background-color: var(--thumb-color, #3b82f6);
-          }
-        `}</style>
       </div>
 
       {/* Helper text */}
       {helperText && (
-        <p
-          className={cn(
-            "text-xs text-slate-500 dark:text-slate-400",
-            disabled && "opacity-50"
-          )}
-        >
+        <p className={clsx(styles.helperText, disabled && styles.disabled)}>
           {helperText}
         </p>
       )}

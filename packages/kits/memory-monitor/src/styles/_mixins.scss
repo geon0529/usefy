@@ -1,0 +1,457 @@
+@use 'variables' as *;
+
+// ============================================================================
+// Layout Mixins
+// ============================================================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin absolute-fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+@mixin fixed-fill {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// ============================================================================
+// Typography Mixins
+// ============================================================================
+
+@mixin text-xs {
+  font-size: $font-size-xs;
+  line-height: $line-height-normal;
+}
+
+@mixin text-sm {
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+}
+
+@mixin text-base {
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+}
+
+@mixin text-lg {
+  font-size: $font-size-lg;
+  line-height: $line-height-snug;
+}
+
+@mixin text-xl {
+  font-size: $font-size-xl;
+  line-height: $line-height-snug;
+}
+
+@mixin text-2xl {
+  font-size: $font-size-2xl;
+  line-height: $line-height-tight;
+}
+
+@mixin text-4xl {
+  font-size: $font-size-4xl;
+  line-height: $line-height-tight;
+}
+
+@mixin font-mono {
+  font-family: $font-family-mono;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ============================================================================
+// Interactive Mixins
+// ============================================================================
+
+@mixin transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: $transition-normal;
+  transition-timing-function: $ease-default;
+}
+
+@mixin transition-all {
+  transition-property: all;
+  transition-duration: $transition-normal;
+  transition-timing-function: $ease-default;
+}
+
+@mixin transition-transform {
+  transition-property: transform;
+  transition-duration: $transition-normal;
+  transition-timing-function: $ease-default;
+}
+
+@mixin focus-ring($color: $color-primary) {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $color;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $color;
+  }
+}
+
+@mixin hover-scale($scale: 1.05) {
+  @include transition-transform;
+
+  &:hover {
+    transform: scale($scale);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ============================================================================
+// Component Base Styles
+// ============================================================================
+
+@mixin reset-button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@mixin card-base {
+  background-color: white;
+  border: 1px solid $slate-200;
+  border-radius: $radius-xl;
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.5);
+    border-color: $slate-700;
+  }
+}
+
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $radius-lg;
+  background-color: white;
+  border: 1px solid $slate-300;
+  color: $slate-900;
+  @include text-sm;
+  @include transition-colors;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    border-color: $slate-600;
+    color: $slate-100;
+  }
+}
+
+@mixin select-base {
+  @include input-base;
+  appearance: none;
+  padding-right: $spacing-10;
+  cursor: pointer;
+}
+
+// ============================================================================
+// Button Mixins
+// ============================================================================
+
+@mixin button-base {
+  @include reset-button;
+  @include flex-center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $radius-lg;
+  font-weight: $font-weight-medium;
+  @include text-sm;
+  @include transition-all;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $color-primary;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: $indigo-600;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: $slate-100;
+  color: $slate-700;
+  border: 1px solid $slate-200;
+
+  &:hover:not(:disabled) {
+    background-color: $slate-200;
+    border-color: $slate-300;
+  }
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    color: $slate-300;
+    border-color: $slate-700;
+
+    &:hover:not(:disabled) {
+      background-color: $slate-700;
+      border-color: $slate-600;
+    }
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background-color: $red-500;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: $red-600;
+  }
+}
+
+@mixin button-ghost {
+  @include button-base;
+  background-color: transparent;
+  color: $slate-600;
+
+  &:hover:not(:disabled) {
+    background-color: $slate-100;
+    color: $slate-900;
+  }
+
+  :global(.dark) & {
+    color: $slate-400;
+
+    &:hover:not(:disabled) {
+      background-color: $slate-800;
+      color: $slate-100;
+    }
+  }
+}
+
+// ============================================================================
+// Badge/Pill Mixins
+// ============================================================================
+
+@mixin badge-base {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-0-5 $spacing-2;
+  border-radius: $radius-full;
+  font-weight: $font-weight-medium;
+  @include text-xs;
+}
+
+@mixin badge-success {
+  @include badge-base;
+  background-color: $green-50;
+  color: $green-700;
+
+  :global(.dark) & {
+    background-color: rgba($green-900, 0.3);
+    color: $green-300;
+  }
+}
+
+@mixin badge-warning {
+  @include badge-base;
+  background-color: $amber-50;
+  color: $amber-700;
+
+  :global(.dark) & {
+    background-color: rgba($amber-900, 0.3);
+    color: $amber-300;
+  }
+}
+
+@mixin badge-danger {
+  @include badge-base;
+  background-color: $red-50;
+  color: $red-700;
+
+  :global(.dark) & {
+    background-color: rgba($red-900, 0.3);
+    color: $red-300;
+  }
+}
+
+// ============================================================================
+// Scrollbar
+// ============================================================================
+
+@mixin thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba($slate-400, 0.4) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba($slate-400, 0);
+    border-radius: 6px;
+    transition: background-color $transition-normal;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: rgba($slate-400, 0.4);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($slate-400, 0.6);
+  }
+}
+
+// ============================================================================
+// Glassmorphism
+// ============================================================================
+
+@mixin glass-light {
+  background-color: rgba(white, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@mixin glass-dark {
+  background-color: rgba($slate-900, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+// ============================================================================
+// Animations
+// ============================================================================
+
+@mixin animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@mixin animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@mixin animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+// ============================================================================
+// Severity Colors
+// ============================================================================
+
+@mixin severity-normal {
+  --severity-bg: #{$green-50};
+  --severity-bg-dark: #{rgba($green-950, 0.3)};
+  --severity-border: #{$green-200};
+  --severity-border-dark: #{$green-800};
+  --severity-text: #{$green-700};
+  --severity-text-dark: #{$green-300};
+  --severity-accent: #{$green-500};
+}
+
+@mixin severity-warning {
+  --severity-bg: #{$amber-50};
+  --severity-bg-dark: #{rgba($amber-950, 0.3)};
+  --severity-border: #{$amber-200};
+  --severity-border-dark: #{$amber-800};
+  --severity-text: #{$amber-700};
+  --severity-text-dark: #{$amber-300};
+  --severity-accent: #{$amber-500};
+}
+
+@mixin severity-critical {
+  --severity-bg: #{$red-50};
+  --severity-bg-dark: #{rgba($red-950, 0.3)};
+  --severity-border: #{$red-200};
+  --severity-border-dark: #{$red-800};
+  --severity-text: #{$red-700};
+  --severity-text-dark: #{$red-300};
+  --severity-accent: #{$red-500};
+}

@@ -1,0 +1,186 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================================================
+// HeapBreakdown Component Styles
+// ============================================================================
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+.emptyState {
+  @include text-sm;
+  color: $slate-400;
+
+  :global(.dark) & {
+    color: $slate-500;
+  }
+}
+
+// Section header with title and value
+.sectionHeader {
+  @include flex-between;
+  align-items: baseline;
+  margin-bottom: $spacing-2;
+}
+
+.sectionTitle {
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  color: $slate-600;
+
+  :global(.dark) & {
+    color: $slate-300;
+  }
+}
+
+.sectionValue {
+  @include text-lg;
+  font-weight: $font-weight-bold;
+
+  &.normal {
+    color: $green-700;
+    :global(.dark) & {
+      color: $green-300;
+    }
+  }
+
+  &.warning {
+    color: $amber-700;
+    :global(.dark) & {
+      color: $amber-300;
+    }
+  }
+
+  &.critical {
+    color: $red-700;
+    :global(.dark) & {
+      color: $red-300;
+    }
+  }
+}
+
+// Progress bar container
+.progressBarContainer {
+  height: $spacing-2-5;
+  background-color: $slate-100;
+  border-radius: $radius-full;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba($slate-900, 0.05);
+
+  :global(.dark) & {
+    background-color: $slate-800;
+    box-shadow: inset 0 0 0 1px rgba(white, 0.05);
+  }
+}
+
+.progressBarContainerWithMarkers {
+  position: relative;
+}
+
+// Progress bar fill
+.progressBar {
+  height: 100%;
+  border-radius: $radius-full;
+  transition: all $transition-slower $ease-out;
+}
+
+// Threshold markers
+.thresholdMarker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  z-index: $z-dropdown;
+
+  &.warning {
+    background-color: rgba($amber-400, 0.5);
+  }
+
+  &.critical {
+    background-color: rgba($red-400, 0.5);
+  }
+}
+
+// Labels below the progress bar
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  @include text-xs;
+  font-weight: $font-weight-medium;
+  color: $slate-400;
+  margin-top: $spacing-1-5;
+}
+
+// Memory values grid
+.segmentsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-3;
+  margin-top: $spacing-4;
+}
+
+.segmentCard {
+  text-align: center;
+  padding: $spacing-3;
+  background-color: $slate-50;
+  border-radius: $radius-xl;
+  border: 1px solid $slate-100;
+
+  :global(.dark) & {
+    background-color: rgba($slate-800, 0.5);
+    border-color: rgba($slate-700, 0.5);
+  }
+}
+
+.segmentIndicator {
+  width: $spacing-2;
+  height: $spacing-2;
+  border-radius: $radius-full;
+  margin: 0 auto $spacing-2;
+}
+
+.segmentLabel {
+  font-size: 11px;
+  font-weight: $font-weight-medium;
+  color: $slate-500;
+  margin-bottom: $spacing-0-5;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+
+  :global(.dark) & {
+    color: $slate-400;
+  }
+}
+
+.segmentValue {
+  @include text-sm;
+  font-weight: $font-weight-bold;
+
+  &.used {
+    // Color is dynamically set based on severity
+  }
+
+  &.available {
+    color: $purple-600;
+    :global(.dark) & {
+      color: $purple-400;
+    }
+  }
+
+  &.reserved {
+    color: $slate-500;
+    :global(.dark) & {
+      color: $slate-400;
+    }
+  }
+}
+
+.segmentPercentage {
+  font-size: 10px;
+  color: $slate-400;
+  margin-top: $spacing-0-5;
+}
