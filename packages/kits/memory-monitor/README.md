@@ -514,11 +514,47 @@ All settings are automatically persisted to LocalStorage:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `mode` | `'development' \| 'production' \| 'always' \| 'headless' \| 'never'` | `'development'` | When to render the panel. Use `'headless'` for production monitoring without UI |
+| `mode` | `'development' \| 'production' \| 'always' \| 'headless' \| 'never'` | `'development'` | When to render the panel. See [Mode Options](#mode-options) below |
 | `defaultOpen` | `boolean` | `false` | Initial open state |
 | `position` | `'left' \| 'right'` | `'right'` | Panel slide-in position |
 | `zIndex` | `number` | `9999` | Panel z-index |
 | `disableInProduction` | `boolean` | `false` | Disable all features in production |
+
+##### Mode Options
+
+The `mode` prop controls when the Memory Monitor UI is rendered:
+
+| Mode | Development | Production | Use Case |
+|------|-------------|------------|----------|
+| `'development'` | UI visible | UI hidden | Default. Debug during development only |
+| `'production'` | UI hidden | UI visible | Show only in production (rare) |
+| `'always'` | UI visible | UI visible | Always show regardless of environment |
+| `'headless'` | UI hidden | UI hidden | No UI, but monitoring + callbacks still run |
+| `'never'` | UI hidden | UI hidden | Completely disabled (no monitoring) |
+
+> **Note:** Environment detection uses `process.env.NODE_ENV`. If unavailable, it falls back to hostname check (`localhost`, `127.0.0.1`, etc.).
+
+**Common patterns:**
+
+```tsx
+// Default: Only visible during local development
+<MemoryMonitor />
+
+// Always visible (e.g., for internal tools or debugging pages)
+<MemoryMonitor mode="always" />
+
+// Production monitoring with callbacks, no UI
+<MemoryMonitor
+  mode="headless"
+  onWarning={(data) => analytics.track('memory_warning', data)}
+  onCritical={(data) => errorReporter.capture(data)}
+/>
+
+// Environment-based switching
+<MemoryMonitor
+  mode={process.env.NODE_ENV === 'development' ? 'always' : 'headless'}
+/>
+```
 
 #### Monitoring Options
 
