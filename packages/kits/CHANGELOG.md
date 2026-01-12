@@ -1,5 +1,12 @@
 # @usefy/components
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [61401b4]
+  - @usefy/memory-monitor@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

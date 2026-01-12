@@ -1,5 +1,16 @@
 # @usefy/memory-monitor
 
+## 0.2.1
+
+### Patch Changes
+
+- 61401b4: Enhance PanelTrigger floating button visibility for warning and critical states
+
+  - Warning state: amber/orange gradient background with pulse glow animation
+  - Critical state: red gradient background with shake and intense glow animations
+  - Each severity level now has distinct visual feedback to better capture user attention
+  - @usefy/use-memory-monitor@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
