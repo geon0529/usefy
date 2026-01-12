@@ -115,7 +115,7 @@ pnpm add @usefy/kits
 ```
 
 ```tsx
-import { MemoryMonitor, ScreenRecorder } from "@usefy/kits";
+import { MemoryMonitor } from "@usefy/kits";
 
 function App() {
   return (
@@ -126,11 +126,6 @@ function App() {
         position="right"
         onLeakDetected={(analysis) => console.warn("Leak:", analysis)}
       />
-      <ScreenRecorder
-        position="bottom-right"
-        countdown={3}
-        onStop={(result) => console.log("Recording saved:", result)}
-      />
     </div>
   );
 }
@@ -138,7 +133,6 @@ function App() {
 
 **Available Kits:**
 - `MemoryMonitor` — Real-time memory monitoring panel (built on `@usefy/use-memory-monitor`)
-- `ScreenRecorder` — Browser-based screen recording with preview and download
 
 <a href="./packages/kits/README.md"><strong>View full documentation →</strong></a>
 
@@ -151,10 +145,9 @@ function App() {
 | Need | Install | Import |
 | ---- | ------- | ------ |
 | All hooks | `pnpm add @usefy/hooks` | `import { useToggle } from "@usefy/hooks"` |
-| All kits | `pnpm add @usefy/kits` | `import { MemoryMonitor, ScreenRecorder } from "@usefy/kits"` |
+| All kits | `pnpm add @usefy/kits` | `import { MemoryMonitor } from "@usefy/kits"` |
 | Single hook | `pnpm add @usefy/use-toggle` | `import { useToggle } from "@usefy/use-toggle"` |
 | Single kit | `pnpm add @usefy/memory-monitor` | `import { MemoryMonitor } from "@usefy/memory-monitor"` |
-| Single kit | `pnpm add @usefy/screen-recorder` | `import { ScreenRecorder } from "@usefy/screen-recorder"` |
 
 ### Peer Dependencies
 
@@ -239,7 +232,6 @@ Some kits may have additional peer dependencies (check individual package docs).
 | Kit | Description |
 | --- | ----------- |
 | `MemoryMonitor` | Real-time memory monitoring panel with leak detection, snapshots, and reports |
-| `ScreenRecorder` | Browser-based screen recording with preview, download, and unlimited duration |
 
 ---
 
