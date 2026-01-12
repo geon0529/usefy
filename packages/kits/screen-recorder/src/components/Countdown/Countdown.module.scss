@@ -1,0 +1,52 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.overlay {
+  @include fixed-fill;
+  @include flex-col;
+  align-items: center;
+  justify-content: center;
+  @include overlay-backdrop;
+  @include animate-fade-in;
+}
+
+.countdownCircle {
+  @include flex-center;
+  width: 8rem;
+  height: 8rem;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: $font-size-7xl;
+  font-weight: $font-weight-bold;
+  @include animate-countdown-scale;
+}
+
+.message {
+  margin-top: $spacing-6;
+  color: rgba(255, 255, 255, 0.8);
+  @include text-lg;
+  font-weight: $font-weight-medium;
+}
+
+.cancelButton {
+  @include reset-button;
+  margin-top: $spacing-8;
+  padding: $spacing-2 $spacing-6;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  @include transition-colors;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+}

@@ -1,8 +1,9 @@
 import type { FC, ReactNode } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { TriggerIcon } from "./TriggerIcon";
 import type { TriggerPosition } from "../../types";
-import { POSITION_CLASSES, ARIA_LABELS } from "../../constants";
+import { ARIA_LABELS } from "../../constants";
+import styles from "./Trigger.module.scss";
 
 export interface TriggerProps {
   /**
@@ -31,6 +32,13 @@ export interface TriggerProps {
   zIndex?: number;
 }
 
+const POSITION_STYLES: Record<TriggerPosition, string> = {
+  "top-left": styles.topLeft,
+  "top-right": styles.topRight,
+  "bottom-left": styles.bottomLeft,
+  "bottom-right": styles.bottomRight,
+};
+
 /**
  * Floating trigger button to start screen recording
  */
@@ -48,29 +56,16 @@ export const Trigger: FC<TriggerProps> = ({
       onClick={onClick}
       disabled={disabled}
       aria-label={ARIA_LABELS.triggerButton}
-      className={cn(
-        // Base styles
-        "fixed flex items-center gap-2 px-4 py-2.5 rounded-full",
-        "font-medium text-sm shadow-lg",
-        // Colors
-        "bg-red-600 text-white",
-        "hover:bg-red-700 active:bg-red-800",
-        // Focus styles
-        "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2",
-        // Disabled styles
-        "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600",
-        // Transitions
-        "transition-all duration-200 ease-out",
-        "hover:scale-105 active:scale-95",
-        // Position
-        POSITION_CLASSES[position],
+      className={clsx(
+        styles.trigger,
+        POSITION_STYLES[position],
         className
       )}
       style={{ zIndex }}
     >
       {children ?? (
         <>
-          <TriggerIcon className="w-5 h-5" />
+          <TriggerIcon className={styles.icon} />
           <span>Record</span>
         </>
       )}

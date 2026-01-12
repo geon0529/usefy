@@ -1,6 +1,7 @@
 import type { FC } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { TIMER_WARNING_THRESHOLD, TIMER_CRITICAL_THRESHOLD, ARIA_LABELS } from "../../constants";
+import styles from "./Timer.module.scss";
 
 export interface TimerProps {
   /**
@@ -41,21 +42,21 @@ export const Timer: FC<TimerProps> = ({
   className,
 }) => {
   // Determine timer color based on remaining time
-  const getTimerColor = () => {
+  const getTimerColorClass = () => {
     if (isPaused) {
-      return "text-amber-600 dark:text-amber-400";
+      return styles.colorPaused;
     }
 
     if (remaining != null) {
       if (remaining <= TIMER_CRITICAL_THRESHOLD) {
-        return "text-red-600 dark:text-red-400";
+        return styles.colorCritical;
       }
       if (remaining <= TIMER_WARNING_THRESHOLD) {
-        return "text-amber-600 dark:text-amber-400";
+        return styles.colorWarning;
       }
     }
 
-    return "text-gray-700 dark:text-gray-300";
+    return styles.colorDefault;
   };
 
   return (
@@ -63,15 +64,15 @@ export const Timer: FC<TimerProps> = ({
       role="timer"
       aria-live="polite"
       aria-label={`${ARIA_LABELS.timer}: ${elapsedFormatted}`}
-      className={cn(
-        "font-mono text-sm font-medium tabular-nums",
-        getTimerColor(),
+      className={clsx(
+        styles.timer,
+        getTimerColorClass(),
         className
       )}
     >
       {elapsedFormatted}
       {maxDuration != null && isFinite(maxDuration) && (
-        <span className="text-gray-400 dark:text-gray-500">
+        <span className={styles.maxDuration}>
           {" / "}
           {formatDuration(maxDuration)}
         </span>

@@ -1,0 +1,372 @@
+@use 'variables' as *;
+
+// ============================================================================
+// Layout Mixins
+// ============================================================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin fixed-fill {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// ============================================================================
+// Typography Mixins
+// ============================================================================
+
+@mixin text-xs {
+  font-size: $font-size-xs;
+  line-height: $line-height-normal;
+}
+
+@mixin text-sm {
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+}
+
+@mixin text-lg {
+  font-size: $font-size-lg;
+  line-height: $line-height-tight;
+}
+
+@mixin font-mono {
+  font-family: $font-family-mono;
+}
+
+@mixin tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+// ============================================================================
+// Interactive Mixins
+// ============================================================================
+
+@mixin transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: $transition-normal;
+  transition-timing-function: $ease-default;
+}
+
+@mixin transition-all {
+  transition-property: all;
+  transition-duration: $transition-normal;
+  transition-timing-function: $ease-default;
+}
+
+@mixin transition-transform {
+  transition-property: transform;
+  transition-duration: $transition-normal;
+  transition-timing-function: $ease-default;
+}
+
+@mixin focus-ring($color: $blue-500) {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $color;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px $color;
+  }
+}
+
+@mixin focus-ring-offset {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px transparent, 0 0 0 2px currentColor;
+  }
+}
+
+@mixin hover-scale($scale: 1.05) {
+  @include transition-transform;
+
+  &:hover {
+    transform: scale($scale);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ============================================================================
+// Button Mixins
+// ============================================================================
+
+@mixin reset-button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-base {
+  @include reset-button;
+  @include flex-center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $radius-lg;
+  font-weight: $font-weight-medium;
+  @include text-sm;
+  @include transition-all;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $color-primary;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-primary-active;
+  }
+}
+
+@mixin button-icon {
+  @include reset-button;
+  padding: $spacing-2;
+  border-radius: $radius-full;
+  @include transition-colors;
+
+  &:hover:not(:disabled) {
+    background-color: $gray-100;
+  }
+
+  :global(.dark) & {
+    &:hover:not(:disabled) {
+      background-color: $gray-700;
+    }
+  }
+}
+
+// ============================================================================
+// Card & Container Mixins
+// ============================================================================
+
+@mixin card-base {
+  background-color: white;
+  border: 1px solid $gray-200;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+
+  :global(.dark) & {
+    background-color: $gray-800;
+    border-color: $gray-700;
+  }
+}
+
+@mixin overlay-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+@mixin overlay-backdrop-dark {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+// ============================================================================
+// Status Badge Mixins
+// ============================================================================
+
+@mixin status-badge-base {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1-5;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $radius-full;
+}
+
+@mixin status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: $radius-full;
+}
+
+// ============================================================================
+// Animations
+// ============================================================================
+
+@mixin animate-pulse {
+  animation: pulse $animation-pulse cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@mixin animate-pulse-record {
+  animation: pulse-record $animation-pulse ease-in-out infinite;
+}
+
+@mixin animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@mixin animate-fade-in {
+  animation: fade-in $animation-fade $ease-default;
+}
+
+@mixin animate-slide-up {
+  animation: slide-up $animation-slide $ease-default;
+}
+
+@mixin animate-countdown-scale {
+  animation: countdown-scale $animation-countdown $ease-default;
+}
+
+// Keyframes
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulse-record {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes countdown-scale {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// ============================================================================
+// Position Mixins
+// ============================================================================
+
+@mixin position-top-left {
+  top: $spacing-4;
+  left: $spacing-4;
+}
+
+@mixin position-top-right {
+  top: $spacing-4;
+  right: $spacing-4;
+}
+
+@mixin position-bottom-left {
+  bottom: $spacing-4;
+  left: $spacing-4;
+}
+
+@mixin position-bottom-right {
+  bottom: $spacing-4;
+  right: $spacing-4;
+}
+
+// ============================================================================
+// Video Player Mixins
+// ============================================================================
+
+@mixin range-slider {
+  flex: 1;
+  height: 0.25rem;
+  border-radius: $radius-full;
+  appearance: none;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: $radius-full;
+    background-color: white;
+  }
+
+  &::-moz-range-thumb {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: $radius-full;
+    background-color: white;
+    border: none;
+  }
+}

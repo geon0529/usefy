@@ -1,0 +1,50 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.timer {
+  @include font-mono;
+  @include text-sm;
+  font-weight: $font-weight-medium;
+  @include tabular-nums;
+}
+
+// Color states
+.colorDefault {
+  color: $gray-700;
+
+  :global(.dark) & {
+    color: $gray-300;
+  }
+}
+
+.colorPaused {
+  color: $amber-600;
+
+  :global(.dark) & {
+    color: $amber-400;
+  }
+}
+
+.colorWarning {
+  color: $amber-600;
+
+  :global(.dark) & {
+    color: $amber-400;
+  }
+}
+
+.colorCritical {
+  color: $red-600;
+
+  :global(.dark) & {
+    color: $red-400;
+  }
+}
+
+.maxDuration {
+  color: $gray-400;
+
+  :global(.dark) & {
+    color: $gray-500;
+  }
+}

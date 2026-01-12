@@ -1029,9 +1029,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      tailwind-merge:
-        specifier: ^2.6.0
-        version: 2.6.0
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.6.3
@@ -1063,9 +1060,9 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.1.2
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.19(yaml@2.8.2)
+      sass:
+        specifier: ^1.83.0
+        version: 1.97.2
       tsup:
         specifier: ^8.3.5
         version: 8.5.1(@swc/core@1.15.7)(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
@@ -5143,9 +5140,6 @@ packages:
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
-
-  tailwind-merge@2.6.0:
-    resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
 
   tailwindcss@3.4.19:
     resolution: {integrity: sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ==}
@@ -10093,8 +10087,6 @@ snapshots:
       '@pkgr/core': 0.2.9
 
   tagged-tag@1.0.0: {}
-
-  tailwind-merge@2.6.0: {}
 
   tailwindcss@3.4.19(yaml@2.8.2):
     dependencies:

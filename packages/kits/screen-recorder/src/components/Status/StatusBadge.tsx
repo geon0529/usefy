@@ -1,6 +1,7 @@
 import type { FC } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import type { RecordingState } from "../../types";
+import styles from "./StatusBadge.module.scss";
 
 export interface StatusBadgeProps {
   /**
@@ -13,60 +14,67 @@ export interface StatusBadgeProps {
   className?: string;
 }
 
+type StatusConfig = {
+  label: string;
+  badgeClass: string;
+  dotClass: string;
+  labelClass: string;
+};
+
 /**
  * Status badge showing current recording state
  */
 export const StatusBadge: FC<StatusBadgeProps> = ({ state, className }) => {
-  const getStatusConfig = () => {
+  const getStatusConfig = (): StatusConfig => {
     switch (state) {
       case "recording":
         return {
           label: "REC",
-          dotClass: "bg-red-500 animate-pulse-record",
-          textClass: "text-red-600 dark:text-red-400",
-          bgClass: "bg-red-50 dark:bg-red-900/20",
+          badgeClass: styles.stateRecording,
+          dotClass: styles.dotRecording,
+          labelClass: styles.labelRecording,
         };
       case "paused":
         return {
           label: "PAUSED",
-          dotClass: "bg-amber-500",
-          textClass: "text-amber-600 dark:text-amber-400",
-          bgClass: "bg-amber-50 dark:bg-amber-900/20",
+          badgeClass: styles.statePaused,
+          dotClass: styles.dotPaused,
+          labelClass: styles.labelPaused,
         };
       case "requesting":
         return {
           label: "REQUESTING",
-          dotClass: "bg-blue-500 animate-pulse",
-          textClass: "text-blue-600 dark:text-blue-400",
-          bgClass: "bg-blue-50 dark:bg-blue-900/20",
+          badgeClass: styles.stateRequesting,
+          dotClass: styles.dotRequesting,
+          labelClass: styles.labelRequesting,
         };
       case "countdown":
         return {
           label: "STARTING",
-          dotClass: "bg-amber-500 animate-pulse",
-          textClass: "text-amber-600 dark:text-amber-400",
-          bgClass: "bg-amber-50 dark:bg-amber-900/20",
+          badgeClass: styles.stateCountdown,
+          dotClass: styles.dotCountdown,
+          labelClass: styles.labelCountdown,
         };
       case "stopped":
         return {
           label: "STOPPED",
-          dotClass: "bg-gray-500",
-          textClass: "text-gray-600 dark:text-gray-400",
-          bgClass: "bg-gray-50 dark:bg-gray-800",
+          badgeClass: styles.stateStopped,
+          dotClass: styles.dotStopped,
+          labelClass: styles.labelStopped,
         };
       case "error":
         return {
           label: "ERROR",
-          dotClass: "bg-red-500",
-          textClass: "text-red-600 dark:text-red-400",
-          bgClass: "bg-red-50 dark:bg-red-900/20",
+          badgeClass: styles.stateError,
+          dotClass: styles.dotError,
+          labelClass: styles.labelError,
         };
       default:
         return {
           label: "IDLE",
-          dotClass: "bg-gray-400",
-          textClass: "text-gray-500 dark:text-gray-400",
-          bgClass: "bg-gray-50 dark:bg-gray-800",
+          badgeClass: styles.stateIdle,
+          dotClass: styles.dotIdle,
+          labelClass: styles.labelIdle,
         };
     }
   };
@@ -75,16 +83,12 @@ export const StatusBadge: FC<StatusBadgeProps> = ({ state, className }) => {
 
   return (
     <div
-      className={cn(
-        "inline-flex items-center gap-1.5 px-2 py-1 rounded-full",
-        config.bgClass,
-        className
-      )}
+      className={clsx(styles.badge, config.badgeClass, className)}
       role="status"
       aria-live="polite"
     >
-      <span className={cn("w-2 h-2 rounded-full", config.dotClass)} />
-      <span className={cn("text-xs font-semibold uppercase", config.textClass)}>
+      <span className={clsx(styles.dot, config.dotClass)} />
+      <span className={clsx(styles.label, config.labelClass)}>
         {config.label}
       </span>
     </div>

@@ -44,8 +44,9 @@ describe("ScreenRecorder", () => {
       const trigger = screen.getByRole("button", {
         name: /start screen recording/i,
       });
-      expect(trigger.className).toContain("top-4");
-      expect(trigger.className).toContain("left-4");
+      // With CSS Modules, class names are scoped with hashes
+      // Check for the position-related class name pattern
+      expect(trigger.className).toMatch(/topLeft/i);
     });
   });
 

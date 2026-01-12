@@ -1,10 +1,10 @@
 import type { FC } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { Timer } from "./Timer";
 import { RecordingIcon, StopIcon, PauseIcon, PlayIcon } from "../Trigger/TriggerIcon";
 import { ARIA_LABELS } from "../../constants";
 import type { TriggerPosition } from "../../types";
-import { POSITION_CLASSES } from "../../constants";
+import styles from "./RecordingControls.module.scss";
 
 export interface RecordingControlsProps {
   /**
@@ -57,6 +57,13 @@ export interface RecordingControlsProps {
   zIndex?: number;
 }
 
+const POSITION_STYLES: Record<TriggerPosition, string> = {
+  "top-left": styles.topLeft,
+  "top-right": styles.topRight,
+  "bottom-left": styles.bottomLeft,
+  "bottom-right": styles.bottomRight,
+};
+
 /**
  * Recording controls bar with timer, pause, and stop buttons
  */
@@ -76,35 +83,30 @@ export const RecordingControls: FC<RecordingControlsProps> = ({
 }) => {
   return (
     <div
-      className={cn(
-        // Base styles
-        "fixed flex items-center gap-3 px-4 py-2.5 rounded-full",
-        "bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700",
-        // Animation
-        "animate-slide-up",
-        // Position
-        POSITION_CLASSES[position],
+      className={clsx(
+        styles.controls,
+        POSITION_STYLES[position],
         className
       )}
       style={{ zIndex }}
     >
       {/* Recording status indicator */}
-      <div className="flex items-center gap-2">
+      <div className={styles.statusSection}>
         <div
-          className={cn(
-            "flex items-center gap-1.5",
-            isPaused ? "text-amber-500" : "text-red-500"
+          className={clsx(
+            styles.statusIndicator,
+            isPaused ? styles.statusPaused : styles.statusRecording
           )}
         >
           {isPaused ? (
             <>
-              <PauseIcon className="w-3 h-3" />
-              <span className="text-xs font-semibold uppercase">Paused</span>
+              <PauseIcon className={styles.pauseIconSmall} />
+              <span className={styles.statusLabel}>Paused</span>
             </>
           ) : (
             <>
-              <RecordingIcon className="w-3 h-3 animate-pulse-record" />
-              <span className="text-xs font-semibold uppercase">Rec</span>
+              <RecordingIcon className={styles.recordingIcon} />
+              <span className={styles.statusLabel}>Rec</span>
             </>
           )}
         </div>
@@ -120,22 +122,18 @@ export const RecordingControls: FC<RecordingControlsProps> = ({
       />
 
       {/* Control buttons */}
-      <div className="flex items-center gap-1 ml-2">
+      <div className={styles.buttonGroup}>
         {/* Pause/Resume button */}
         <button
           type="button"
           onClick={isPaused ? onResume : onPause}
           aria-label={isPaused ? ARIA_LABELS.resumeButton : ARIA_LABELS.pauseButton}
-          className={cn(
-            "p-2 rounded-full transition-colors",
-            "hover:bg-gray-100 dark:hover:bg-gray-700",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          )}
+          className={styles.controlButton}
         >
           {isPaused ? (
-            <PlayIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            <PlayIcon className={styles.buttonIcon} />
           ) : (
-            <PauseIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            <PauseIcon className={styles.buttonIcon} />
           )}
         </button>
 
@@ -144,13 +142,9 @@ export const RecordingControls: FC<RecordingControlsProps> = ({
           type="button"
           onClick={onStop}
           aria-label={ARIA_LABELS.stopButton}
-          className={cn(
-            "p-2 rounded-full transition-colors",
-            "hover:bg-red-100 dark:hover:bg-red-900/30",
-            "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          )}
+          className={styles.stopButton}
         >
-          <StopIcon className="w-4 h-4 text-red-600 dark:text-red-400" />
+          <StopIcon className={styles.stopIcon} />
         </button>
       </div>
     </div>

@@ -1,15 +1,16 @@
 import { forwardRef, useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import clsx from "clsx";
 import type { ScreenRecorderProps } from "./types";
 import { DEFAULT_OPTIONS } from "./constants";
 import { useScreenRecorder } from "./useScreenRecorder";
-import { cn } from "./utils/cn";
 import { Trigger } from "./components/Trigger";
 import { RecordingControls } from "./components/Controls";
 import { Countdown } from "./components/Countdown";
 import { PreviewModal } from "./components/Preview";
 import { ErrorMessage } from "./components/Status";
 import { generateFilename } from "./utils/downloadBlob";
+import styles from "./ScreenRecorder.module.scss";
 
 /**
  * ScreenRecorder component for capturing screen recordings
@@ -339,16 +340,16 @@ export const ScreenRecorder = forwardRef<HTMLDivElement, ScreenRecorderProps>(
             position={position}
             disabled={true}
             zIndex={zIndex}
-            className={cn("opacity-75", className)}
+            className={clsx(styles.opacityReduced, className)}
           >
-            <span className="flex items-center gap-2">
+            <span className={styles.requestingContent}>
               <svg
-                className="animate-spin h-4 w-4"
+                className={styles.spinner}
                 fill="none"
                 viewBox="0 0 24 24"
               >
                 <circle
-                  className="opacity-25"
+                  className={styles.spinnerTrack}
                   cx="12"
                   cy="12"
                   r="10"
@@ -356,7 +357,7 @@ export const ScreenRecorder = forwardRef<HTMLDivElement, ScreenRecorderProps>(
                   strokeWidth="4"
                 />
                 <path
-                  className="opacity-75"
+                  className={styles.spinnerHead}
                   fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
@@ -387,7 +388,7 @@ export const ScreenRecorder = forwardRef<HTMLDivElement, ScreenRecorderProps>(
     const containerContent = (
       <div
         ref={ref}
-        className={cn("usefy-screen-recorder", theme === "dark" && "dark")}
+        className={clsx(styles.root, "usefy-screen-recorder", theme === "dark" && "dark")}
         data-state={recorder.state}
       >
         {content}

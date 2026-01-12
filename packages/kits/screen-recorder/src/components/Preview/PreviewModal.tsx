@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { VideoPlayer } from "./VideoPlayer";
 import {
   CloseIcon,
@@ -12,6 +12,7 @@ import {
 import { ARIA_LABELS } from "../../constants";
 import { formatBytes } from "../../utils/downloadBlob";
 import type { RecordingResult, ThemeOption } from "../../types";
+import styles from "./PreviewModal.module.scss";
 
 export interface PreviewModalProps {
   /**
@@ -105,13 +106,9 @@ export const PreviewModal: FC<PreviewModalProps> = ({
 
   const modalContent = (
     <div
-      className={cn(
-        // Dark mode wrapper for portal
+      className={clsx(
+        styles.overlay,
         isDark && "dark",
-        // Fullscreen overlay
-        "fixed inset-0 flex items-center justify-center p-4",
-        "bg-black/60 backdrop-blur-sm",
-        "animate-fade-in",
         className
       )}
       style={{ zIndex }}
@@ -128,52 +125,35 @@ export const PreviewModal: FC<PreviewModalProps> = ({
     >
       <div
         ref={modalRef}
-        className={cn(
-          // Modal container
-          "relative w-full max-w-2xl",
-          "bg-white dark:bg-gray-800 rounded-xl shadow-2xl",
-          "animate-slide-up",
-          "focus:outline-none"
-        )}
+        className={styles.modal}
         tabIndex={-1}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2
-            id="preview-title"
-            className="text-lg font-semibold text-gray-900 dark:text-white"
-          >
+        <div className={styles.header}>
+          <h2 id="preview-title" className={styles.title}>
             Recording Complete
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label={ARIA_LABELS.closePreview}
-            className={cn(
-              "p-2 rounded-full",
-              "hover:bg-gray-100 dark:hover:bg-gray-700",
-              "transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-blue-500"
-            )}
+            className={styles.closeButton}
           >
-            <CloseIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            <CloseIcon className={styles.closeIcon} />
           </button>
         </div>
 
         {/* Video preview */}
-        <div className="p-6">
+        <div className={styles.content}>
           <VideoPlayer
             src={result.url}
-            className="w-full aspect-video"
+            className={styles.videoWrapper}
             showControls
             knownDuration={result.duration}
           />
 
           {/* Recording info */}
-          <p
-            id="preview-description"
-            className="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center"
-          >
+          <p id="preview-description" className={styles.recordingInfo}>
             Duration: {formatDuration(result.duration)} • Size:{" "}
             {formatBytes(result.size)} • {getFormatLabel(result.mimeType)}
             {result.hasAudio && " • With audio"}
@@ -181,22 +161,15 @@ export const PreviewModal: FC<PreviewModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-center gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <div className={styles.actions}>
           {/* Download button */}
           <button
             type="button"
             onClick={onDownload}
             aria-label={ARIA_LABELS.downloadButton}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg",
-              "bg-blue-600 hover:bg-blue-700 text-white",
-              "font-medium text-sm",
-              "transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-              "dark:focus:ring-offset-gray-800"
-            )}
+            className={styles.downloadButton}
           >
-            <DownloadIcon className="w-4 h-4" />
+            <DownloadIcon className={styles.buttonIcon} />
             Download
           </button>
 
@@ -205,17 +178,9 @@ export const PreviewModal: FC<PreviewModalProps> = ({
             type="button"
             onClick={onReRecord}
             aria-label={ARIA_LABELS.reRecordButton}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg",
-              "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600",
-              "text-gray-700 dark:text-gray-300",
-              "font-medium text-sm",
-              "transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2",
-              "dark:focus:ring-offset-gray-800"
-            )}
+            className={styles.reRecordButton}
           >
-            <RefreshIcon className="w-4 h-4" />
+            <RefreshIcon className={styles.buttonIcon} />
             Re-record
           </button>
 
@@ -223,16 +188,9 @@ export const PreviewModal: FC<PreviewModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg",
-              "bg-green-600 hover:bg-green-700 text-white",
-              "font-medium text-sm",
-              "transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2",
-              "dark:focus:ring-offset-gray-800"
-            )}
+            className={styles.doneButton}
           >
-            <CheckIcon className="w-4 h-4" />
+            <CheckIcon className={styles.buttonIcon} />
             Done
           </button>
         </div>

@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { WarningIcon, CloseIcon } from "../Trigger/TriggerIcon";
 import type { ScreenRecorderError } from "../../types";
 import type { TriggerPosition } from "../../types";
-import { POSITION_CLASSES } from "../../constants";
+import styles from "./ErrorMessage.module.scss";
 
 export interface ErrorMessageProps {
   /**
@@ -32,6 +32,13 @@ export interface ErrorMessageProps {
   zIndex?: number;
 }
 
+const POSITION_STYLES: Record<TriggerPosition, string> = {
+  "top-left": styles.topLeft,
+  "top-right": styles.topRight,
+  "bottom-left": styles.bottomLeft,
+  "bottom-right": styles.bottomRight,
+};
+
 /**
  * Error message component for screen recording errors
  */
@@ -45,13 +52,9 @@ export const ErrorMessage: FC<ErrorMessageProps> = ({
 }) => {
   return (
     <div
-      className={cn(
-        // Base styles
-        "fixed flex flex-col gap-3 p-4 max-w-sm rounded-lg shadow-lg",
-        "bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800",
-        "animate-slide-up",
-        // Position
-        POSITION_CLASSES[position],
+      className={clsx(
+        styles.container,
+        POSITION_STYLES[position],
         className
       )}
       style={{ zIndex }}
@@ -59,13 +62,13 @@ export const ErrorMessage: FC<ErrorMessageProps> = ({
       aria-live="assertive"
     >
       {/* Header with icon and close button */}
-      <div className="flex items-start gap-3">
-        <WarningIcon className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
-        <div className="flex-1">
-          <h3 className="font-semibold text-red-800 dark:text-red-200">
+      <div className={styles.header}>
+        <WarningIcon className={styles.warningIcon} />
+        <div className={styles.content}>
+          <h3 className={styles.title}>
             {getErrorTitle(error.code)}
           </h3>
-          <p className="mt-1 text-sm text-red-600 dark:text-red-300">
+          <p className={styles.message}>
             {error.message}
           </p>
         </div>
@@ -73,15 +76,10 @@ export const ErrorMessage: FC<ErrorMessageProps> = ({
           <button
             type="button"
             onClick={onDismiss}
-            className={cn(
-              "p-1 rounded-full",
-              "hover:bg-red-100 dark:hover:bg-red-800/50",
-              "transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-red-500"
-            )}
+            className={styles.dismissButton}
             aria-label="Dismiss error"
           >
-            <CloseIcon className="w-4 h-4 text-red-500 dark:text-red-400" />
+            <CloseIcon className={styles.dismissIcon} />
           </button>
         )}
       </div>
@@ -91,13 +89,7 @@ export const ErrorMessage: FC<ErrorMessageProps> = ({
         <button
           type="button"
           onClick={onRetry}
-          className={cn(
-            "w-full py-2 rounded-md",
-            "bg-red-100 dark:bg-red-800/50 hover:bg-red-200 dark:hover:bg-red-800",
-            "text-red-700 dark:text-red-200 font-medium text-sm",
-            "transition-colors duration-150",
-            "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          )}
+          className={styles.retryButton}
         >
           Try Again
         </button>

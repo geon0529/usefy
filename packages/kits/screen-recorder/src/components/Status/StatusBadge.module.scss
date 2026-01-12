@@ -1,0 +1,168 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.badge {
+  @include status-badge-base;
+}
+
+.dot {
+  @include status-dot;
+}
+
+.label {
+  @include text-xs;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+}
+
+// State variants
+
+// Recording state
+.stateRecording {
+  background-color: $red-50;
+
+  :global(.dark) & {
+    background-color: rgba($red-900, 0.2);
+  }
+}
+
+.dotRecording {
+  background-color: $red-500;
+  @include animate-pulse-record;
+}
+
+.labelRecording {
+  color: $red-600;
+
+  :global(.dark) & {
+    color: $red-400;
+  }
+}
+
+// Paused state
+.statePaused {
+  background-color: $amber-50;
+
+  :global(.dark) & {
+    background-color: rgba($amber-900, 0.2);
+  }
+}
+
+.dotPaused {
+  background-color: $amber-500;
+}
+
+.labelPaused {
+  color: $amber-600;
+
+  :global(.dark) & {
+    color: $amber-400;
+  }
+}
+
+// Requesting state
+.stateRequesting {
+  background-color: $blue-50;
+
+  :global(.dark) & {
+    background-color: rgba($blue-700, 0.2);
+  }
+}
+
+.dotRequesting {
+  background-color: $blue-500;
+  @include animate-pulse;
+}
+
+.labelRequesting {
+  color: $blue-600;
+
+  :global(.dark) & {
+    color: $blue-400;
+  }
+}
+
+// Countdown state
+.stateCountdown {
+  background-color: $amber-50;
+
+  :global(.dark) & {
+    background-color: rgba($amber-900, 0.2);
+  }
+}
+
+.dotCountdown {
+  background-color: $amber-500;
+  @include animate-pulse;
+}
+
+.labelCountdown {
+  color: $amber-600;
+
+  :global(.dark) & {
+    color: $amber-400;
+  }
+}
+
+// Stopped state
+.stateStopped {
+  background-color: $gray-50;
+
+  :global(.dark) & {
+    background-color: $gray-800;
+  }
+}
+
+.dotStopped {
+  background-color: $gray-500;
+}
+
+.labelStopped {
+  color: $gray-600;
+
+  :global(.dark) & {
+    color: $gray-400;
+  }
+}
+
+// Error state
+.stateError {
+  background-color: $red-50;
+
+  :global(.dark) & {
+    background-color: rgba($red-900, 0.2);
+  }
+}
+
+.dotError {
+  background-color: $red-500;
+}
+
+.labelError {
+  color: $red-600;
+
+  :global(.dark) & {
+    color: $red-400;
+  }
+}
+
+// Idle state
+.stateIdle {
+  background-color: $gray-50;
+
+  :global(.dark) & {
+    background-color: $gray-800;
+  }
+}
+
+.dotIdle {
+  background-color: $gray-400;
+}
+
+.labelIdle {
+  color: $gray-500;
+
+  :global(.dark) & {
+    color: $gray-400;
+  }
+}

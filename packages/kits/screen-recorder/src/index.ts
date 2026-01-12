@@ -83,7 +83,7 @@ export type {
 // Utils
 // ============================================================================
 
-export { cn, downloadBlob, generateFilename, formatBytes } from "./utils";
+export { downloadBlob, generateFilename, formatBytes } from "./utils";
 
 // ============================================================================
 // UI Components (for custom compositions)

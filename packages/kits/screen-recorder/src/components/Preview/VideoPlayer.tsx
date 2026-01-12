@@ -1,7 +1,8 @@
 import { forwardRef, useRef, useImperativeHandle, useState, useCallback, useEffect } from "react";
-import { cn } from "../../utils/cn";
+import clsx from "clsx";
 import { PlayIcon, PauseIcon } from "../Trigger/TriggerIcon";
 import { ARIA_LABELS } from "../../constants";
+import styles from "./VideoPlayer.module.scss";
 
 export interface VideoPlayerProps {
   /**
@@ -135,12 +136,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
       : knownDuration || 0;
 
     return (
-      <div className={cn("relative bg-black rounded-lg overflow-hidden", className)}>
+      <div className={clsx(styles.container, className)}>
         {/* Video element */}
         <video
           ref={videoRef}
           src={src}
-          className="w-full h-auto"
+          className={styles.video}
           onPlay={handlePlay}
           onPause={handlePause}
           onEnded={handleEnded}
@@ -154,54 +155,37 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 
         {/* Controls overlay */}
         {showControls && (
-          <div
-            className={cn(
-              "absolute bottom-0 left-0 right-0",
-              "bg-gradient-to-t from-black/80 to-transparent",
-              "p-3"
-            )}
-          >
+          <div className={styles.controlsOverlay}>
             {/* Progress bar */}
-            <div className="flex items-center gap-2 mb-2">
+            <div className={styles.progressWrapper}>
               <input
                 type="range"
                 min={0}
                 max={effectiveDuration || 100}
                 value={currentTime}
                 onChange={handleSeek}
-                className={cn(
-                  "flex-1 h-1 rounded-full appearance-none cursor-pointer",
-                  "bg-white/30",
-                  "[&::-webkit-slider-thumb]:appearance-none",
-                  "[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3",
-                  "[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
-                )}
+                className={styles.progressSlider}
                 aria-label="Video progress"
               />
             </div>
 
             {/* Play button and time */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className={styles.bottomControls}>
+              <div className={styles.leftControls}>
                 <button
                   type="button"
                   onClick={togglePlay}
-                  className={cn(
-                    "p-1.5 rounded-full",
-                    "hover:bg-white/20",
-                    "transition-colors duration-150",
-                    "focus:outline-none focus:ring-2 focus:ring-white/50"
-                  )}
+                  className={styles.playButton}
                   aria-label={isPlaying ? "Pause" : "Play"}
                 >
                   {isPlaying ? (
-                    <PauseIcon className="w-4 h-4 text-white" />
+                    <PauseIcon className={styles.playIcon} />
                   ) : (
-                    <PlayIcon className="w-4 h-4 text-white" />
+                    <PlayIcon className={styles.playIcon} />
                   )}
                 </button>
 
-                <span className="text-white/80 text-xs font-mono tabular-nums">
+                <span className={styles.timeDisplay}>
                   {formatTime(currentTime)} / {formatTime(effectiveDuration)}
                 </span>
               </div>
