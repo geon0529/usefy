@@ -2,50 +2,34 @@ import { useState, useEffect } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { MemoryMonitor, useMemoryMonitorHeadless } from "@usefy/memory-monitor";
 
-/**
- * MemoryMonitor is a React component for real-time
- * browser memory monitoring with a slide-in panel UI.
- *
- * ## Features
- * - Real-time memory usage visualization with gauges and charts
- * - Slide-in panel UI (left or right position)
- * - Keyboard shortcuts (Ctrl+Shift+M to toggle)
- * - Auto-GC trigger when thresholds are exceeded
- * - Memory leak detection and warnings
- * - Snapshot comparison for debugging
- * - **Configurable snapshot limits** (1-50 snapshots)
- * - **Scheduled auto-snapshots** (1min to 24hour intervals)
- * - Settings persistence via LocalStorage
- * - Dark mode support
- *
- * ## Browser Support
- * - Chrome/Edge: Full support with `performance.memory` API
- * - Firefox/Safari: Limited support (DOM-only metrics)
- *
- * ## Usage
- * Add the component at the root of your app. It renders a floating trigger
- * button that opens the panel when clicked.
- */
+// ============================================================================
+// Code Block Component
+// ============================================================================
+
+function CodeBlock({ code, title }: { code: string; title?: string }) {
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+      {title && (
+        <div className="px-4 py-2 bg-slate-100 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600">
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{title}</span>
+        </div>
+      )}
+      <pre className="bg-slate-900 text-slate-100 p-4 text-sm overflow-x-auto">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
+// ============================================================================
+// Meta
+// ============================================================================
+
 const meta: Meta<typeof MemoryMonitor> = {
   title: "Kits/MemoryMonitor",
   component: MemoryMonitor,
   parameters: {
     layout: "fullscreen",
-    docs: {
-      description: {
-        component:
-          "React component for real-time browser memory monitoring with a slide-in panel UI.\n\n" +
-          "**Key Features:**\n" +
-          "- Real-time memory gauges and time-series charts\n" +
-          "- Keyboard shortcuts (Ctrl+Shift+M)\n" +
-          "- Auto-GC trigger with configurable thresholds\n" +
-          "- Memory leak detection\n" +
-          "- Snapshot comparison\n" +
-          "- Settings persistence via LocalStorage\n" +
-          "- Dark mode support\n" +
-          "- SSR compatible",
-      },
-    },
   },
   argTypes: {
     mode: {
@@ -120,20 +104,35 @@ const meta: Meta<typeof MemoryMonitor> = {
 export default meta;
 type Story = StoryObj<typeof MemoryMonitor>;
 
-/**
- * Interactive overview of the MemoryMonitor component.
- *
- * **How to use:**
- * 1. Click the floating trigger button (bottom-right) or press `Ctrl+Shift+M` to open the panel
- * 2. Explore the tabs:
- *    - **Overview**: Real-time memory gauge, heap breakdown, DOM metrics
- *    - **History**: Time-series chart of memory usage
- *    - **Snapshots**: Capture and compare memory snapshots
- *    - **Settings**: Configure thresholds, auto-GC, polling interval
- * 3. Try the keyboard shortcuts:
- *    - `Ctrl+Shift+M`: Toggle panel
- *    - `Escape`: Close panel
- */
+// ============================================================================
+// Overview Story
+// ============================================================================
+
+const OVERVIEW_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+function App() {
+  return (
+    <div>
+      <YourApp />
+      {/* Add at the root of your app */}
+      <MemoryMonitor />
+    </div>
+  );
+}
+
+// With custom options
+<MemoryMonitor
+  mode="always"           // 'development' | 'production' | 'always' | 'headless' | 'never'
+  position="right"        // 'left' | 'right'
+  defaultOpen={false}     // Initial open state
+  defaultWidth={420}      // Panel width in pixels
+  shortcut="ctrl+shift+m" // Keyboard shortcut
+  enableLeakDetection     // Enable memory leak detection
+  onOpenChange={(open) => console.log('Panel:', open)}
+  onWarning={(data) => console.log('Warning:', data)}
+  onAutoGC={(data) => console.log('Auto-GC:', data)}
+/>`;
+
 export const Overview: Story = {
   args: {
     mode: "always",
@@ -145,33 +144,17 @@ export const Overview: Story = {
   },
   render: (args) => (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 p-8">
-      {/* Demo content */}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
           MemoryMonitor Demo
         </h1>
         <p className="text-slate-600 dark:text-slate-300 mb-8">
-          This is a demo page showing the MemoryMonitor component. The
-          panel is open by default for demonstration purposes.
+          Real-time browser memory monitoring with a slide-in panel UI.
+          Click the trigger button or press <kbd className="px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded text-xs">Ctrl+Shift+M</kbd> to toggle.
         </p>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-4">
-            Quick Start
-          </h2>
-          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto">
-            {`import { MemoryMonitor } from "@usefy/memory-monitor";
-
-function App() {
-  return (
-    <div>
-      <YourApp />
-      {/* Add at the root of your app */}
-      <MemoryMonitor />
-    </div>
-  );
-}`}
-          </pre>
+        <div className="mb-6">
+          <CodeBlock code={OVERVIEW_CODE} title="Usage" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -180,18 +163,10 @@ function App() {
               Panel Tabs
             </h3>
             <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-              <li>
-                <strong>Overview:</strong> Real-time memory gauge and metrics
-              </li>
-              <li>
-                <strong>History:</strong> Time-series chart of memory usage
-              </li>
-              <li>
-                <strong>Snapshots:</strong> Capture and compare memory states
-              </li>
-              <li>
-                <strong>Settings:</strong> Configure thresholds and auto-GC
-              </li>
+              <li><strong>Overview:</strong> Real-time memory gauge and metrics</li>
+              <li><strong>History:</strong> Time-series chart of memory usage</li>
+              <li><strong>Snapshots:</strong> Capture and compare memory states</li>
+              <li><strong>Settings:</strong> Configure thresholds and auto-GC</li>
             </ul>
           </div>
 
@@ -201,15 +176,11 @@ function App() {
             </h3>
             <ul className="space-y-2 text-slate-600 dark:text-slate-300">
               <li>
-                <kbd className="px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded text-xs">
-                  Ctrl+Shift+M
-                </kbd>{" "}
+                <kbd className="px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded text-xs">Ctrl+Shift+M</kbd>{" "}
                 Toggle panel
               </li>
               <li>
-                <kbd className="px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded text-xs">
-                  Escape
-                </kbd>{" "}
+                <kbd className="px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded text-xs">Escape</kbd>{" "}
                 Close panel
               </li>
             </ul>
@@ -217,60 +188,29 @@ function App() {
         </div>
       </div>
 
-      {/* The panel component */}
       <MemoryMonitor {...args} />
     </div>
   ),
-  parameters: {
-    docs: {
-      source: {
-        code: `import { MemoryMonitor } from "@usefy/memory-monitor";
-
-// Basic usage - renders in development mode only
-<MemoryMonitor />
-
-// With custom options
-<MemoryMonitor
-  mode="always"           // 'development' | 'production' | 'always' | 'never'
-  position="right"        // 'left' | 'right'
-  defaultOpen={false}     // Initial open state
-  defaultWidth={420}      // Panel width in pixels
-  shortcut="ctrl+shift+m" // Keyboard shortcut
-  enableLeakDetection     // Enable memory leak detection
-  onOpenChange={(open) => console.log('Panel:', open)}
-  onWarning={(data) => console.log('Warning:', data)}
-  onAutoGC={(data) => console.log('Auto-GC:', data)}
-/>`,
-        language: "tsx",
-        type: "code",
-      },
-    },
-  },
 };
 
-/**
- * Demonstrates the snapshot configuration features.
- *
- * **Snapshot Settings (in Settings tab):**
- * - **Maximum Snapshots**: Set the max number of snapshots to store (1-50)
- * - **Auto Snapshot Schedule**: Automatically capture snapshots at intervals
- *   - Off (default)
- *   - Every 1 minute
- *   - Every 5 minutes
- *   - Every 10 minutes
- *   - Every 30 minutes
- *   - Every 1 hour
- *   - Every 6 hours
- *   - Every 24 hours
- * - **Auto-delete oldest**: When enabled, oldest snapshot is deleted when max is reached
- *
- * **Try it:**
- * 1. Open the panel and go to "Settings" tab
- * 2. Scroll down to "Snapshot Settings" section
- * 3. Adjust the maximum snapshots value
- * 4. Enable auto-snapshot schedule (e.g., "Every 1 min")
- * 5. Go to "Snapshots" tab to see auto-captured snapshots (marked with "Auto" badge)
- */
+// ============================================================================
+// Snapshot Settings Story
+// ============================================================================
+
+const SNAPSHOT_SETTINGS_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+// Snapshot settings are configured in the Settings tab
+// - Maximum Snapshots: 1-50 (default: 10)
+// - Auto Snapshot Schedule: off | 1min | 5min | 10min | 30min | 1hour | 6hour | 24hour
+// - Auto-delete oldest: when max is reached
+
+<MemoryMonitor
+  mode="always"
+  // Settings are persisted in localStorage
+  persistSettings={true}
+  storageKey="memory-monitor-settings"
+/>`;
+
 export const SnapshotSettings: Story = {
   args: {
     mode: "always",
@@ -289,29 +229,28 @@ export const SnapshotSettings: Story = {
           Configure snapshot limits and automatic snapshot schedules in the Settings tab.
         </p>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-4">
-            Snapshot Features
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg">
-              <h3 className="font-medium text-slate-800 dark:text-white mb-2">
-                📸 Configurable Limits
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Set maximum snapshots from 1 to 50. When limit is reached,
-                oldest snapshot is auto-deleted if enabled.
-              </p>
-            </div>
-            <div className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg">
-              <h3 className="font-medium text-slate-800 dark:text-white mb-2">
-                ⏰ Scheduled Snapshots
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Automatically capture snapshots at intervals: 1min, 5min, 10min,
-                30min, 1hour, 6hours, or 24hours.
-              </p>
-            </div>
+        <div className="mb-6">
+          <CodeBlock code={SNAPSHOT_SETTINGS_CODE} title="Configuration" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
+            <h3 className="font-medium text-slate-800 dark:text-white mb-2">
+              Configurable Limits
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Set maximum snapshots from 1 to 50. When limit is reached,
+              oldest snapshot is auto-deleted if enabled.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
+            <h3 className="font-medium text-slate-800 dark:text-white mb-2">
+              Scheduled Snapshots
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Automatically capture snapshots at intervals: 1min, 5min, 10min,
+              30min, 1hour, 6hours, or 24hours.
+            </p>
           </div>
         </div>
 
@@ -328,9 +267,18 @@ export const SnapshotSettings: Story = {
   ),
 };
 
-/**
- * Panel positioned on the left side of the screen.
- */
+// ============================================================================
+// Left Position Story
+// ============================================================================
+
+const LEFT_POSITION_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+// Panel slides in from the left
+<MemoryMonitor
+  position="left"
+  mode="always"
+/>`;
+
 export const LeftPosition: Story = {
   args: {
     mode: "always",
@@ -344,9 +292,11 @@ export const LeftPosition: Story = {
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
           Left Position Demo
         </h1>
-        <p className="text-slate-600 dark:text-slate-300">
+        <p className="text-slate-600 dark:text-slate-300 mb-8">
           The panel slides in from the left side of the screen.
         </p>
+
+        <CodeBlock code={LEFT_POSITION_CODE} title="Usage" />
       </div>
       <MemoryMonitor {...args} />
     </div>
@@ -356,6 +306,46 @@ export const LeftPosition: Story = {
 // ============================================================================
 // Headless Mode Demo
 // ============================================================================
+
+const HEADLESS_MODE_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+// Recommended: Use mode="headless" for easy environment switching
+function App() {
+  return (
+    <div>
+      <YourApp />
+      <MemoryMonitor
+        // Switch between dev UI and production headless
+        mode={process.env.NODE_ENV === 'development' ? 'always' : 'headless'}
+        onWarning={(data) => {
+          console.warn("Memory warning:", data);
+          analytics.track("memory_warning", data);
+        }}
+        onCritical={(data) => {
+          console.error("Critical memory:", data);
+          alertService.send(data);
+        }}
+        onLeakDetected={(analysis) => {
+          Sentry.captureMessage("Memory leak detected", { extra: analysis });
+        }}
+      />
+    </div>
+  );
+}
+
+// Alternative: useMemoryMonitorHeadless hook for more control
+import { useMemoryMonitorHeadless } from "@usefy/memory-monitor";
+
+function ProductionMonitor() {
+  const { memory, severity, requestGC } = useMemoryMonitorHeadless({
+    interval: 1000,
+    warningThreshold: 70,
+    criticalThreshold: 90,
+    onWarning: (data) => analytics.track("memory_warning", data),
+  });
+
+  return null; // No UI
+}`;
 
 function HeadlessModeDemo() {
   const [events, setEvents] = useState<Array<{ type: string; time: string; data: string }>>([]);
@@ -396,7 +386,6 @@ function HeadlessModeDemo() {
     },
   });
 
-  // Add periodic update events
   useEffect(() => {
     if (memory) {
       addEvent("update", `${(memory.heapUsed / 1024 / 1024).toFixed(1)} MB`);
@@ -426,6 +415,10 @@ function HeadlessModeDemo() {
         <p className="text-slate-600 mb-8">
           No visible panel - just monitoring in background with callbacks.
         </p>
+
+        <div className="mb-6">
+          <CodeBlock code={HEADLESS_MODE_CODE} title="Usage" />
+        </div>
 
         {/* Status Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -496,82 +489,40 @@ function HeadlessModeDemo() {
   );
 }
 
-/**
- * Headless mode for production monitoring without UI.
- *
- * **Recommended:** Use `mode="headless"` on the component for easy dev/prod switching.
- * **Alternative:** Use `useMemoryMonitorHeadless` hook for more control.
- *
- * Perfect for:
- * - Sending memory metrics to analytics
- * - Triggering alerts when thresholds are exceeded
- * - Auto-GC in background
- * - Memory leak detection with callbacks
- */
 export const HeadlessMode: Story = {
   render: () => <HeadlessModeDemo />,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Headless mode provides memory monitoring without UI. " +
-          "Use `mode=\"headless\"` for production environments where you want to track memory " +
-          "usage and trigger callbacks without showing a visible panel. " +
-          "This keeps the same component API, making dev/prod switching easy.",
-      },
-      source: {
-        code: `// Recommended: Use mode="headless" for easy environment switching
-import { MemoryMonitor } from "@usefy/memory-monitor";
-
-function App() {
-  return (
-    <div>
-      <YourApp />
-      <MemoryMonitor
-        // Switch between dev UI and production headless with same code
-        mode={process.env.NODE_ENV === 'development' ? 'always' : 'headless'}
-        onWarning={(data) => {
-          console.warn("Memory warning:", data);
-          analytics.track("memory_warning", data);
-        }}
-        onCritical={(data) => {
-          console.error("Critical memory:", data);
-          alertService.send(data);
-        }}
-        onLeakDetected={(analysis) => {
-          Sentry.captureMessage("Memory leak detected", { extra: analysis });
-        }}
-        onAutoGC={(data) => {
-          console.log("Auto-GC triggered:", data);
-        }}
-      />
-    </div>
-  );
-}
-
-// Alternative: useMemoryMonitorHeadless hook for more control
-import { useMemoryMonitorHeadless } from "@usefy/memory-monitor";
-
-function ProductionMonitor() {
-  const { memory, usagePercentage, severity, requestGC } = useMemoryMonitorHeadless({
-    interval: 1000,
-    warningThreshold: 70,
-    criticalThreshold: 90,
-    onWarning: (data) => analytics.track("memory_warning", data),
-  });
-
-  return null; // No UI
-}`,
-        language: "tsx",
-        type: "code",
-      },
-    },
-  },
 };
 
 // ============================================================================
 // Callback Events Demo
 // ============================================================================
+
+const CALLBACK_EVENTS_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+<MemoryMonitor
+  mode="always"
+  onOpenChange={(isOpen) => {
+    console.log("Panel:", isOpen ? "opened" : "closed");
+  }}
+  onWarning={(data) => {
+    console.warn("Warning at", data.usagePercentage.toFixed(1) + "%");
+    // Send to analytics
+  }}
+  onCritical={(data) => {
+    console.error("Critical at", data.usagePercentage.toFixed(1) + "%");
+    // Trigger alert
+  }}
+  onLeakDetected={(analysis) => {
+    console.warn("Leak probability:", analysis.probability + "%");
+    // Report to error tracking
+  }}
+  onAutoGC={(data) => {
+    console.log("Auto-GC at", data.usage.toFixed(1) + "%");
+  }}
+  onUpdate={(memory) => {
+    // Called on every memory measurement
+  }}
+/>`;
 
 function CallbackEventsDemo() {
   const [events, setEvents] = useState<Array<{ type: string; time: string; data: string }>>([]);
@@ -602,6 +553,10 @@ function CallbackEventsDemo() {
           Open the panel and interact to see events logged below.
         </p>
 
+        <div className="mb-6">
+          <CodeBlock code={CALLBACK_EVENTS_CODE} title="Available Callbacks" />
+        </div>
+
         {/* Event Log */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
           <h2 className="font-semibold text-slate-800 mb-4">Event Stream</h2>
@@ -622,7 +577,7 @@ function CallbackEventsDemo() {
 
         {/* Callback Reference */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h2 className="font-semibold text-slate-800 mb-4">Available Callbacks</h2>
+          <h2 className="font-semibold text-slate-800 mb-4">Callback Reference</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-slate-50 p-3 rounded-lg">
               <code className="text-indigo-600 text-sm">onOpenChange</code>
@@ -676,59 +631,37 @@ function CallbackEventsDemo() {
   );
 }
 
-/**
- * Demonstrates all callback events available in MemoryMonitor.
- *
- * **Available Callbacks:**
- * - `onOpenChange`: Panel open/close state changes
- * - `onWarning`: Memory usage exceeds warning threshold
- * - `onCritical`: Memory usage exceeds critical threshold
- * - `onLeakDetected`: Potential memory leak detected
- * - `onAutoGC`: Auto garbage collection triggered
- */
 export const CallbackEvents: Story = {
   render: () => <CallbackEventsDemo />,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "MemoryMonitor provides various callback events for integrating with your application's " +
-          "logging, analytics, and alerting systems.",
-      },
-      source: {
-        code: `import { MemoryMonitor } from "@usefy/memory-monitor";
-
-<MemoryMonitor
-  mode="always"
-  onOpenChange={(isOpen) => {
-    console.log("Panel:", isOpen ? "opened" : "closed");
-  }}
-  onWarning={(data) => {
-    console.warn("Warning at", data.usagePercentage.toFixed(1) + "%");
-  }}
-  onCritical={(data) => {
-    console.error("Critical at", data.usagePercentage.toFixed(1) + "%");
-  }}
-  onLeakDetected={(analysis) => {
-    console.warn("Leak probability:", analysis.probability + "%");
-  }}
-  onAutoGC={(data) => {
-    console.log("Auto-GC at", data.usage.toFixed(1) + "%");
-  }}
-/>`,
-        language: "tsx",
-        type: "code",
-      },
-    },
-  },
 };
 
-/**
- * Custom trigger button with your own styling.
- *
- * Use `triggerContent` prop to provide a custom trigger element,
- * or set `showTrigger={false}` and control the panel programmatically.
- */
+// ============================================================================
+// Custom Trigger Story
+// ============================================================================
+
+const CUSTOM_TRIGGER_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+// Custom trigger content
+<MemoryMonitor
+  triggerContent={
+    <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full">
+      <span>📊</span>
+      <span>Memory</span>
+    </div>
+  }
+/>
+
+// Or hide trigger and control programmatically
+const [isOpen, setIsOpen] = useState(false);
+
+<MemoryMonitor
+  showTrigger={false}
+  defaultOpen={isOpen}
+  onOpenChange={setIsOpen}
+/>
+
+<button onClick={() => setIsOpen(true)}>Open Memory Panel</button>`;
+
 export const CustomTrigger: Story = {
   args: {
     mode: "always",
@@ -752,40 +685,34 @@ export const CustomTrigger: Story = {
           Click the custom "Memory" button in the bottom-right corner to open the panel.
         </p>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-4">
-            Customization Options
-          </h2>
-          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto">
-            {`// Custom trigger content
-<MemoryMonitor
-  triggerContent={
-    <MyCustomButton>
-      📊 Memory
-    </MyCustomButton>
-  }
-/>
-
-// Or hide trigger and control programmatically
-<MemoryMonitor
-  showTrigger={false}
-  defaultOpen={true}
-  onOpenChange={setIsOpen}
-/>`}
-          </pre>
-        </div>
+        <CodeBlock code={CUSTOM_TRIGGER_CODE} title="Customization" />
       </div>
       <MemoryMonitor {...args} />
     </div>
   ),
 };
 
-/**
- * Demonstrates threshold configuration for warnings and alerts.
- *
- * Configure when memory warnings and critical alerts are triggered
- * based on usage percentage.
- */
+// ============================================================================
+// Threshold Configuration Story
+// ============================================================================
+
+const THRESHOLD_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+<MemoryMonitor
+  // Threshold configuration
+  warningThreshold={60}   // Yellow indicator at 60%
+  criticalThreshold={85}  // Red indicator at 85%
+
+  // Auto-GC configuration
+  enableAutoGC={true}
+  autoGCThreshold={80}    // Request GC at 80%
+
+  // Callbacks
+  onWarning={(data) => console.warn("Warning:", data)}
+  onCritical={(data) => console.error("Critical:", data)}
+  onAutoGC={(data) => console.log("Auto-GC:", data)}
+/>`;
+
 export const ThresholdConfiguration: Story = {
   args: {
     mode: "always",
@@ -795,7 +722,7 @@ export const ThresholdConfiguration: Story = {
     criticalThreshold: 85,
     enableAutoGC: true,
     autoGCThreshold: 80,
-    persistSettings: false, // Disable localStorage to ensure story args take effect
+    persistSettings: false,
   },
   render: (args) => (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 p-8">
@@ -807,7 +734,11 @@ export const ThresholdConfiguration: Story = {
           Configure warning, critical, and auto-GC thresholds.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="mb-6">
+          <CodeBlock code={THRESHOLD_CODE} title="Configuration" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
             <h3 className="font-bold text-amber-800 dark:text-amber-200 mb-2">
               Warning: 60%
@@ -833,40 +764,32 @@ export const ThresholdConfiguration: Story = {
             </p>
           </div>
         </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
-          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-x-auto">
-            {`<MemoryMonitor
-  warningThreshold={60}
-  criticalThreshold={85}
-  enableAutoGC={true}
-  autoGCThreshold={80}
-  onWarning={(data) => console.warn("Warning:", data)}
-  onCritical={(data) => console.error("Critical:", data)}
-  onAutoGC={(data) => console.log("Auto-GC:", data)}
-/>`}
-          </pre>
-        </div>
       </div>
       <MemoryMonitor {...args} />
     </div>
   ),
 };
 
-/**
- * Dark mode demonstration.
- *
- * MemoryMonitor automatically adapts to dark mode based on:
- * 1. System preference (prefers-color-scheme)
- * 2. Manual theme setting in Settings tab
- */
+// ============================================================================
+// Dark Mode Story
+// ============================================================================
+
+const DARK_MODE_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+// Theme options
+<MemoryMonitor theme="system" />  // Follow OS preference (default)
+<MemoryMonitor theme="light" />   // Always light mode
+<MemoryMonitor theme="dark" />    // Always dark mode
+
+// Theme can also be changed in Settings tab`;
+
 export const DarkMode: Story = {
   args: {
     mode: "always",
     position: "right",
     defaultOpen: true,
     theme: "dark",
-    persistSettings: false, // Disable localStorage to ensure dark theme is applied
+    persistSettings: false,
   },
   render: (args) => (
     <div className="min-h-screen bg-slate-900 p-8">
@@ -878,30 +801,41 @@ export const DarkMode: Story = {
           MemoryMonitor supports dark mode with automatic system preference detection.
         </p>
 
-        <div className="bg-slate-800 rounded-xl p-6 shadow-lg">
-          <h2 className="text-xl font-semibold text-white mb-4">
-            Theme Options
-          </h2>
-          <ul className="space-y-2 text-slate-300">
-            <li><code className="text-indigo-400">theme="system"</code> - Follow OS preference (default)</li>
-            <li><code className="text-indigo-400">theme="light"</code> - Always light mode</li>
-            <li><code className="text-indigo-400">theme="dark"</code> - Always dark mode</li>
-          </ul>
-        </div>
+        <CodeBlock code={DARK_MODE_CODE} title="Theme Options" />
       </div>
       <MemoryMonitor {...args} />
     </div>
   ),
 };
 
-/**
- * Leak detection with sensitivity configuration.
- *
- * Configure how aggressively memory leaks are detected:
- * - **low**: More samples required, fewer false positives
- * - **medium**: Balanced detection (default)
- * - **high**: Quick detection, may have more false positives
- */
+// ============================================================================
+// Leak Detection Story
+// ============================================================================
+
+const LEAK_DETECTION_CODE = `import { MemoryMonitor } from "@usefy/memory-monitor";
+
+<MemoryMonitor
+  enableLeakDetection={true}
+  leakSensitivity="medium"  // 'low' | 'medium' | 'high'
+  onLeakDetected={(analysis) => {
+    console.warn("Leak detected:", {
+      probability: analysis.probability,  // 0-100%
+      trend: analysis.trend,              // 'increasing' | 'stable' | 'decreasing'
+      recommendation: analysis.recommendation,
+    });
+
+    // Report to error tracking
+    Sentry.captureMessage("Memory leak detected", {
+      extra: analysis,
+    });
+  }}
+/>
+
+// Sensitivity levels:
+// - low:    100KB/sample growth, R² ≥ 0.8 (fewer false positives)
+// - medium: 50KB/sample growth, R² ≥ 0.7 (balanced)
+// - high:   10KB/sample growth, R² ≥ 0.6 (quick detection)`;
+
 export const LeakDetection: Story = {
   args: {
     mode: "always",
@@ -909,7 +843,7 @@ export const LeakDetection: Story = {
     defaultOpen: true,
     enableLeakDetection: true,
     leakSensitivity: "high",
-    persistSettings: false, // Disable localStorage to ensure story settings take effect
+    persistSettings: false,
   },
   render: (args) => (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 p-8">
@@ -921,33 +855,32 @@ export const LeakDetection: Story = {
           Advanced leak detection using linear regression and GC analysis.
         </p>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg mb-6">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-4">
-            Detection Algorithm
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg">
-              <h3 className="font-medium text-slate-800 dark:text-white mb-2">
-                5-Factor Weighted Scoring
-              </h3>
-              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-                <li>• Slope (Growth Rate): 30 points</li>
-                <li>• R² (Consistency): 20 points</li>
-                <li>• GC Ineffectiveness: 25 points</li>
-                <li>• Observation Time: 15 points</li>
-                <li>• Baseline Growth: 10 points</li>
-              </ul>
-            </div>
-            <div className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg">
-              <h3 className="font-medium text-slate-800 dark:text-white mb-2">
-                Sensitivity Levels
-              </h3>
-              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-                <li>• <strong>Low:</strong> 100KB/sample, R² ≥ 0.8</li>
-                <li>• <strong>Medium:</strong> 50KB/sample, R² ≥ 0.7</li>
-                <li>• <strong>High:</strong> 10KB/sample, R² ≥ 0.6</li>
-              </ul>
-            </div>
+        <div className="mb-6">
+          <CodeBlock code={LEAK_DETECTION_CODE} title="Configuration" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
+            <h3 className="font-medium text-slate-800 dark:text-white mb-2">
+              5-Factor Weighted Scoring
+            </h3>
+            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
+              <li>• Slope (Growth Rate): 30 points</li>
+              <li>• R² (Consistency): 20 points</li>
+              <li>• GC Ineffectiveness: 25 points</li>
+              <li>• Observation Time: 15 points</li>
+              <li>• Baseline Growth: 10 points</li>
+            </ul>
+          </div>
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow">
+            <h3 className="font-medium text-slate-800 dark:text-white mb-2">
+              Sensitivity Levels
+            </h3>
+            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
+              <li>• <strong>Low:</strong> 100KB/sample, R² ≥ 0.8</li>
+              <li>• <strong>Medium:</strong> 50KB/sample, R² ≥ 0.7</li>
+              <li>• <strong>High:</strong> 10KB/sample, R² ≥ 0.6</li>
+            </ul>
           </div>
         </div>
 
