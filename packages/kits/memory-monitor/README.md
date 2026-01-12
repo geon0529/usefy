@@ -45,7 +45,7 @@
 
 `@usefy/memory-monitor` is a React component for real-time browser memory monitoring with a slide-in panel UI. It provides memory visualization, leak detection, automatic GC triggers, snapshot management, and HTML report generation.
 
-**Built on [`@usefy/use-memory-monitor`](https://www.npmjs.com/package/@usefy/use-memory-monitor)** — the core hook that provides all memory monitoring logic. This component wraps the hook with a complete UI solution.
+**Includes `useMemoryMonitorHeadless` hook** for programmatic memory monitoring without UI — perfect for production environments where you only need data and callbacks.
 
 **Part of the [@usefy](https://www.npmjs.com/org/usefy) ecosystem.**
 
@@ -514,7 +514,7 @@ All settings are automatically persisted to LocalStorage:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `mode` | `'development' \| 'production' \| 'always' \| 'never'` | `'development'` | When to render the panel |
+| `mode` | `'development' \| 'production' \| 'always' \| 'headless' \| 'never'` | `'development'` | When to render the panel. Use `'headless'` for production monitoring without UI |
 | `defaultOpen` | `boolean` | `false` | Initial open state |
 | `position` | `'left' \| 'right'` | `'right'` | Panel slide-in position |
 | `zIndex` | `number` | `9999` | Panel z-index |
@@ -762,31 +762,73 @@ After capturing 5+ snapshots, click "Generate Report" in the Snapshots tab to do
 
 ### Headless Mode (Production)
 
-For production monitoring without the UI, use the underlying hook:
+For production monitoring without the UI, use `mode="headless"`. This keeps the same component API, making it easy to switch between development and production:
 
 ```tsx
-import { useMemoryMonitor } from "@usefy/use-memory-monitor";
+import { MemoryMonitor } from "@usefy/memory-monitor";
+
+function App() {
+  return (
+    <div>
+      <YourApp />
+      <MemoryMonitor
+        // Easy environment switching with same API
+        mode={process.env.NODE_ENV === 'development' ? 'always' : 'headless'}
+        onWarning={(data) => {
+          console.warn("Memory warning:", data);
+          analytics.track("memory_warning", data);
+        }}
+        onCritical={(data) => {
+          console.error("Critical memory:", data);
+          alertService.send(data);
+        }}
+        onLeakDetected={(analysis) => {
+          Sentry.captureMessage("Memory leak detected", { extra: analysis });
+        }}
+        onAutoGC={(data) => {
+          console.log("Auto-GC triggered:", data);
+        }}
+      />
+    </div>
+  );
+}
+```
+
+**Mode Comparison:**
+
+| Mode | UI | Monitoring | Use Case |
+|------|:---:|:----------:|----------|
+| `development` | Dev only | Active | Default for dev |
+| `production` | Prod only | Active | Debug in prod |
+| `always` | Always | Active | Demo/testing |
+| `headless` | Never | Active | Production callbacks |
+| `never` | Never | Disabled | Completely off |
+
+#### Alternative: useMemoryMonitorHeadless Hook
+
+For more fine-grained control, you can also use the `useMemoryMonitorHeadless` hook directly:
+
+```tsx
+import { useMemoryMonitorHeadless } from "@usefy/memory-monitor";
 
 function ProductionMonitor() {
-  const { usagePercentage, isLeakDetected, formatted } = useMemoryMonitor({
+  const {
+    memory,
+    usagePercentage,
+    severity,
+    isLeakDetected,
+    requestGC,
+  } = useMemoryMonitorHeadless({
     interval: 5000,
-    enableHistory: true,
-    leakDetection: {
-      enabled: true,
-      sensitivity: "medium",
-    },
+    warningThreshold: 70,
+    criticalThreshold: 90,
+    enableAutoGC: true,
+    autoGCThreshold: 85,
+    onWarning: (data) => analytics.track("memory_warning", data),
+    onCritical: (data) => alertService.send(data),
   });
 
-  // Send metrics to monitoring service
-  useEffect(() => {
-    metrics.gauge('memory_usage', usagePercentage);
-
-    if (isLeakDetected) {
-      metrics.increment('leak_detected');
-    }
-  }, [usagePercentage, isLeakDetected]);
-
-  return null; // No UI
+  return null; // No UI rendered
 }
 ```
 

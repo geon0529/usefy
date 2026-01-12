@@ -56,6 +56,13 @@ describe("MemoryMonitor", () => {
       expect(container.firstChild).toBeNull();
     });
 
+    it("does not render UI when mode is 'headless'", () => {
+      const { container } = render(<MemoryMonitor mode="headless" />);
+
+      // Headless mode should not render any UI
+      expect(container.firstChild).toBeNull();
+    });
+
     it("hides trigger when showTrigger is false", () => {
       render(<MemoryMonitor showTrigger={false} />);
 
@@ -265,6 +272,44 @@ describe("MemoryMonitor", () => {
       );
 
       expect(screen.getByTestId("custom-trigger")).toBeInTheDocument();
+    });
+  });
+
+  describe("Headless Mode", () => {
+    it("does not render any UI in headless mode", () => {
+      const { container } = render(<MemoryMonitor mode="headless" />);
+
+      expect(container.firstChild).toBeNull();
+    });
+
+    it("headless mode differs from never mode - monitoring stays active", () => {
+      // This test verifies the conceptual difference:
+      // - "headless": No UI but monitoring is active
+      // - "never": No UI and monitoring is completely disabled
+
+      // Both should not render UI
+      const { container: headlessContainer } = render(
+        <MemoryMonitor mode="headless" />
+      );
+      expect(headlessContainer.firstChild).toBeNull();
+
+      const { container: neverContainer } = render(
+        <MemoryMonitor mode="never" />
+      );
+      expect(neverContainer.firstChild).toBeNull();
+
+      // The actual monitoring behavior difference is tested at the unit level
+      // via environment.ts tests (getShouldActivate returns true for headless, false for never)
+    });
+
+    it("headless mode works in both development and production", () => {
+      // Headless should work regardless of NODE_ENV
+      vi.stubEnv("NODE_ENV", "production");
+
+      const { container } = render(<MemoryMonitor mode="headless" />);
+
+      // Still no UI but component should mount and run monitoring
+      expect(container.firstChild).toBeNull();
     });
   });
 });

@@ -256,17 +256,17 @@
   @include reset-button;
   position: relative;
   display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
-  width: 2.25rem; // 36px (w-9)
-  height: 1.25rem; // 20px (h-5)
-  padding: $spacing-0-5;
+  width: 2.75rem; // 44px (w-11) - matching AutoGCToggle
+  height: 1.5rem; // 24px (h-6) - matching AutoGCToggle
   border-radius: $radius-full;
   @include transition-colors;
 
-  background-color: $slate-200;
+  background-color: $slate-300;
 
   :global(.dark) & {
-    background-color: $slate-700;
+    background-color: $slate-600;
   }
 
   &:focus {
@@ -274,8 +274,8 @@
     box-shadow: 0 0 0 2px white, 0 0 0 4px $blue-500;
   }
 
-  &:focus-visible {
-    box-shadow: 0 0 0 2px white, 0 0 0 4px $blue-500;
+  :global(.dark) &:focus {
+    box-shadow: 0 0 0 2px $slate-900, 0 0 0 4px $blue-500;
   }
 
   &:disabled {
@@ -286,6 +286,10 @@
 
 .toggleEnabled {
   background-color: $blue-600;
+
+  :global(.dark) & {
+    background-color: $blue-500;
+  }
 }
 
 .toggleThumb {
@@ -295,11 +299,10 @@
   border-radius: $radius-full;
   background-color: white;
   box-shadow: $shadow-sm;
-  transform: translateX(0);
-  transition: transform $transition-normal $ease-in-out;
-  pointer-events: none;
+  transform: translateX(0.25rem);
+  transition: transform $transition-normal $ease-default;
 }
 
 .toggleThumbEnabled {
-  transform: translateX(1rem);
+  transform: translateX(1.375rem); // 22px - matching AutoGCToggle
 }

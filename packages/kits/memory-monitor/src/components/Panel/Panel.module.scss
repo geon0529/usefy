@@ -51,28 +51,33 @@
   height: 100%;
   @include glass-light;
   box-shadow: $shadow-2xl, 0 0 40px rgba($slate-200, 0.5);
-  border-color: $slate-200;
 
   :global(.dark) & {
     @include glass-dark;
     box-shadow: $shadow-2xl, 0 0 40px rgba(black, 0.5);
-    border-color: $slate-800;
   }
+}
 
+// Position-specific border styles
+// Apply border based on position, with dark mode support
+.panelInner {
   .positionRight & {
-    border-left: 1px solid $slate-200;
-
-    :global(.dark) & {
-      border-left-color: $slate-800;
-    }
+    border-left: 1px solid $slate-300;
   }
 
   .positionLeft & {
-    border-right: 1px solid $slate-200;
+    border-right: 1px solid $slate-300;
+  }
+}
 
-    :global(.dark) & {
-      border-right-color: $slate-800;
-    }
+// Dark mode border colors - applied via .panelInnerDark class
+.panelInnerDark {
+  .positionRight & {
+    border-left-color: $slate-700;
+  }
+
+  .positionLeft & {
+    border-right-color: $slate-700;
   }
 }
 

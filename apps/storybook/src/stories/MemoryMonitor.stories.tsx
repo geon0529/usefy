@@ -50,10 +50,10 @@ const meta: Meta<typeof MemoryMonitor> = {
   argTypes: {
     mode: {
       control: "select",
-      options: ["development", "production", "always", "never"],
-      description: "When to render the panel",
+      options: ["development", "production", "always", "headless", "never"],
+      description: "When to render the panel. Use 'headless' for production monitoring without UI.",
       table: {
-        type: { summary: "'development' | 'production' | 'always' | 'never'" },
+        type: { summary: "'development' | 'production' | 'always' | 'headless' | 'never'" },
         defaultValue: { summary: "'development'" },
       },
     },
@@ -499,8 +499,10 @@ function HeadlessModeDemo() {
 /**
  * Headless mode for production monitoring without UI.
  *
- * Use `useMemoryMonitorHeadless` hook when you need memory monitoring
- * in production without showing any visible UI. Perfect for:
+ * **Recommended:** Use `mode="headless"` on the component for easy dev/prod switching.
+ * **Alternative:** Use `useMemoryMonitorHeadless` hook for more control.
+ *
+ * Perfect for:
  * - Sending memory metrics to analytics
  * - Triggering alerts when thresholds are exceeded
  * - Auto-GC in background
@@ -513,49 +515,52 @@ export const HeadlessMode: Story = {
       description: {
         story:
           "Headless mode provides memory monitoring without UI. " +
-          "Use `useMemoryMonitorHeadless` hook for production environments where you want to track memory " +
-          "usage and trigger callbacks without showing a visible panel.",
+          "Use `mode=\"headless\"` for production environments where you want to track memory " +
+          "usage and trigger callbacks without showing a visible panel. " +
+          "This keeps the same component API, making dev/prod switching easy.",
       },
       source: {
-        code: `import { useMemoryMonitorHeadless } from "@usefy/memory-monitor";
+        code: `// Recommended: Use mode="headless" for easy environment switching
+import { MemoryMonitor } from "@usefy/memory-monitor";
 
 function App() {
-  const {
-    memory,
-    usagePercentage,
-    severity,
-    isLeakDetected,
-    leakProbability,
-    trend,
-    requestGC,
-    isSupported,
-  } = useMemoryMonitorHeadless({
+  return (
+    <div>
+      <YourApp />
+      <MemoryMonitor
+        // Switch between dev UI and production headless with same code
+        mode={process.env.NODE_ENV === 'development' ? 'always' : 'headless'}
+        onWarning={(data) => {
+          console.warn("Memory warning:", data);
+          analytics.track("memory_warning", data);
+        }}
+        onCritical={(data) => {
+          console.error("Critical memory:", data);
+          alertService.send(data);
+        }}
+        onLeakDetected={(analysis) => {
+          Sentry.captureMessage("Memory leak detected", { extra: analysis });
+        }}
+        onAutoGC={(data) => {
+          console.log("Auto-GC triggered:", data);
+        }}
+      />
+    </div>
+  );
+}
+
+// Alternative: useMemoryMonitorHeadless hook for more control
+import { useMemoryMonitorHeadless } from "@usefy/memory-monitor";
+
+function ProductionMonitor() {
+  const { memory, usagePercentage, severity, requestGC } = useMemoryMonitorHeadless({
     interval: 1000,
     warningThreshold: 70,
     criticalThreshold: 90,
-    enableAutoGC: true,
-    autoGCThreshold: 85,
-    enableLeakDetection: true,
-    leakSensitivity: "medium",
-    onWarning: (data) => {
-      console.warn("Memory warning:", data);
-      analytics.track("memory_warning", data);
-    },
-    onCritical: (data) => {
-      console.error("Critical memory:", data);
-      analytics.track("memory_critical", data);
-    },
-    onLeakDetected: (analysis) => {
-      console.warn("Leak detected:", analysis);
-      Sentry.captureMessage("Memory leak detected", { extra: analysis });
-    },
-    onAutoGC: (data) => {
-      console.log("Auto-GC triggered:", data);
-    },
+    onWarning: (data) => analytics.track("memory_warning", data),
   });
 
-  // No UI rendered - just monitoring in background
-  return <YourApp />;
+  return null; // No UI
 }`,
         language: "tsx",
         type: "code",

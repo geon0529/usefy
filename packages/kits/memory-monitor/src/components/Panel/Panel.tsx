@@ -83,7 +83,7 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
           }}
         >
           {/* Inner wrapper with theme-aware styles */}
-          <div className={styles.panelInner}>
+          <div className={clsx(styles.panelInner, isDark && styles.panelInnerDark)}>
             {children}
           </div>
         </div>

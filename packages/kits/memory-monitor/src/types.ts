@@ -17,8 +17,13 @@ export type {
 
 /**
  * Panel visibility mode
+ * - 'development': Show UI only in development
+ * - 'production': Show UI only in production
+ * - 'always': Always show UI
+ * - 'headless': No UI, but monitoring runs (for production callbacks)
+ * - 'never': No UI and no monitoring (completely disabled)
  */
-export type PanelMode = "development" | "production" | "always" | "never";
+export type PanelMode = "development" | "production" | "always" | "headless" | "never";
 
 /**
  * Panel position
@@ -264,10 +269,11 @@ export interface MemoryMonitorProps {
   // === Core Configuration ===
   /**
    * Panel visibility mode
-   * - 'development': Show only in development (default)
-   * - 'production': Show only in production
-   * - 'always': Always show
-   * - 'never': Never show (useful for headless mode)
+   * - 'development': Show UI only in development (default)
+   * - 'production': Show UI only in production
+   * - 'always': Always show UI
+   * - 'headless': No UI, but monitoring runs with callbacks (ideal for production)
+   * - 'never': No UI and no monitoring (completely disabled)
    * @default 'development'
    */
   mode?: PanelMode;

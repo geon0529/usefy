@@ -52,6 +52,9 @@ export function getShouldRender(mode: PanelMode): boolean {
     case "always":
       return true;
     case "never":
+    case "headless":
+      // "never" and "headless" both don't render UI
+      // The difference is handled in getShouldActivate
       return false;
     case "production":
       return isProduction();
@@ -62,8 +65,11 @@ export function getShouldRender(mode: PanelMode): boolean {
 }
 
 /**
- * Determine if features should be active (for headless mode)
- * Features can be active even when panel is not rendered
+ * Determine if monitoring features should be active
+ *
+ * Features can be active even when panel is not rendered (headless mode).
+ * - "headless": No UI but monitoring runs (for production callbacks)
+ * - "never": No UI and no monitoring (completely disabled)
  *
  * @param mode - Panel visibility mode
  * @param disableInProduction - Whether to disable in production
@@ -73,7 +79,8 @@ export function getShouldActivate(
   mode: PanelMode,
   disableInProduction: boolean
 ): boolean {
-  // If explicitly set to never, don't activate
+  // Only "never" completely disables monitoring
+  // "headless" keeps monitoring active without UI
   if (mode === "never") {
     return false;
   }
