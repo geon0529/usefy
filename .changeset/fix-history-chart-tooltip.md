@@ -2,7 +2,8 @@
 "@usefy/memory-monitor": patch
 ---
 
-Fix HistoryChart tooltip showing duplicate "Total" labels
+Fix HistoryChart tooltip showing duplicate labels
 
-- Changed heapTotal label from "Total" to "Allocated" to differentiate from heapUsed
-- Tooltip now correctly displays "Used" for heap used and "Allocated" for heap total
+- Fixed formatter to correctly check Area component's name prop instead of dataKey
+- Changed heapTotal label from "Total" to "Allocated" to clarify the difference
+- Tooltip now correctly displays "Used" (current heap usage) and "Allocated" (total heap size)
