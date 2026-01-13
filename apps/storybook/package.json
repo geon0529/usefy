@@ -25,6 +25,7 @@
     "@usefy/use-memory-monitor": "workspace:*",
     "@usefy/memory-monitor": "workspace:*",
     "@usefy/use-on-click-outside": "workspace:*",
+    "@usefy/use-resize-observer": "workspace:*",
     "@usefy/use-session-storage": "workspace:*",
     "@usefy/use-signal": "workspace:*",
     "@usefy/use-throttle": "workspace:*",
