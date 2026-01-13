@@ -1,5 +1,30 @@
 # @usefy/usefy
 
+## 0.2.4
+
+### Patch Changes
+
+- 6af7994: add useResizeObserver
+  - @usefy/use-click-any-where@0.2.4
+  - @usefy/use-copy-to-clipboard@0.2.4
+  - @usefy/use-counter@0.2.4
+  - @usefy/use-debounce@0.2.4
+  - @usefy/use-debounce-callback@0.2.4
+  - @usefy/use-event-listener@0.2.4
+  - @usefy/use-geolocation@0.2.4
+  - @usefy/use-init@0.2.4
+  - @usefy/use-intersection-observer@0.2.4
+  - @usefy/use-local-storage@0.2.4
+  - @usefy/use-memory-monitor@0.2.4
+  - @usefy/use-on-click-outside@0.2.4
+  - @usefy/use-session-storage@0.2.4
+  - @usefy/use-signal@0.2.4
+  - @usefy/use-throttle@0.2.4
+  - @usefy/use-throttle-callback@0.2.4
+  - @usefy/use-timer@0.2.4
+  - @usefy/use-toggle@0.2.4
+  - @usefy/use-unmount@0.2.4
+
 ## 0.2.3
 
 ### Patch Changes
