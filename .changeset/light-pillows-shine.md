@@ -3,4 +3,4 @@
 "@usefy/hooks": patch
 ---
 
-add README.md
+add useResizeObserver
