@@ -265,6 +265,11 @@ export function useResizeObserver<T extends Element = Element>(
     (node: T | null) => {
       const prevTarget = targetRef.current;
 
+      // Skip if same element (prevent redundant observe calls)
+      if (node === prevTarget) {
+        return;
+      }
+
       // Unobserve previous target
       if (prevTarget && observerRef.current) {
         observerRef.current.unobserve(prevTarget);
@@ -325,7 +330,7 @@ export function useResizeObserver<T extends Element = Element>(
   useEffect(() => {
     if (!isSupported) return;
 
-    // Create observer with ref-based callback
+    // Create observer with ref-based callback (only once on mount)
     observerRef.current = new ResizeObserver((entries) => {
       observerCallbackRef.current(entries);
     });
@@ -354,22 +359,27 @@ export function useResizeObserver<T extends Element = Element>(
       }
       isObservingRef.current = false;
     };
-  }, [isSupported, enabled, box]);
+    // Note: Only depend on isSupported to create observer once on mount
+    // enabled and box changes are handled separately to avoid re-creating observer
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSupported]);
 
-  // ============ Effect: Handle enabled Toggle ============
+  // ============ Effect: Handle enabled toggle ============
   useEffect(() => {
     if (!isSupported || !observerRef.current || !targetRef.current) return;
 
-    if (enabled) {
+    if (enabled && !isObservingRef.current) {
+      // Only observe if not already observing
       observerRef.current.observe(targetRef.current, { box });
       isObservingRef.current = true;
       setIsObserving(true);
-    } else {
+    } else if (!enabled && isObservingRef.current) {
+      // Only unobserve if currently observing
       observerRef.current.unobserve(targetRef.current);
       isObservingRef.current = false;
       setIsObserving(false);
     }
-  }, [enabled, box, isSupported]);
+  }, [enabled, isSupported, box]);
 
   // ============ Computed Values ============
   const computedValues = useMemo(
